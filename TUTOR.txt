@@ -47,6 +47,7 @@ pip install -r requirements.txt
 
 # Jalankan API (port bisa diganti jika bentrok)
 python -m uvicorn app:app --reload --port 8000
+uvicorn app:app --reload --port 8000
 
 Cek:
   http://127.0.0.1:8000/health  -> {"status":"ok"}

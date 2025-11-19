@@ -52,15 +52,65 @@ def contains_ci(series: pd.Series, term: str | List[str]) -> pd.Series:
         return pd.Series(True, index=series.index)
     return series.astype(str).str.contains(pat, case=False, regex=True, na=False)
 
+def _norm_trans(s: str) -> str:
+    """
+    Normalisasi teks transmisi ke kode sederhana:
+    - 'matic' untuk AT / CVT / DCT / otomatis
+    - 'manual' untuk MT / manual
+    - '' kalau tidak dikenali
+    """
+    t = str(s or "").strip().lower()
+    if not t:
+        return ""
+
+    # satukan spasi, '-' dan '/' supaya 'A/T', '6 AT', '6AT' jadi mirip
+    compact = re.sub(r"[\s\-/_.]+", "", t)
+
+    # --- grup matic / automatic ---
+    matic_keys = [
+        "at", "automatic", "auto", "cvt", "dct", "amt",
+        "ecvt", "e-cvt", "dualclutch", "duaclutch"
+    ]
+    if any(k in compact for k in matic_keys):
+        return "matic"
+
+    # --- grup manual ---
+    manual_keys = ["mt", "manual"]
+    if any(k in compact for k in manual_keys):
+        return "manual"
+
+    return ""
+
+
 def vector_match_trans(series: pd.Series, choice: str | List[str] | None) -> pd.Series:
+    """
+    Filter transmisi berbasis kategori 'matic' / 'manual', dengan normalisasi
+    dari berbagai bentuk teks (AT, A/T, CVT, MT, Manual, dsb).
+    """
+    # Tidak ada pilihan -> jangan filter
     if not choice:
         return pd.Series(True, index=series.index)
+
+    # Normalisasi pilihan user
     if isinstance(choice, (list, tuple, set)):
-        toks = [re.escape(str(c)) for c in choice if str(c).strip()]
-        pat = r"\b(?:" + "|".join(toks) + r")\b"
+        normalized_choices = { _norm_trans(c) for c in choice if _norm_trans(c) }
     else:
-        pat = r"\b" + re.escape(str(choice).strip()) + r"\b"
-    return series.astype(str).str.upper().str.contains(pat.upper(), regex=True, na=False)
+        c_norm = _norm_trans(choice)
+        normalized_choices = {c_norm} if c_norm else set()
+
+    # Kalau setelah normalisasi kosong (user kirim string aneh), JANGAN bunuh semua kandidat
+    if not normalized_choices:
+        return pd.Series(True, index=series.index)
+
+    # Kalau user memilih dua-duanya (matic & manual) -> anggap tidak difilter
+    if normalized_choices == {"matic", "manual"}:
+        return pd.Series(True, index=series.index)
+
+    # Normalisasi kolom transmisi di data
+    trans_norm = series.astype(str).map(_norm_trans)
+
+    # Hanya ambil yang masuk kategori yang diminta
+    return trans_norm.isin(normalized_choices)
 
 def get_standard_depreciation_rate(years: float) -> float:
     anchors = {0: 1.00, 1: 0.80, 2: 0.70, 3: 0.60, 4: 0.52, 5: 0.45, 6: 0.40, 7: 0.36}
