@@ -36,7 +36,9 @@ export function BudgetField({
   return (
     <div className="grid gap-3">
       <label className="font-semibold">Budget</label>
-
+        <span id="budget-help" className="text-xs opacity-70">
+          Rentang harga di form {fmtIDR(BUDGET_MIN)} – Rp 10.000.000.000
+        </span>
       <div className="flex flex-wrap items-center gap-3">
         <input
           type="text"
@@ -52,11 +54,11 @@ export function BudgetField({
           className={`${isDark ? "bg-[#0a0a0a] border border-gray-700 text-gray-100" : "bg-white border border-gray-300"} w-60 px-3 py-2 rounded-xl`}
           aria-describedby="budget-help"
         />
-        <span id="budget-help" className="text-xs opacity-70">
-          Rentang slider {fmtIDR(BUDGET_MIN)} – {fmtIDR(BUDGET_MAX)}
-        </span>
+       
       </div>
-
+        <span id="budget-help" className="text-xs mt-5 opacity-70">
+          Rentang harga di slider {fmtIDR(BUDGET_MIN)} – {fmtIDR(BUDGET_MAX)}
+        </span> 
       <ElasticSlider
         value={sliderValue}                // ← slider mentok 2M
         min={BUDGET_MIN}
@@ -67,11 +69,12 @@ export function BudgetField({
         onChange={(v) => onChange(clampSlider(roundToStep(v)))} // slider selalu ≤ 2M
         className="w-full"
       />
-
+        
       <div className="flex justify-between text-xs opacity-70 -mt-1">
         <span>{fmtIDR(BUDGET_MIN)}</span>
         <span>{fmtIDR(BUDGET_MAX)}</span>
       </div>
+      
     </div>
   );
 }
