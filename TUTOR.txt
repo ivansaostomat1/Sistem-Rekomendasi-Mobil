@@ -96,3 +96,5 @@ Unblock-File .\.venv\Scripts\Activate.ps1
 ##aktifasi
 .\.venv\Scripts\Activate.ps1
 
+buat (.env.local) dengan isi :
+NEXT_PUBLIC_API_BASE=http://127.0.0.1:8000

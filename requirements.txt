@@ -1,6 +1,8 @@
 fastapi
-uvicorn
+uvicorn[standard]
 pandas
 numpy
 python-multipart
 scikit-learn
+google-genai
+python-dotenv

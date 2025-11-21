@@ -4,6 +4,8 @@ from __future__ import annotations
 import os
 import json
 from typing import Any, Dict, List, Optional
+from dotenv import load_dotenv
+load_dotenv()
 
 from pydantic import BaseModel
 
@@ -19,9 +21,7 @@ except ImportError:  # tergantung environment
 # NOTE: idealnya jangan hardcode API key di sini, tapi pakai env var saja.
 # Untuk sementara mengikuti punyamu.
 GEMINI_API_KEY = os.getenv(
-    "GEMINI_API_KEY",
-    "AIzaSyAJ511Y8MiyGquKPy0hZe8FX9mu6sKSF4s",
-)
+    "GEMINI_API_KEY")
 
 # =====================================================================
 #                     STATE: LAST_RECOMMENDATION
