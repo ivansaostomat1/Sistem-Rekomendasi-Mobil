@@ -89,6 +89,9 @@ Remove-Item -Recurse -Force .\.venv
 
 py -m venv .venv      
 
+# Install dependency (pertama kali / saat requirements.txt berubah)
+pip install -r requirements.txt
+
 ##pake kalo error
 Set-ExecutionPolicy -Scope CurrentUser RemoteSigned -Force
 Unblock-File .\.venv\Scripts\Activate.ps1
