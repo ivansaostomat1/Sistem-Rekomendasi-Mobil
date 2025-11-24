@@ -122,20 +122,51 @@ def get_standard_depreciation_rate(years: float) -> float:
 
 
 def fuel_to_code(v: str) -> str:
+    """
+    Normalisasi teks bahan bakar ke kode:
+    g = bensin
+    d = diesel
+    h = hybrid (HEV)
+    p = PHEV
+    e = BEV / EV
+    o = lainnya / tidak jelas
+    """
     s = str(v or "").strip().lower()
     if not s or s in {"na", "n/a", "-"}:
         return "o"
+
+    # 1) kalau sudah berupa kode langsung, jangan diutak–atik lagi
+    if s in {"g", "d", "h", "p", "e"}:
+        return s
+
+    # 2) deteksi PHEV
     if "phev" in s or "plug-in" in s or "plugin" in s or "plug in" in s:
         return "p"
+
+    # 3) deteksi hybrid (HEV)
     if "hybrid" in s or "hev" in s:
         return "h"
-    if "bev" in s or "battery" in s or "electric" in s or s == "ev":
+
+    # 4) deteksi BEV / EV
+    if (
+        "bev" in s
+        or "battery" in s
+        or "electric" in s
+        or s in {"ev", "full ev", "full electric"}
+    ):
         return "e"
-    if s == "d" or "diesel" in s or "dsl" in s or "solar" in s:
+
+    # 5) diesel
+    if "diesel" in s or "dsl" in s or "solar" in s or s == "d":
         return "d"
-    if s == "g" or "bensin" in s or "gasoline" in s or "petrol" in s:
+
+    # 6) bensin / gasoline
+    if "bensin" in s or "gasoline" in s or "petrol" in s or s == "g":
         return "g"
+
+    # default: lainnya
     return "o"
+
 
 
 def _series_num(s: pd.Series) -> pd.Series:

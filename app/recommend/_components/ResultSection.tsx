@@ -74,7 +74,7 @@ function buildFitLabelers(items: RecommendItem[]) {
 }
 
 /* =================================================================== */
-/*                        CHATBOT 2 - UI PANEL                          */
+/*                           CHAT PANEL (SMART)                        */
 /* =================================================================== */
 
 type ChatMessage = {
@@ -82,19 +82,25 @@ type ChatMessage = {
   text: string;
 };
 
-type Chatbot2ApiResponse = {
+type ChatbotApiResponse = {
   reply: string;
   suggested_questions?: string[];
 };
 
-function ExplainChatPanel({ theme, onClose }: { theme: Theme; onClose: () => void }) {
+function SmartChatPanel({
+  theme,
+  onClose,
+}: {
+  theme: Theme;
+  onClose: () => void;
+}) {
   const isDark = theme === "dark";
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       from: "bot",
       text:
-        "Hai! Aku bisa jelasin kenapa mobil nomor 1 jadi pilihan, apa beda mobil 1 dan 2, " +
-        "atau kenapa banyak mobil diesel di hasil rekomendasi kamu.",
+        "Hai! Aku bisa jelasin kenapa mobil tertentu jadi peringkat 1, bedain mobil peringkat atas, " +
+        "atau bantu simulasi 'what-if' (naik/turun budget, hindari jenis BBM, ubah fokus kebutuhan).",
     },
   ]);
   const [input, setInput] = useState("");
@@ -103,6 +109,7 @@ function ExplainChatPanel({ theme, onClose }: { theme: Theme; onClose: () => voi
     "Kenapa mobil ini nomor 1?",
     "Apa beda mobil 1 dan 2 untuk keluarga?",
     "Kenapa kok banyak yang diesel?",
+    "Kalau budget saya naikin 50 juta gimana?",
   ]);
 
   const listRef = useRef<HTMLDivElement | null>(null);
@@ -122,17 +129,17 @@ function ExplainChatPanel({ theme, onClose }: { theme: Theme; onClose: () => voi
     setSending(true);
 
     try {
-      const res = await fetch(`${API_BASE}/chatbot2`, {
+      const res = await fetch(`${API_BASE}/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: final }),
       });
 
       if (!res.ok) {
-        throw new Error(`Gagal memanggil chatbot2 (${res.status})`);
+        throw new Error(`Gagal memanggil /chat (${res.status})`);
       }
 
-      const json = (await res.json()) as Chatbot2ApiResponse;
+      const json = (await res.json()) as ChatbotApiResponse;
       const reply = json.reply?.trim() || "Maaf, aku belum bisa menjawab sekarang.";
       setMessages((prev) => [...prev, { from: "bot", text: reply }]);
 
@@ -146,7 +153,7 @@ function ExplainChatPanel({ theme, onClose }: { theme: Theme; onClose: () => voi
         {
           from: "bot",
           text:
-            "Maaf, ada kendala saat menghubungi asisten penjelas rekomendasi. " +
+            "Maaf, ada kendala saat menghubungi asisten AI. " +
             "Silakan coba lagi sebentar lagi.",
         },
       ]);
@@ -170,11 +177,13 @@ function ExplainChatPanel({ theme, onClose }: { theme: Theme; onClose: () => voi
     >
       {/* Header */}
       <div className="px-4 pt-3 pb-2 border-b border-white/5 flex items-center justify-between gap-3">
-        <div>
+        <div className="flex flex-col gap-1">
           <div className="text-[10px] uppercase tracking-wide opacity-70">
-            Asisten Penjelasan
+            Asisten Rekomendasi Mobil
           </div>
-          <div className="text-sm font-semibold">Chatbot Rekomendasi Mobil</div>
+          <div className="text-sm font-semibold">
+            Chat AI – Penjelasan & Simulasi
+          </div>
         </div>
         <div className="flex items-center gap-2">
           <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-amber-400 text-[11px] font-bold text-black shadow-md">
@@ -184,9 +193,7 @@ function ExplainChatPanel({ theme, onClose }: { theme: Theme; onClose: () => voi
             type="button"
             onClick={onClose}
             className={`w-7 h-7 inline-flex items-center justify-center rounded-full text-xs ${
-              isDark
-                ? "hover:bg-white/10 text-gray-300"
-                : "hover:bg-gray-100 text-gray-600"
+              isDark ? "hover:bg-white/10 text-gray-300" : "hover:bg-gray-100 text-gray-600"
             }`}
             aria-label="Tutup chat"
           >
@@ -196,17 +203,11 @@ function ExplainChatPanel({ theme, onClose }: { theme: Theme; onClose: () => voi
       </div>
 
       {/* Isi chat */}
-      <div
-        ref={listRef}
-        className="flex-1 px-4 py-3 space-y-2 overflow-y-auto text-sm"
-      >
+      <div ref={listRef} className="flex-1 px-4 py-3 space-y-2 overflow-y-auto text-sm">
         {messages.map((m, idx) => {
           const isUser = m.from === "user";
           return (
-            <div
-              key={idx}
-              className={`flex ${isUser ? "justify-end" : "justify-start"}`}
-            >
+            <div key={idx} className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
               <div
                 className={`max-w-[85%] px-3 py-2 rounded-2xl text-xs sm:text-sm leading-relaxed shadow-sm ${
                   isUser
@@ -254,8 +255,7 @@ function ExplainChatPanel({ theme, onClose }: { theme: Theme; onClose: () => voi
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyDown={onKeyDown}
-            placeholder="Tanya apa saja tentang hasil rekomendasi…"
+            onKeyDown={onKeyDown}     
             className={`flex-1 text-xs sm:text-sm rounded-xl px-3 py-2 outline-none border ${
               isDark
                 ? "bg-black/40 border-gray-700 placeholder:text-gray-500 text-gray-100 focus:border-orange-400"
@@ -381,8 +381,9 @@ export function ResultsSection({ theme, loading, error, data, onBackToForm }: Pr
             : "Hasil Rekomendasi"}
         </h2>
         <p className="text-sm text-neutral-500">
-          Setelah hasil muncul, kamu bisa klik tombol AI di kiri bawah untuk tanya apa saja tentang
-          peringkat mobil dan alasan rekomendasinya.
+          Setelah hasil muncul, klik tombol AI di pojok kanan bawah untuk tanya apa saja:
+          alasan peringkat, bandingkan mobil, atau simulasi what-if (naik/turun budget,
+          ubah kebutuhan, hindari jenis BBM tertentu, dll).
         </p>
       </div>
 
@@ -397,9 +398,7 @@ export function ResultsSection({ theme, loading, error, data, onBackToForm }: Pr
               isDark ? "border border-gray-800/60" : "border border-gray-200"
             } p-3`}
           >
-            <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-              {cards}
-            </div>
+            <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">{cards}</div>
           </div>
         ) : (
           <div
@@ -449,12 +448,12 @@ export function ResultsSection({ theme, loading, error, data, onBackToForm }: Pr
             <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-black/20 text-xl font-bold">
               👤
             </span>
-            <span className="hidden sm:inline">Tanya tentang rekomendasi</span>
+            <span className="hidden sm:inline">Tanya / Simulasi dengan AI</span>
           </button>
 
           {chatOpen && (
             <div className="fixed bottom-16 right-4 z-50 w-[min(100%-2rem,380px)] sm:w-96">
-              <ExplainChatPanel theme={theme} onClose={() => setChatOpen(false)} />
+              <SmartChatPanel theme={theme} onClose={() => setChatOpen(false)} />
             </div>
           )}
         </>

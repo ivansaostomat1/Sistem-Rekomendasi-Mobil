@@ -13,7 +13,10 @@ from spk_utils import (
     NEED_LABELS,
     contains_ci, vector_match_trans,
     _series_num, assign_array_safe, _dbg, _ensure_df, price_fit_anchor,
+    fuel_to_code,  # ← TAMBAH INI
 )
+
+
 
 from spk_features import add_need_features, has_turbo
 
@@ -45,7 +48,8 @@ def sanitize_needs(raw: List[str]) -> List[str]:
     for n in raw:
         n = str(n).strip().lower()
         if n in NEED_LABELS and n not in seen:
-            needs.append(n); seen.add(n)
+            needs.append(n)
+            seen.add(n)
     needs = _resolve_pair_keep_first(needs, "fun", "offroad")
     needs = _resolve_pair_keep_first(needs, "fun", "niaga")
     needs = _resolve_pair_keep_first(needs, "perjalanan_jauh", "perkotaan")
@@ -63,9 +67,10 @@ def has_turbo_model(model: str) -> bool:
 
 
 def is_fast_enough(cc_s: pd.Series, model_s: pd.Series, fuel_s: pd.Series) -> pd.Series:
-    cc_ok    = pd.to_numeric(cc_s, errors="coerce").fillna(0) >= 1500
+    cc_ok = pd.to_numeric(cc_s, errors="coerce").fillna(0) >= 1500
     turbo_ok = model_s.astype(str).apply(has_turbo_model)
-    fuel_ok  = fuel_s.astype(str).str.lower().isin(["h","p","e"])  # HEV/PHEV/BEV
+    fuel_ok = fuel_s.astype(str).str.lower().isin(
+        ["h", "p", "e"])  # HEV/PHEV/BEV
     return cc_ok | turbo_ok | fuel_ok
 
 
@@ -82,37 +87,46 @@ def hard_constraints_filter(cand_feat: pd.DataFrame, needs: List[str]) -> pd.Ser
         return pd.Series([], dtype=bool, index=cand_feat.index)
 
     seats = _series_num(cand_feat.get("seats"))
-    seg   = cand_feat["segmentasi"].astype(str) if "segmentasi" in cand_feat.columns else pd.Series([""] * n, index=cand_feat.index, dtype="object")
-    model = cand_feat["model"].astype(str) if "model" in cand_feat.columns else pd.Series([""] * n, index=cand_feat.index, dtype="object")
+    seg = cand_feat["segmentasi"].astype(str) if "segmentasi" in cand_feat.columns else pd.Series([
+        ""] * n, index=cand_feat.index, dtype="object")
+    model = cand_feat["model"].astype(str) if "model" in cand_feat.columns else pd.Series([
+        ""] * n, index=cand_feat.index, dtype="object")
     length = _series_num(cand_feat.get("length_mm"))
-    width  = _series_num(cand_feat.get("width_mm"))
+    width = _series_num(cand_feat.get("width_mm"))
     weight = _series_num(cand_feat.get("vehicle_weight_kg"))
-    wb     = _series_num(cand_feat.get("wheelbase_mm"))
-    cc     = _series_num(cand_feat.get("cc_kwh_num"))
-    awd    = _series_num(cand_feat.get("awd_flag")).fillna(0.0)
-    rim    = _series_num(cand_feat.get("rim_inch"))
-    tyr    = _series_num(cand_feat.get("tyre_w_mm"))
-    doors  = _series_num(cand_feat.get("doors_num"))
-    fuel   = cand_feat.get("fuel_code", pd.Series(["o"] * n, index=cand_feat.index)).astype(str)
+    wb = _series_num(cand_feat.get("wheelbase_mm"))
+    cc = _series_num(cand_feat.get("cc_kwh_num"))
+    awd = _series_num(cand_feat.get("awd_flag")).fillna(0.0)
+    rim = _series_num(cand_feat.get("rim_inch"))
+    tyr = _series_num(cand_feat.get("tyre_w_mm"))
+    doors = _series_num(cand_feat.get("doors_num"))
+    fuel = cand_feat.get("fuel_code", pd.Series(
+        ["o"] * n, index=cand_feat.index)).astype(str)
 
     # persentil untuk "kompak" & "besar"
-    p_len40 = float(np.nanpercentile(length.dropna(), 40)) if length.notna().any() else np.inf
-    p_wid40 = float(np.nanpercentile(width.dropna(),  40)) if width.notna().any()  else np.inf
-    p_wgt50 = float(np.nanpercentile(weight.dropna(), 50)) if weight.notna().any() else np.inf
-    p_wb60  = float(np.nanpercentile(wb.dropna(),     60)) if wb.notna().any()     else -np.inf
-    p_len60 = float(np.nanpercentile(length.dropna(), 60)) if length.notna().any() else -np.inf
+    p_len40 = float(np.nanpercentile(length.dropna(), 40)
+                    ) if length.notna().any() else np.inf
+    p_wid40 = float(np.nanpercentile(width.dropna(),  40)
+                    ) if width.notna().any() else np.inf
+    p_wgt50 = float(np.nanpercentile(weight.dropna(), 50)
+                    ) if weight.notna().any() else np.inf
+    p_wb60 = float(np.nanpercentile(wb.dropna(),     60)
+                   ) if wb.notna().any() else -np.inf
+    p_len60 = float(np.nanpercentile(length.dropna(), 60)
+                    ) if length.notna().any() else -np.inf
 
     # proxy power-to-weight
     pw = _pw_series(cc, weight)
-    p_pw55 = float(np.nanpercentile(pw.dropna(), 55)) if pw.notna().any() else -np.inf
+    p_pw55 = float(np.nanpercentile(pw.dropna(), 55)
+                   ) if pw.notna().any() else -np.inf
 
     # cepat (FUN)
     turbo_ok = model.apply(has_turbo_model)
-    fuel_ok  = fuel.str.lower().isin(["h","p","e"])
-    cc_ok    = cc >= 1500
-    rim_ok   = (rim >= 17) | (tyr >= 205)
-    pw_ok    = pw >= p_pw55
-    fast_ok  = turbo_ok | fuel_ok | (cc_ok & (pw_ok | rim_ok))
+    fuel_ok = fuel.str.lower().isin(["h", "p", "e"])
+    cc_ok = cc >= 1500
+    rim_ok = (rim >= 17) | (tyr >= 205)
+    pw_ok = pw >= p_pw55
+    fast_ok = turbo_ok | fuel_ok | (cc_ok & (pw_ok | rim_ok))
 
     # mulai dari semua True
     mask = pd.Series(True, index=cand_feat.index)
@@ -122,18 +136,21 @@ def hard_constraints_filter(cand_feat: pd.DataFrame, needs: List[str]) -> pd.Ser
         idx = cand_feat.index
 
         if "doors_num" in cand_feat.columns:
-            doors_s = pd.to_numeric(cand_feat["doors_num"], errors="coerce").reindex(idx)
+            doors_s = pd.to_numeric(
+                cand_feat["doors_num"], errors="coerce").reindex(idx)
         else:
             doors_s = pd.Series(np.nan, index=idx, dtype="float64")
 
         two_dr_pat = r"\b(?:2[\s\-]?door|2dr|two\s*door)\b"
         if "model" in cand_feat.columns:
-            two_dr_txt = cand_feat["model"].astype(str).str.contains(two_dr_pat, flags=re.I, regex=True, na=False).reindex(idx)
+            two_dr_txt = cand_feat["model"].astype(str).str.contains(
+                two_dr_pat, flags=re.I, regex=True, na=False).reindex(idx)
         else:
             two_dr_txt = pd.Series(False, index=idx)
 
         if "segmentasi" in cand_feat.columns:
-            two_dr_seg = cand_feat["segmentasi"].astype(str).str.contains(r"\bcoupe\b", flags=re.I, regex=True, na=False).reindex(idx)
+            two_dr_seg = cand_feat["segmentasi"].astype(str).str.contains(
+                r"\bcoupe\b", flags=re.I, regex=True, na=False).reindex(idx)
         else:
             two_dr_seg = pd.Series(False, index=idx)
 
@@ -149,20 +166,23 @@ def hard_constraints_filter(cand_feat: pd.DataFrame, needs: List[str]) -> pd.Ser
         min_seats = 5 if "perkotaan" in needs else 6
         seats_ok = (seats.fillna(0) >= min_seats)
         three_row_hint = seg.str.contains(r"\b(?:mpv|suv|minibus|van)\b", flags=re.I, regex=True, na=False) & \
-                         ((wb >= p_wb60) | (length >= p_len60))
+            ((wb >= p_wb60) | (length >= p_len60))
         seats_ok = seats_ok | (seats.isna() & three_row_hint)
         mask &= seats_ok
 
     # --- offroad ---
     if "offroad" in needs:
-        forbid_sedan = seg.str.contains(r"\bsedan\b", flags=re.I, regex=True, na=False)
+        forbid_sedan = seg.str.contains(
+            r"\bsedan\b", flags=re.I, regex=True, na=False)
         mask &= ~forbid_sedan
         mask &= (awd >= 0.5)
 
     # --- perkotaan (short trip) ---
     if "perkotaan" in needs:
-        small = ((length <= p_len40) | length.isna()) & ((width <= p_wid40) | width.isna()) & ((weight <= p_wgt50) | weight.isna())
-        efficient = fuel.str.lower().isin(["h","p","e"]) | (cc <= 1500) | cc.isna()
+        small = ((length <= p_len40) | length.isna()) & (
+            (width <= p_wid40) | width.isna()) & ((weight <= p_wgt50) | weight.isna())
+        efficient = fuel.str.lower().isin(
+            ["h", "p", "e"]) | (cc <= 1500) | cc.isna()
         if "fun" in needs:
             mask &= (small & efficient) | (fast_ok & efficient)
         else:
@@ -172,10 +192,12 @@ def hard_constraints_filter(cand_feat: pd.DataFrame, needs: List[str]) -> pd.Ser
     if "fun" in needs:
         mask &= fast_ok
         if "perjalanan_jauh" not in needs:
-            not_suv = ~seg.str.contains(r"\b(?:suv|crossover)\b", flags=re.I, regex=True, na=False)
+            not_suv = ~seg.str.contains(
+                r"\b(?:suv|crossover)\b", flags=re.I, regex=True, na=False)
             mask &= not_suv
         if "perkotaan" in needs:
-            not_mpv = ~seg.str.contains(r"\b(?:mpv|van|minibus)\b", flags=re.I, regex=True, na=False)
+            not_mpv = ~seg.str.contains(
+                r"\b(?:mpv|van|minibus)\b", flags=re.I, regex=True, na=False)
             mask &= not_mpv
 
     # --- niaga ---
@@ -184,7 +206,8 @@ def hard_constraints_filter(cand_feat: pd.DataFrame, needs: List[str]) -> pd.Ser
         allow = seg.str.contains(niaga_pat, flags=re.I, regex=True, na=False)
         mask &= allow
     if needs and "niaga" not in needs:
-        is_niaga = seg.str.contains(niaga_pat, flags=re.I, regex=True, na=False)
+        is_niaga = seg.str.contains(
+            niaga_pat, flags=re.I, regex=True, na=False)
         mask &= ~is_niaga
 
     return mask
@@ -226,18 +249,20 @@ def soft_multiplier(r: pd.Series, needs: List[str], P: Dict[str, float]) -> floa
     needs = needs or []
     m = 1.0
 
-    length = float(pd.to_numeric(r.get("length_mm"), errors="coerce") or np.nan)
-    width  = float(pd.to_numeric(r.get("width_mm"),  errors="coerce") or np.nan)
-    weight = float(pd.to_numeric(r.get("vehicle_weight_kg"), errors="coerce") or np.nan)
-    wb     = float(pd.to_numeric(r.get("wheelbase_mm"), errors="coerce") or np.nan)
-    cc     = float(pd.to_numeric(r.get("cc_kwh_num"), errors="coerce") or np.nan)
-    rim    = float(pd.to_numeric(r.get("rim_inch"), errors="coerce") or np.nan)
-    tyr    = float(pd.to_numeric(r.get("tyre_w_mm"), errors="coerce") or np.nan)
-    awd    = float(pd.to_numeric(r.get("awd_flag"), errors="coerce") or 0.0)
-    seats  = float(pd.to_numeric(r.get("seats"), errors="coerce") or 0.0)
+    length = float(pd.to_numeric(
+        r.get("length_mm"), errors="coerce") or np.nan)
+    width = float(pd.to_numeric(r.get("width_mm"),  errors="coerce") or np.nan)
+    weight = float(pd.to_numeric(
+        r.get("vehicle_weight_kg"), errors="coerce") or np.nan)
+    wb = float(pd.to_numeric(r.get("wheelbase_mm"), errors="coerce") or np.nan)
+    cc = float(pd.to_numeric(r.get("cc_kwh_num"), errors="coerce") or np.nan)
+    rim = float(pd.to_numeric(r.get("rim_inch"), errors="coerce") or np.nan)
+    tyr = float(pd.to_numeric(r.get("tyre_w_mm"), errors="coerce") or np.nan)
+    awd = float(pd.to_numeric(r.get("awd_flag"), errors="coerce") or 0.0)
+    seats = float(pd.to_numeric(r.get("seats"), errors="coerce") or 0.0)
     fuel_c = str(r.get("fuel_code") or "").lower()
-    seg    = str(r.get("segmentasi") or "").lower()
-    model  = str(r.get("model") or "")
+    seg = str(r.get("segmentasi") or "").lower()
+    model = str(r.get("model") or "")
 
     def is_small_city():
         return (length <= P["len_p40"]) and (width <= P["wid_p40"]) and (weight <= P["wgt_p50"])
@@ -254,14 +279,16 @@ def soft_multiplier(r: pd.Series, needs: List[str], P: Dict[str, float]) -> floa
         if is_small_city() and is_efficient():
             m *= 1.08
         else:
-            big = (length >= P["len_p70"]) or (width >= P["wid_p60"]) or (weight >= P["wgt_p60"])
+            big = (length >= P["len_p70"]) or (
+                width >= P["wid_p60"]) or (weight >= P["wgt_p60"])
             m *= 0.97 if big else 1.0
         if re.search(r"\b(mpv|van|minibus|suv|crossover)\b", seg, flags=re.I):
             m *= 0.98
 
     # Keluarga
     if "keluarga" in needs:
-        roomy = (seats >= 7) or ((seats >= 6) and (wb >= P["wb_p60"]) and (width >= P["wid_p60"]))
+        roomy = (seats >= 7) or ((seats >= 6) and (
+            wb >= P["wb_p60"]) and (width >= P["wid_p60"]))
         m *= 1.06 if roomy else 0.98
 
     # Fun to Drive
@@ -318,28 +345,37 @@ def style_adjust_multiplier(r: pd.Series, needs: List[str]) -> float:
     m = 1.0
 
     if "fun" in needs:
-        if SEG_MPV.search(seg):   m *= 0.90
-        if SEG_SUV.search(seg):   m *= 0.96
+        if SEG_MPV.search(seg):
+            m *= 0.90
+        if SEG_SUV.search(seg):
+            m *= 0.96
         if SEG_SEDAN.search(seg) or SEG_HATCH.search(seg) or SEG_COUPE.search(seg):
             m *= 1.06
         if (cc and cc < 1400) and (not has_turbo_model(model)):
             m *= 0.92
 
     if "perjalanan_jauh" in needs:
-        if fuel_c == "d":  m *= 1.04
-        if SEG_SEDAN.search(seg): m *= 1.02
+        if fuel_c == "d":
+            m *= 1.04
+        if SEG_SEDAN.search(seg):
+            m *= 1.02
 
     if "keluarga" in needs:
         seats = float(pd.to_numeric(r.get("seats"), errors="coerce") or 0.0)
-        if seats >= 7: m *= 1.03
-        if SEG_MPV.search(seg): m *= 1.02
+        if seats >= 7:
+            m *= 1.03
+        if SEG_MPV.search(seg):
+            m *= 1.02
 
     if "perkotaan" in needs:
-        if SEG_MPV.search(seg) or SEG_SUV.search(seg): m *= 0.98
-        if SEG_HATCH.search(seg): m *= 1.02
+        if SEG_MPV.search(seg) or SEG_SUV.search(seg):
+            m *= 0.98
+        if SEG_HATCH.search(seg):
+            m *= 1.02
 
     if "offroad" in needs:
-        if SEG_SUV.search(seg) or SEG_PICKUP.search(seg): m *= 1.03
+        if SEG_SUV.search(seg) or SEG_PICKUP.search(seg):
+            m *= 1.03
 
     return float(np.clip(m, 0.85, 1.18))
 
@@ -368,22 +404,53 @@ def rank_candidates(
 
         # 2) Brand (opsional)
         if spec_filters.get("brand"):
-            cand = _dbg("brand", cand[contains_ci(cand["brand"], spec_filters["brand"])])
+            cand = _dbg("brand", cand[contains_ci(
+                cand["brand"], spec_filters["brand"])])
             if cand.empty:
                 return _ensure_df(cand)
 
         # 3) Transmisi (opsional)
-        cand = _dbg("trans", cand[vector_match_trans(cand["trans"], spec_filters.get("trans_choice"))])
+        cand = _dbg("trans", cand[vector_match_trans(
+            cand["trans"], spec_filters.get("trans_choice"))])
         if cand.empty:
             return _ensure_df(cand)
 
-        # 4) Fuel multi-select (opsional)
-        fuels = spec_filters.get("fuels")
-        if fuels:
-            want = {str(x).lower() for x in fuels}
-            cand = _dbg("fuel", cand[cand["fuel_code"].isin(want)])
-            if cand.empty:
-                return _ensure_df(cand)
+               # 4) Fuel multi-select (opsional, robust)
+        fuels = spec_filters.get("fuels", None)
+        print("[dbg] spec_filters.fuels (raw):", fuels)
+
+        if fuels is not None:
+            # Normalisasi ke list
+            if isinstance(fuels, (str, bytes)):
+                fuels_list = [fuels]
+            else:
+                try:
+                    fuels_list = list(fuels)
+                except TypeError:
+                    fuels_list = [fuels]
+
+            # Konversi apa pun yang datang (code / label / dict) ke kode 'g/d/h/p/e'
+            want_codes = set()
+            for x in fuels_list:
+                if x is None:
+                    continue
+                # kalau bentuknya dict {code: "...", label: "..."}
+                if isinstance(x, dict) and "code" in x:
+                    raw = x["code"]
+                else:
+                    raw = x
+                code = fuel_to_code(str(raw))
+                if code and code != "o":
+                    want_codes.add(code)
+
+            print("[dbg] fuel codes wanted:", sorted(want_codes))
+
+            # Kalau user pilih semua jenis atau tidak ada kode valid -> jangan batasi
+            # (5 = g, d, h, p, e)
+            if 0 < len(want_codes) < 5:
+                cand = _dbg("fuel", cand[cand["fuel_code"].isin(want_codes)])
+                if cand.empty:
+                    return _ensure_df(cand)
 
         # 5) Fitur + hard constraints
         print(f"[dbg] before_features: {len(cand)}")
@@ -400,15 +467,17 @@ def rank_candidates(
             hard_ok = hard_ok.reindex(cand_feat.index)
         hard_ok = hard_ok.fillna(False).astype(bool)
 
-        cand      = _dbg("hard_ok", cand[hard_ok])
+        cand = _dbg("hard_ok", cand[hard_ok])
         cand_feat = cand_feat[hard_ok]
         if cand.empty:
             return _ensure_df(cand)
 
         # 6) Klaster + need_score
         try:
-            cand_feat2, cluster_to_label, C_scaled, feat_cols, scaler, _ = cluster_and_label(cand_feat, k=6)
-            X_for_need = cand_feat2[feat_cols].apply(lambda col: col.fillna(col.median()), axis=0).values
+            cand_feat2, cluster_to_label, C_scaled, feat_cols, scaler, _ = cluster_and_label(
+                cand_feat, k=6)
+            X_for_need = cand_feat2[feat_cols].apply(
+                lambda col: col.fillna(col.median()), axis=0).values
             X_scaled = scaler.transform(X_for_need)
             cluster_ids = cand_feat2.get("cluster_id")
             if cluster_ids is None:
@@ -422,7 +491,8 @@ def rank_candidates(
             # Simpan label klaster bila tersedia
             if "cluster_id" in cand.columns and cluster_to_label is not None:
                 try:
-                    cand["cluster_label"] = cand["cluster_id"].map(cluster_to_label)
+                    cand["cluster_label"] = cand["cluster_id"].map(
+                        cluster_to_label)
                 except Exception:
                     cand["cluster_label"] = cand["cluster_id"].astype(str)
         except Exception:
@@ -439,76 +509,99 @@ def rank_candidates(
         else:
             p10, p90 = 0.0, 1.0
         span = max(1.0, p90 - p10)
-        price_rank = ((p - p10) / span).clip(0, 1)  # makin mahal di antara kandidat → makin tinggi
+        # makin mahal di antara kandidat → makin tinggi
+        price_rank = ((p - p10) / span).clip(0, 1)
         pmax_cand = float(p.max() if p.notna().any() else budget)
-        price_anchor = p.apply(lambda x: price_fit_anchor(x, budget, pmax_cand))
+        price_anchor = p.apply(
+            lambda x: price_fit_anchor(x, budget, pmax_cand))
         cand["price_fit"] = 0.5 * price_rank + 0.5 * price_anchor  # 0..1
 
         # 7) SAW (need vs price)
         if needs and isinstance(need_score, np.ndarray):
             alpha_price = 0.20 if ("fun" in needs) else 0.30
-            cand["fit_score"] = (1.0 - alpha_price) * cand["need_score"] + alpha_price * cand["price_fit"]
+            cand["fit_score"] = (1.0 - alpha_price) * \
+                cand["need_score"] + alpha_price * cand["price_fit"]
         else:
             cand["fit_score"] = cand["price_fit"]
 
         # 8) Soft layer + style layer
         P = compute_percentiles(cand)
-        cand["soft_mult"]  = cand.apply(lambda r: soft_multiplier(r, needs or [], P), axis=1)
-        cand["fit_score"]  = (cand["fit_score"] * cand["soft_mult"]).clip(0, 1.0)
-        cand["style_mult"] = cand.apply(lambda r: style_adjust_multiplier(r, needs or []), axis=1)
-        cand["fit_score"]  = (cand["fit_score"] * cand["style_mult"]).clip(0, 1.0)
+        cand["soft_mult"] = cand.apply(
+            lambda r: soft_multiplier(r, needs or [], P), axis=1)
+        cand["fit_score"] = (cand["fit_score"] *
+                             cand["soft_mult"]).clip(0, 1.0)
+        cand["style_mult"] = cand.apply(
+            lambda r: style_adjust_multiplier(r, needs or []), axis=1)
+        cand["fit_score"] = (cand["fit_score"] *
+                             cand["style_mult"]).clip(0, 1.0)
 
         # 9) Alasan
         def mk_reason(r):
             why = []
-            why.append("harga sesuai budget" if r["price"] <= budget else "±15% dari budget")
+            why.append(
+                "harga sesuai budget" if r["price"] <= budget else "±15% dari budget")
             if "keluarga" in (needs or []):
                 min_seats = 5 if "perkotaan" in (needs or []) else 6
                 why.append(f"kursi ≥{min_seats}")
             if "offroad" in (needs or []):
-                why.append("AWD/4x4 & siap offroad" if r.get("awd_flag",0)>=0.5 else "butuh AWD/4x4")
+                why.append("AWD/4x4 & siap offroad" if r.get("awd_flag", 0)
+                           >= 0.5 else "butuh AWD/4x4")
             if "perkotaan" in (needs or []):
                 why.append("kompak & efisien")
             if "perjalanan_jauh" in (needs or []):
-                why.append("diesel cocok perjalanan jauh" if str(r.get("fuel_code","")) == "d" else "stabil & efisien jarak jauh")
+                why.append("diesel cocok perjalanan jauh" if str(
+                    r.get("fuel_code", "")) == "d" else "stabil & efisien jarak jauh")
             if "fun" in (needs or []):
                 bits = []
-                if pd.to_numeric(r.get("cc_kwh_num"), errors="coerce") >= 1600: bits.append("mesin responsif")
-                if has_turbo_model(str(r.get("model",""))): bits.append("turbo")
-                if r.get("awd_flag",0) >= 0.5: bits.append("traksi baik")
-                if bits: why.append("fun: " + ", ".join(bits))
+                if pd.to_numeric(r.get("cc_kwh_num"), errors="coerce") >= 1600:
+                    bits.append("mesin responsif")
+                if has_turbo_model(str(r.get("model", ""))):
+                    bits.append("turbo")
+                if r.get("awd_flag", 0) >= 0.5:
+                    bits.append("traksi baik")
+                if bits:
+                    why.append("fun: " + ", ".join(bits))
             return ", ".join([w for w in why if w])
 
         cand["alasan"] = cand.apply(mk_reason, axis=1)
 
         # 10) Sortir & deduplikasi
-        cand["model_norm"] = cand["model"].astype(str).str.replace(r"\s+"," ",regex=True).str.strip().str.lower()
-        cand["price_int"]  = pd.to_numeric(cand["price"], errors="coerce").fillna(-1).astype(int)
+        cand["model_norm"] = cand["model"].astype(str).str.replace(
+            r"\s+", " ", regex=True).str.strip().str.lower()
+        cand["price_int"] = pd.to_numeric(
+            cand["price"], errors="coerce").fillna(-1).astype(int)
         cand = (
             cand.sort_values(["fit_score"], ascending=[False])
-                .drop_duplicates(subset=["model_norm","price_int"], keep="first")
-                .drop(columns=["model_norm","price_int"])
+                .drop_duplicates(subset=["model_norm", "price_int"], keep="first")
+                .drop(columns=["model_norm", "price_int"])
         )
 
         # 11) Rank & points
         cand = cand.reset_index(drop=True)
-        cand["rank"] = cand["fit_score"].rank(ascending=False, method="first").astype(int)
-        n_out = len(cand); den = max(1, n_out - 1)
-        cand["points"] = (((n_out - cand["rank"]) / den) * 98 + 1).round(0).astype(int)
+        cand["rank"] = cand["fit_score"].rank(
+            ascending=False, method="first").astype(int)
+        n_out = len(cand)
+        den = max(1, n_out - 1)
+        cand["points"] = (((n_out - cand["rank"]) / den)
+                          * 98 + 1).round(0).astype(int)
 
         # 12) Kolom tampil minimal (kolom lain tetap ikut ke JSON)
-        show_cols = ["rank","points","brand","model","price","fit_score","fuel","fuel_code","trans","seats","cc_kwh","alasan"]
+        show_cols = ["rank", "points", "brand", "model", "price", "fit_score",
+                     "fuel", "fuel_code", "trans", "seats", "cc_kwh", "alasan"]
         for c in show_cols:
             if c not in cand.columns:
                 cand[c] = np.nan
 
-        topn = 15 if (topn is None or (isinstance(topn, (int, float)) and topn <= 0)) else int(topn)
+        topn = 15 if (topn is None or (isinstance(
+            topn, (int, float)) and topn <= 0)) else int(topn)
 
         t1 = time.perf_counter()
         shape_ns = getattr(need_score, "shape", None)
-        print(f"[rank] n_out={len(cand)} time={t1-t0:.3f}s needs={needs} need_score_shape={shape_ns}")
+        print(
+            f"[rank] n_out={len(cand)} time={t1-t0:.3f}s needs={needs} need_score_shape={shape_ns}")
         try:
-            print("max price passing hard:", float(pd.to_numeric(cand["price"], errors="coerce").max()))
+            print("max price passing hard:", float(
+                pd.to_numeric(cand["price"], errors="coerce").max()))
         except Exception:
             pass
         return _ensure_df(cand.head(topn))

@@ -6,6 +6,10 @@ import time
 import numpy as np
 import pandas as pd
 
+from dotenv import load_dotenv
+
+load_dotenv()  
+
 from typing import Any, Dict, List
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -22,12 +26,15 @@ from loaders import (
     WHOLESALE_GLOB,
 )
 from spk import build_master, rank_candidates, fuel_to_code
+
+# ==== IMPORT BARU UNTUK CHAT PINTAR ====
+from recommendation_state import set_last_recommendation
+from chat_schemas import ChatRequest, ChatReply
+from smart_chat import build_smart_reply
 from chatbot import (
-    Chatbot2Request,
-    Chatbot2Response,
     set_last_recommendation,
-    build_chatbot_reply,
 )
+
 
 app = FastAPI(title="Rekomendasi Mobil API (JSON)", version="1.3.0")
 app.add_middleware(
@@ -244,6 +251,8 @@ def recommendations(req: RecommendRequest):
     # Ranking
     cand = rank_candidates(master, budget, filters, needs, topn)
     if not isinstance(cand, pd.DataFrame):
+        # kosongkan state kalau terjadi error
+        set_last_recommendation(None)
         raise HTTPException(
             status_code=500,
             detail="rank_candidates mengembalikan nilai tak terduga",
@@ -311,10 +320,10 @@ def recommendations(req: RecommendRequest):
     cand["price"] = pd.to_numeric(cand["price"], errors="coerce").round(0)
     cand["fit_score"] = pd.to_numeric(cand["fit_score"], errors="coerce").round(4)
 
-    # Kirim semua kolom (supaya Chatbot2 bisa baca fitur lengkap)
+    # Kirim semua kolom (supaya chat bisa baca fitur lengkap)
     items = df_to_items(cand)
 
-    # Siapkan payload lengkap untuk disimpan di chatbot
+    # Siapkan payload lengkap untuk disimpan di state chatbot
     payload = {
         "timestamp": time.time(),
         "needs": needs,
@@ -336,19 +345,18 @@ def recommendations(req: RecommendRequest):
 
 
 # =====================================================================
-#                             CHATBOT 2
+#                       ENDPOINT CHAT PINTAR (SMART)
 # =====================================================================
-@app.post("/chatbot2", response_model=Chatbot2Response)
-def chatbot2(req: Chatbot2Request) -> Chatbot2Response:
+@app.post("/chat", response_model=ChatReply)
+def chat_endpoint(req: ChatRequest) -> ChatReply:
     """
-    Endpoint chatbot penjelas rekomendasi.
-    Request:
-      - message: teks user
-    Response:
-      - reply: jawaban bot
-      - suggested_questions: (opsional) daftar follow-up
+    Satu endpoint chat pintar.
+    Di dalamnya nanti akan milih:
+    - mode jelaskan rekomendasi
+    - atau simulasi what-if
+    berdasarkan isi pesan.
     """
-    return build_chatbot_reply(req.message)
+    return build_smart_reply(req.message)
 
 
 # =====================================================================
