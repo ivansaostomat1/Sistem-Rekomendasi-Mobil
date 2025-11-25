@@ -1,3 +1,4 @@
+// file: app/(main)/_components/ResultsSection.tsx
 "use client";
 
 import React, { useMemo, useState, useEffect, useRef } from "react";
@@ -255,7 +256,7 @@ function SmartChatPanel({
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyDown={onKeyDown}     
+            onKeyDown={onKeyDown}
             className={`flex-1 text-xs sm:text-sm rounded-xl px-3 py-2 outline-none border ${
               isDark
                 ? "bg-black/40 border-gray-700 placeholder:text-gray-500 text-gray-100 focus:border-orange-400"
@@ -292,6 +293,10 @@ export function ResultsSection({ theme, loading, error, data, onBackToForm }: Pr
     (data && typeof (data as any).count === "number" ? (data as any).count : data?.items?.length) ?? 0;
 
   const labeler = useMemo(() => buildFitLabelers(data?.items ?? []), [data]);
+
+  const emptyHint: any = data && (data as any).hint ? (data as any).hint : null;
+  const filtersSummary: any = emptyHint?.filters_summary ?? null;
+  const needsDiag: any[] = emptyHint?.needs_diag ?? [];
 
   const cards = useMemo(() => {
     if (!data?.items?.length) return [];
@@ -377,14 +382,9 @@ export function ResultsSection({ theme, loading, error, data, onBackToForm }: Pr
             : data
             ? safeCount > 0
               ? `Hasil Rekomendasi Mobil Terbaik Untuk Anda ✨ (${safeCount})`
-              : "Maaf, Tidak Ada Rekomendasi Mobil Ditemukan 😔"
+              : "Belum Ada Mobil yang Cocok dengan Kriteria Saat Ini"
             : "Hasil Rekomendasi"}
         </h2>
-        <p className="text-sm text-neutral-500">
-          Setelah hasil muncul, klik tombol AI di pojok kanan bawah untuk tanya apa saja:
-          alasan peringkat, bandingkan mobil, atau simulasi what-if (naik/turun budget,
-          ubah kebutuhan, hindari jenis BBM tertentu, dll).
-        </p>
       </div>
 
       {loading ? (
@@ -408,17 +408,230 @@ export function ResultsSection({ theme, loading, error, data, onBackToForm }: Pr
                 : "bg-white border border-gray-200"
             }`}
           >
-            <p className="text-lg opacity-80">
-              Coba sesuaikan budget atau hilangkan beberapa kriteria filter untuk mendapatkan hasil.
+            <p className="text-lg font-semibold mb-2">
+              Belum ada mobil yang bisa direkomendasikan dengan kriteria ini.
             </p>
-            <div className="mt-4">
+
+            {/* Paragraf utama tergantung reason dari backend */}
+            {(() => {
+              const r = emptyHint?.reason as string | undefined;
+
+              if (r === "BUDGET_TOO_LOW" || r === "BUDGET_TOO_LOW_FOR_NEEDS") {
+                const cur = Number(emptyHint?.current_budget ?? 0);
+                const cap = Number(
+                  emptyHint?.max_price_allowed ?? emptyHint?.current_budget ?? 0
+                );
+                const minFiltered =
+                  emptyHint?.min_price_filtered != null
+                    ? Number(emptyHint.min_price_filtered)
+                    : null;
+                const suggested =
+                  emptyHint?.suggested_budget != null
+                    ? Number(emptyHint.suggested_budget)
+                    : null;
+
+                return (
+                  <>
+                    <p className="text-sm text-neutral-400">
+                      Dengan budget sekarang{" "}
+                      <span className="font-semibold">{fmtIDR(cur)}</span> dan batas
+                      perhitungan sistem sekitar{" "}
+                      <span className="font-semibold">{fmtIDR(cap)}</span>, semua mobil
+                      yang cocok filter jatuh di luar jangkauan harga ini.
+                    </p>
+                    {minFiltered != null && (
+                      <p className="text-sm text-neutral-400 mt-1">
+                        Di antara mobil yang sudah lolos filter dasar, harga termurah
+                        sekitar{" "}
+                        <span className="font-semibold">{fmtIDR(minFiltered)}</span>.
+                      </p>
+                    )}
+                    {suggested != null && (
+                      <p className="text-sm text-neutral-400 mt-1">
+                        Sebagai gambaran awal, coba naikkan budget ke kisaran{" "}
+                        <span className="font-semibold">{fmtIDR(suggested)}</span>.
+                      </p>
+                    )}
+                  </>
+                );
+              }
+
+              if (r === "NO_MATCH_FILTERS") {
+                const minOverall =
+                  emptyHint?.min_price_overall != null
+                    ? Number(emptyHint.min_price_overall)
+                    : null;
+                return (
+                  <>
+                    <p className="text-sm text-neutral-400">
+                      Tidak ada mobil di data yang cocok dengan kombinasi brand /
+                      transmisi / jenis BBM yang kamu pilih.
+                    </p>
+                    {minOverall != null && (
+                      <p className="text-sm text-neutral-400 mt-1">
+                        Sebagai konteks, harga mobil termurah di seluruh data sekitar{" "}
+                        <span className="font-semibold">{fmtIDR(minOverall)}</span>.
+                      </p>
+                    )}
+                  </>
+                );
+              }
+
+              if (r === "NO_MATCH_NEEDS") {
+                return (
+                  <p className="text-sm text-neutral-400">
+                    Di data saat ini belum ada mobil yang bisa memenuhi salah satu
+                    kebutuhan yang kamu pilih. Coba kurangi jumlah kebutuhan atau pilih
+                    kombinasi yang lebih umum.
+                  </p>
+                );
+              }
+
+              if (r === "CONSTRAINTS_TOO_STRICT") {
+                return (
+                  <p className="text-sm text-neutral-400">
+                    Budget dan filter dasar sebenarnya sudah cukup, tapi kombinasi
+                    kebutuhan dan aturan sistem membuat semua kandidat gugur. Coba
+                    kurangi jumlah kebutuhan atau longgarkan filter lain.
+                  </p>
+                );
+              }
+
+              if (r === "ERROR") {
+                return (
+                  <p className="text-sm text-neutral-400">
+                    Terjadi kendala saat menghitung saran. Coba ubah kriteria sedikit
+                    lalu jalankan ulang.
+                  </p>
+                );
+              }
+
+              return (
+                <p className="text-sm text-neutral-400">
+                  Coba sesuaikan budget atau hilangkan beberapa kriteria filter untuk
+                  mendapatkan hasil.
+                </p>
+              );
+            })()}
+
+            {/* Ringkasan filter yang terpakai */}
+            {filtersSummary && (
+              <div className="mt-4 text-xs sm:text-sm text-neutral-400 text-left max-w-xl mx-auto">
+                <div className="font-semibold text-neutral-300 mb-1">
+                  Ringkasan filter yang terpakai:
+                </div>
+                <ul className="space-y-0.5">
+                  <li>
+                    • Brand:{" "}
+                    {filtersSummary.brand
+                      ? `hanya merek yang mengandung "${filtersSummary.brand}"`
+                      : "semua merek diizinkan"}
+                  </li>
+                  <li>
+                    • Transmisi:{" "}
+                    {filtersSummary.trans_choice
+                      ? `difilter ke tipe "${filtersSummary.trans_choice}"`
+                      : "manual & otomatis diizinkan"}
+                  </li>
+                  <li>
+                    • Jenis BBM:{" "}
+                    {Array.isArray(filtersSummary.fuels) &&
+                    filtersSummary.fuels.length > 0 ? (
+                      filtersSummary.fuels.length === 5 ? (
+                        "semua jenis BBM (bensin, diesel, hybrid, PHEV, BEV)"
+                      ) : (
+                        filtersSummary.fuels
+                          .map((c: string) => {
+                            const code = (c || "").toLowerCase();
+                            if (code === "g") return "bensin";
+                            if (code === "d") return "diesel";
+                            if (code === "h") return "hybrid";
+                            if (code === "p") return "PHEV";
+                            if (code === "e") return "BEV";
+                            return code;
+                          })
+                          .join(", ")
+                      )
+                    ) : (
+                      "tidak dibatasi (semua jenis BBM diizinkan)"
+                    )}
+                  </li>
+                </ul>
+              </div>
+            )}
+
+            {/* Ringkasan kebutuhan (khususnya offroad dll) */}
+            {needsDiag.length > 0 && (
+              <div className="mt-3 text-xs sm:text-sm text-neutral-400 text-left max-w-xl mx-auto">
+                <div className="font-semibold text-neutral-300 mb-1">
+                  Ringkasan kebutuhan yang dipilih:
+                </div>
+                <ul className="space-y-0.5">
+                  {needsDiag.map((d) => {
+                    const needKey = String(d.need || "");
+                    const labelMap: Record<string, string> = {
+                      perjalanan_jauh: "Perjalanan Jauh",
+                      keluarga: "Keluarga",
+                      fun: "Fun to Drive",
+                      perkotaan: "Perkotaan",
+                      niaga: "Niaga",
+                      offroad: "Offroad",
+                    };
+                    const label = labelMap[needKey] ?? needKey;
+                    const total = Number(d.total ?? 0);
+                    const underCap = Number(d.under_cap ?? 0);
+                    const minAll =
+                      d.min_price_all != null ? Number(d.min_price_all) : null;
+
+                    if (total === 0) {
+                      return (
+                        <li key={needKey}>
+                          • {label}: di data belum ada mobil yang memenuhi definisi
+                          kebutuhan ini.
+                        </li>
+                      );
+                    }
+
+                    if (underCap === 0) {
+                      return (
+                        <li key={needKey}>
+                          • {label}: ada {total} mobil di data yang cocok dari sisi
+                          spesifikasi, tetapi semuanya di atas batas harga yang
+                          dihitung dari budget saat ini
+                          {minAll != null && (
+                            <>
+                              {" "}
+                              (mobil termurah sekitar{" "}
+                              <span className="font-semibold">
+                                {fmtIDR(minAll)}
+                              </span>
+                              ).
+                            </>
+                          )}
+                        </li>
+                      );
+                    }
+
+                    return (
+                      <li key={needKey}>
+                        • {label}: masih ada {underCap} mobil yang cocok di data, tetapi
+                        kombinasi dengan kebutuhan lain / aturan sistem membuat semuanya
+                        gugur di ranking akhir.
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
+
+            <div className="mt-5">
               <button
                 onClick={onBackToForm}
                 className={`${
                   isDark
                     ? "border border-gray-700 hover:bg-[#2a2a2a]"
                     : "border border-gray-300 hover:bg-gray-100"
-                } px-6 py-3 rounded-xl`}
+                } px-6 py-3 rounded-xl text-sm font-medium`}
               >
                 Ubah Kriteria
               </button>

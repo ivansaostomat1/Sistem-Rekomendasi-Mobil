@@ -63,9 +63,6 @@ export default function RecommendPage() {
               VRoom
             </span>
           </h1>
-          <p className="text-base md:text-lg opacity-80 mb-6 max-w-2xl">
-            Masukkan kriteria mobil impianmu dan dapatkan rekomendasi terbaik.
-          </p>
         </section>
 
         {/* Tahap 1: Form */}

@@ -3,7 +3,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { StickyResultBar } from "./StickyResultBar";
 import { SkeletonGrid } from "./SkeletonGrid";
-import { RecommendationForm } from "@/components/forms/RecommendationForm";
+import { RecommendationForm } from "@/components/forms/index";
 import { API_BASE } from "@/constants";
 import type { Theme, RecommendResponse, MetaResponse, RecommendItem } from "@/types";
 

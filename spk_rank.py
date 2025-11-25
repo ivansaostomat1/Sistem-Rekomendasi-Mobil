@@ -860,11 +860,34 @@ def rank_candidates(
 
         cand["alasan"] = cand.apply(mk_reason, axis=1)
 
+                # ------------------------------------------------------------
+        # 13) Sortir, deduplikasi, rank & points (robust terhadap NaN)
         # ------------------------------------------------------------
-        # 13) Sortir, deduplikasi, rank & points
-        # ------------------------------------------------------------
-        cand["model_norm"] = cand["model"].astype(str).str.replace(r"\s+", " ", regex=True).str.strip().str.lower()
-        cand["price_int"]  = pd.to_numeric(cand["price"], errors="coerce").fillna(-1).astype(int)
+        # Buang inf, ganti ke NaN dulu
+        cand = cand.replace([np.inf, -np.inf], np.nan)
+
+        # Pastikan fit_score numerik
+        cand["fit_score"] = pd.to_numeric(cand.get("fit_score"), errors="coerce")
+
+        # Jika semua fit_score NaN → tidak ada rekomendasi yang layak
+        valid_fit = cand["fit_score"].notna()
+        if not valid_fit.any():
+            return _ensure_df(cand.iloc[0:0])
+
+        # Hanya pakai baris yang fit_score-nya valid
+        cand = cand[valid_fit].copy()
+
+        # Normalisasi nama model + price untuk dedup
+        cand["model_norm"] = cand["model"].astype(str) \
+            .str.replace(r"\s+", " ", regex=True) \
+            .str.strip() \
+            .str.lower()
+
+        cand["price_int"] = pd.to_numeric(cand["price"], errors="coerce") \
+            .fillna(-1) \
+            .astype(int)
+
+        # Sortir dari fit_score tertinggi, lalu deduplikasi
         cand = (
             cand.sort_values(["fit_score"], ascending=[False])
                 .drop_duplicates(subset=["model_norm", "price_int"], keep="first")
@@ -872,10 +895,16 @@ def rank_candidates(
         )
 
         cand = cand.reset_index(drop=True)
-        cand["rank"] = cand["fit_score"].rank(ascending=False, method="first").astype(int)
+
+        # Rank urut manual 1..N (tanpa .rank() yang bisa bikin NaN)
         n_out = len(cand)
+        cand["rank"] = np.arange(1, n_out + 1, dtype=int)
+
+        # Points 1..99 (kurang lebih linear dari rank)
         den = max(1, n_out - 1)
-        cand["points"] = (((n_out - cand["rank"]) / den) * 98 + 1).round(0).astype(int)
+        cand["points"] = (((n_out - cand["rank"]) / den) * 98 + 1) \
+            .round(0) \
+            .astype(int)
 
         # ------------------------------------------------------------
         # 14) Kolom minimal untuk JSON
