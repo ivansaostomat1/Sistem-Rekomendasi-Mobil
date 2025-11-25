@@ -10,7 +10,7 @@ import { BudgetField } from "./BudgetField";
 import { NeedsPicker } from "./NeedsPicker";
 import { FuelPicker } from "./FuelPicker";
 import { TransmissionBrandRow } from "./TransmissionBrandRow";
-import { AlertCircle } from "lucide-react"; // <-- tambahan
+import { AlertCircle } from "lucide-react"; // untuk alert kebutuhan & fuel
 
 const DEFAULT_TOPN = 18;
 const DEFAULT_BUDGET = BUDGET_MIN;
@@ -73,7 +73,8 @@ export function RecommendationForm({
   });
   const [brand, setBrand] = useState("");
   const [selectedNeeds, setSelectedNeeds] = useState<string[]>([]);
-  const [fuelError, setFuelError] = useState<string | null>(null); // <- untuk alert bahan bakar
+  const [fuelError, setFuelError] = useState<string | null>(null);
+  const [needsError, setNeedsError] = useState<string | null>(null); // <- alert kebutuhan
 
   // ---------------- Fuel Options (meta → bersih & urut) ----------------
   const fuelOptions: FuelOption[] = useMemo(() => {
@@ -155,10 +156,13 @@ export function RecommendationForm({
   }, [meta?.budgetDefault]);
 
   // ---------------- Handlers ----------------
-  const toggleNeed = (key: string) =>
+  const toggleNeed = (key: string) => {
+    // begitu user mulai pilih kebutuhan, error di-clear
+    setNeedsError(null);
     setSelectedNeeds((prev) =>
       prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key],
     );
+  };
 
   const toggleFuel = (code: string) => {
     setFuelError(null); // bersihkan alert ketika user ganti pilihan
@@ -207,10 +211,19 @@ export function RecommendationForm({
     const selectedFuels = ((form.filters as FiltersState).fuels ||
       []) as string[];
 
-    // VALIDASI: minimal 1 fuel, tampilkan alert cantik
+    // VALIDASI: minimal 1 kebutuhan & minimal 1 fuel
+    const hasNeeds = selectedNeeds.length > 0;
+    if (!hasNeeds) {
+      setNeedsError("Pilih minimal satu kebutuhan terlebih dahulu.");
+    }
+
     if (selectedFuels.length === 0) {
       setFuelError("Pilih minimal satu jenis bahan bakar terlebih dahulu.");
-      return; // stop, jangan kirim request ke API
+    }
+
+    // kalau salah satu belum diisi, hentikan submit
+    if (!hasNeeds || selectedFuels.length === 0) {
+      return;
     }
 
     setLoading(true);
@@ -271,7 +284,8 @@ export function RecommendationForm({
     setError(null);
     setIsSearched(false);
     setBrand("");
-    setFuelError(null); // sekaligus hilangkan alert fuel
+    setFuelError(null);
+    setNeedsError(null); // sekaligus hilangkan alert kebutuhan
   };
 
   // ---------------- Render ----------------
@@ -310,6 +324,17 @@ export function RecommendationForm({
           selected={selectedNeeds}
           onToggle={toggleNeed}
         />
+
+        {needsError && (
+          <motion.div
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-1 flex items-center gap-2 rounded-xl border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-500"
+          >
+            <AlertCircle className="h-4 w-4" />
+            <span>{needsError}</span>
+          </motion.div>
+        )}
 
         <FuelPicker
           isDark={isDark}
