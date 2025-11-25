@@ -378,11 +378,11 @@ def compute_empty_hint(
 
         for need_key in need_set:
             if need_key == "offroad":
-                # definisi hard / strict: AWD/4x4 dan bukan sedan
-                core = (awd >= 0.5) & (~seg.str.contains(r"\bsedan\b", regex=True))
-
-                # versi longgar: semua SUV / crossover / pickup walau FWD/RWD
-                offroad_loose_pat = r"\b(suv|crossover|pick\s*up|pickup|double\s*cabin|4x4|4wd)\b"
+                # strict: AWD/4x4 atau SUV/pickup berat badan tertentu
+                core = ((awd >= 0.5) | seg.str.contains(r"\b(suv|pickup|double\s*cabin|4x4|4wd)\b", regex=True, na=False)) \
+           & (~seg.str.contains(r"\bsedan\b", regex=True, na=False))
+                # longgar: semua SUV / crossover / pickup / double cabin
+                offroad_loose_pat = r"\b(suv|crossover|pick\s*up|pickup|double\s*cab(?:in)?|4x4|4wd|dcab)\b"
                 loose = seg.str.contains(offroad_loose_pat, regex=True, na=False)
 
                 add_need_diag("offroad", core, loose)
