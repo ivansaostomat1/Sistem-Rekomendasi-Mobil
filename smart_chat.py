@@ -21,13 +21,19 @@ def _looks_like_rank_ref(q: str) -> bool:
         re.search(r"\b(mobil|no|nomor|peringkat|rank)\s*\d+\b", q)
     )
 
-
 def _looks_like_simulation(q: str) -> bool:
     """
-    Deteksi pertanyaan gaya simulasi 'what-if' yang dulu ditangani chatbot 3.
-    Sekarang fitur ini dimatikan, jadi akan dijawab bahwa fitur belum aktif.
+    Deteksi pertanyaan gaya simulasi 'what-if'.
+    CATATAN: kalau sudah jelas minta 'spek/spesifikasi/detail',
+    JANGAN dianggap simulasi.
     """
     q = q.lower()
+
+    # 🔴 Tambahan penting: kalau ada kata "spek"/"spesifikasi" → bukan simulasi
+    if any(k in q for k in ["spek", "spesifikasi", "detail", "spek lengkap", "spesifikasi lengkap"]):
+        return False
+
+    # pola what-if klasik
     if any(w in q for w in ["kalau ", "misal ", "andaikan", "what if"]):
         return True
 
@@ -60,6 +66,7 @@ def _looks_like_simulation(q: str) -> bool:
             return True
 
     return False
+
 
 def _detect_intent(message: str) -> Literal["explain", "simulate", "carinfo"]:
     q = (message or "").lower().strip()

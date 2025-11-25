@@ -394,28 +394,38 @@ def rank_candidates(
     try:
         t0 = time.perf_counter()
 
+        # ------------------------------------------------------------
+        # 0) Normalisasi kebutuhan
+        # ------------------------------------------------------------
         needs = sanitize_needs(needs or [])
+        needs_set = set(needs)
 
-        # 1) Harga
+        # ------------------------------------------------------------
+        # 1) Filter harga (<= 115% budget)
+        # ------------------------------------------------------------
         cap = budget * 1.15
         cand = _dbg("start", df_master[df_master["price"] <= cap].copy())
         if cand.empty:
             return _ensure_df(cand)
 
-        # 2) Brand (opsional)
+        # ------------------------------------------------------------
+        # 2) Filter brand (opsional)
+        # ------------------------------------------------------------
         if spec_filters.get("brand"):
-            cand = _dbg("brand", cand[contains_ci(
-                cand["brand"], spec_filters["brand"])])
+            cand = _dbg("brand", cand[contains_ci(cand["brand"], spec_filters["brand"])])
             if cand.empty:
                 return _ensure_df(cand)
 
-        # 3) Transmisi (opsional)
-        cand = _dbg("trans", cand[vector_match_trans(
-            cand["trans"], spec_filters.get("trans_choice"))])
+        # ------------------------------------------------------------
+        # 3) Filter transmisi (opsional)
+        # ------------------------------------------------------------
+        cand = _dbg("trans", cand[vector_match_trans(cand["trans"], spec_filters.get("trans_choice"))])
         if cand.empty:
             return _ensure_df(cand)
 
-               # 4) Fuel multi-select (opsional, robust)
+        # ------------------------------------------------------------
+        # 4) Filter fuel multi-select (opsional, robust)
+        # ------------------------------------------------------------
         fuels = spec_filters.get("fuels", None)
         print("[dbg] spec_filters.fuels (raw):", fuels)
 
@@ -434,7 +444,6 @@ def rank_candidates(
             for x in fuels_list:
                 if x is None:
                     continue
-                # kalau bentuknya dict {code: "...", label: "..."}
                 if isinstance(x, dict) and "code" in x:
                     raw = x["code"]
                 else:
@@ -443,24 +452,25 @@ def rank_candidates(
                 if code and code != "o":
                     want_codes.add(code)
 
-            print("[dbg] fuel codes wanted:", sorted(want_codes))
+            want_codes_sorted = sorted(want_codes)
+            print("[dbg] fuel codes wanted:", want_codes_sorted)
 
-            # Kalau user pilih semua jenis atau tidak ada kode valid -> jangan batasi
-            # (5 = g, d, h, p, e)
+            # Kalau ada subset spesifik (0 < len < 5) → batasi
             if 0 < len(want_codes) < 5:
-                cand = _dbg("fuel", cand[cand["fuel_code"].isin(want_codes)])
+                cand = _dbg("fuel", cand[cand["fuel_code"].astype(str).str.lower().isin(want_codes)])
                 if cand.empty:
                     return _ensure_df(cand)
 
-        # 5) Fitur + hard constraints
+        # ------------------------------------------------------------
+        # 5) Tambah fitur kebutuhan + hard constraints
+        # ------------------------------------------------------------
         print(f"[dbg] before_features: {len(cand)}")
         cand_feat = add_need_features(cand)
         print(f"[dbg] after_features:  {len(cand_feat)}")
 
-        # --- hard filter ---
         hard_ok = hard_constraints_filter(cand_feat, needs or [])
 
-        # Normalisasi hard_ok => selalu boolean Series berindeks cand_feat.index
+        # Pastikan hard_ok adalah boolean Series sesuai index
         if not isinstance(hard_ok, pd.Series):
             hard_ok = pd.Series(bool(hard_ok), index=cand_feat.index)
         else:
@@ -472,27 +482,27 @@ def rank_candidates(
         if cand.empty:
             return _ensure_df(cand)
 
-        # 6) Klaster + need_score
+        # ------------------------------------------------------------
+        # 6) Klaster + basic need_score (berbasis centroid)
+        # ------------------------------------------------------------
         try:
-            cand_feat2, cluster_to_label, C_scaled, feat_cols, scaler, _ = cluster_and_label(
-                cand_feat, k=6)
-            X_for_need = cand_feat2[feat_cols].apply(
-                lambda col: col.fillna(col.median()), axis=0).values
+            cand_feat2, cluster_to_label, C_scaled, feat_cols, scaler, _ = cluster_and_label(cand_feat, k=6)
+            X_for_need = cand_feat2[feat_cols].apply(lambda col: col.fillna(col.median()), axis=0).values
             X_scaled = scaler.transform(X_for_need)
             cluster_ids = cand_feat2.get("cluster_id")
             if cluster_ids is None:
                 cluster_ids_arr = np.zeros(len(cand_feat2), dtype=int)
             else:
                 cluster_ids_arr = np.asarray(cluster_ids)
+
             need_score = need_similarity_scores(
                 X_scaled, C_scaled, cluster_ids_arr, cluster_to_label, needs or []
             )
             cand = cand_feat2.copy()
-            # Simpan label klaster bila tersedia
+
             if "cluster_id" in cand.columns and cluster_to_label is not None:
                 try:
-                    cand["cluster_label"] = cand["cluster_id"].map(
-                        cluster_to_label)
+                    cand["cluster_label"] = cand["cluster_id"].map(cluster_to_label)
                 except Exception:
                     cand["cluster_label"] = cand["cluster_id"].astype(str)
         except Exception:
@@ -501,7 +511,9 @@ def rank_candidates(
 
         assign_array_safe(cand, "need_score", need_score, fallback=0.0)
 
-        # --- PRICE FEATURES: rank (p10..p90) + anchor ke budget ---
+        # ------------------------------------------------------------
+        # 7) Harga: price_fit (rank + anchor ke budget)
+        # ------------------------------------------------------------
         p = pd.to_numeric(cand["price"], errors="coerce")
         if p.notna().any():
             p10 = float(np.nanpercentile(p.dropna(), 10))
@@ -509,48 +521,331 @@ def rank_candidates(
         else:
             p10, p90 = 0.0, 1.0
         span = max(1.0, p90 - p10)
-        # makin mahal di antara kandidat → makin tinggi
-        price_rank = ((p - p10) / span).clip(0, 1)
+
+        price_rank = ((p - p10) / span).clip(0, 1)  # makin mahal di antara kandidat → makin tinggi
         pmax_cand = float(p.max() if p.notna().any() else budget)
-        price_anchor = p.apply(
-            lambda x: price_fit_anchor(x, budget, pmax_cand))
+        price_anchor = p.apply(lambda x: price_fit_anchor(x, budget, pmax_cand))
         cand["price_fit"] = 0.5 * price_rank + 0.5 * price_anchor  # 0..1
 
-        # 7) SAW (need vs price)
+        # ------------------------------------------------------------
+        # 8) Skor atribut eksplisit (power-to-weight, family, city, long trip, offroad, niaga)
+        #    + kombinasi khusus kebutuhan (fun+keluarga, longtrip+keluarga, dst.)
+        # ------------------------------------------------------------
+        # Helper normalisasi 0..1
+        def _scale_01(series: pd.Series) -> pd.Series:
+            s = pd.to_numeric(series, errors="coerce")
+            s_valid = s.dropna()
+            if s_valid.empty:
+                return pd.Series(0.5, index=series.index, dtype=float)
+            lo = float(np.nanpercentile(s_valid, 5))
+            hi = float(np.nanpercentile(s_valid, 95))
+            if not np.isfinite(lo):
+                lo = float(np.nanmin(s_valid))
+            if not np.isfinite(hi):
+                hi = float(np.nanmax(s_valid))
+            span = max(1e-6, hi - lo)
+            return ((s - lo) / span).clip(0, 1)
+
+        # Ambil fitur numerik yang dibutuhkan
+        length = _series_num(cand.get("length_mm"))
+        width  = _series_num(cand.get("width_mm"))
+        height = _series_num(cand.get("height_mm"))
+        wb     = _series_num(cand.get("wheelbase_mm"))
+        weight = _series_num(cand.get("vehicle_weight_kg"))
+        cc     = _series_num(cand.get("cc_kwh_num"))
+        rim    = _series_num(cand.get("rim_inch"))
+        tyr    = _series_num(cand.get("tyre_w_mm"))
+        awd    = _series_num(cand.get("awd_flag")).fillna(0.0)
+        seats  = _series_num(cand.get("seats"))
+        doors  = _series_num(cand.get("doors_num"))
+
+        fuel_c = cand.get("fuel_code", pd.Series(["o"] * len(cand), index=cand.index)).astype(str).str.lower()
+        seg    = cand.get("segmentasi", pd.Series([""] * len(cand), index=cand.index)).astype(str).str.lower()
+        model  = cand.get("model", pd.Series([""] * len(cand), index=cand.index)).astype(str)
+
+        # Power-to-weight ratio
+        w_safe = weight.replace(0, np.nan)
+        pw_raw = cc / w_safe.replace(0, np.nan)
+        pw_norm = _scale_01(pw_raw)
+
+        # Normalisasi untuk ukuran
+        len_norm = _scale_01(length)
+        wid_norm = _scale_01(width)
+        wgt_norm = _scale_01(weight)
+        wb_norm  = _scale_01(wb)
+        cc_norm  = _scale_01(cc)
+        rim_norm = _scale_01(rim)
+        tyr_norm = _scale_01(tyr)
+
+        small_size = ((1 - len_norm) + (1 - wid_norm) + (1 - wgt_norm)) / 3.0
+
+        # Flag turbo
+        turbo_flag = model.apply(has_turbo_model).astype(float)
+
+        # Efisiensi (untuk city / irit)
+        cc_small   = 1 - cc_norm
+        wgt_small  = 1 - wgt_norm
+        is_elec_hybrid = fuel_c.isin({"h", "p", "e"}).astype(float)
+
+        efficiency_score = (
+            0.4 * cc_small +
+            0.4 * wgt_small +
+            0.2 * is_elec_hybrid
+        ).clip(0, 1)
+
+        # Skor FUN: PW tinggi + turbo + ban besar + AWD
+        perf_score = (
+            0.55 * pw_norm +
+            0.15 * rim_norm +
+            0.10 * tyr_norm +
+            0.15 * turbo_flag +
+            0.05 * (awd > 0.5).astype(float)
+        ).clip(0, 1)
+
+        # Skor KELUARGA: kursi, pintu, MPV/van, dengan cap di 7 kursi (di atas 7 tidak tambah skor)
+        seats_capped = seats.copy()
+        seats_capped[seats_capped > 7] = 7
+        seats_norm = _scale_01(seats_capped)
+
+        doors_good = (doors >= 5).astype(float)
+        mpv_like = seg.str.contains(r"\b(mpv|van|minibus)\b", regex=True).astype(float)
+
+        family_score = (0.5 * seats_norm + 0.3 * doors_good + 0.2 * mpv_like).clip(0, 1)
+
+        # Penalti ringan untuk bus besar (>=8 kursi dan bodi panjang)
+        if length.notna().any():
+            len_p70 = float(np.nanpercentile(length.dropna(), 70))
+        else:
+            len_p70 = np.inf
+        many_seats = seats >= 8
+        long_body = length >= len_p70
+        big_bus_mask = many_seats & long_body
+        family_penalty = pd.Series(1.0, index=cand.index, dtype=float)
+        family_penalty[big_bus_mask] = 0.95
+        family_score = (family_score * family_penalty).clip(0, 1)
+
+        # Skor LONG TRIP (perjalanan jauh): wheelbase, berat, panjang, diesel / efisien
+        is_diesel = (fuel_c == "d").astype(float)
+        comfort_score = (
+            0.45 * wb_norm +
+            0.20 * wgt_norm +
+            0.15 * len_norm +
+            0.20 * (is_diesel * 0.7 + efficiency_score * 0.3)
+        ).clip(0, 1)
+
+        # Skor CITY (short trip / perkotaan): kompak + irit
+        city_core = (
+            0.6 * small_size +
+            0.4 * efficiency_score
+        ).clip(0, 1)
+        city_score = city_core
+
+        # Skor OFFROAD: AWD + ban besar + SUV/pickup
+        is_suv = SEG_SUV.search if False else None  # placeholder untuk type hint saja
+
+        suv_like = cand["segmentasi"].astype(str).str.contains(
+            r"\b(suv|crossover)\b", flags=re.I, regex=True, na=False
+        ).astype(float)
+        pickup_like = cand["segmentasi"].astype(str).str.contains(
+            r"\b(pick\s*up|pickup|pu|light\s*truck|chassis)\b", flags=re.I, regex=True, na=False
+        ).astype(float)
+
+        offroad_score = (
+            0.5 * (awd.clip(0, 1)) +
+            0.2 * tyr_norm +
+            0.15 * rim_norm +
+            0.15 * (suv_like + pickup_like).clip(0, 1)
+        ).clip(0, 1)
+
+        # Skor NIAGA: panjang + berat (kapasitas), tapi tidak terlalu tergantung PW
+        utility_score = (
+            0.5 * len_norm +
+            0.5 * wgt_norm
+        ).clip(0, 1)
+
+        # --------------------------------------------------------
+        # 9) Gabungkan skor atribut sesuai kebutuhan + KOMBINASI KHUSUS
+        # --------------------------------------------------------
+        need_s = pd.to_numeric(cand.get("need_score", 0.5), errors="coerce").fillna(0.5)
+
+        # Default: rata-rata tertimbang skor atribut per-need
+        attr_num = pd.Series(0.0, index=cand.index, dtype=float)
+        w_attr = 0.0
+
+        if "fun" in needs_set:
+            attr_num += 0.4 * perf_score
+            w_attr += 0.4
+        if "keluarga" in needs_set:
+            attr_num += 0.4 * family_score
+            w_attr += 0.4
+        if "perjalanan_jauh" in needs_set:
+            attr_num += 0.4 * comfort_score
+            w_attr += 0.4
+        if "perkotaan" in needs_set:
+            attr_num += 0.4 * city_score
+            w_attr += 0.4
+        if "niaga" in needs_set:
+            attr_num += 0.4 * utility_score
+            w_attr += 0.4
+        if "offroad" in needs_set:
+            attr_num += 0.4 * offroad_score
+            w_attr += 0.4
+
+        if w_attr > 0:
+            attr_score = (attr_num / w_attr).clip(0, 1)
+        else:
+            attr_score = need_s.copy()
+
+        # ---------- Kombinasi khusus ----------
+        combo_attr = None
+
+        # 9.1 fun + keluarga + perkotaan
+        if {"fun", "keluarga", "perkotaan"}.issubset(needs_set):
+            combo_attr = (
+                0.45 * perf_score +
+                0.35 * family_score +
+                0.20 * city_score
+            ).clip(0, 1)
+
+            # tambahan: penalti ukuran terlalu besar (biar lebih lincah)
+            if length.notna().any():
+                len_p70_combo = float(np.nanpercentile(length.dropna(), 70))
+            else:
+                len_p70_combo = np.inf
+            if weight.notna().any():
+                wgt_p70_combo = float(np.nanpercentile(weight.dropna(), 70))
+            else:
+                wgt_p70_combo = np.inf
+
+            too_big = (length >= len_p70_combo) | (weight >= wgt_p70_combo)
+            size_penalty = pd.Series(1.0, index=cand.index, dtype=float)
+            size_penalty[too_big] = 0.90
+            combo_attr = (combo_attr * size_penalty).clip(0, 1)
+
+        # 9.2 fun + keluarga (tanpa long trip)
+        elif {"fun", "keluarga"}.issubset(needs_set) and "perjalanan_jauh" not in needs_set:
+            combo_attr = (
+                0.6 * perf_score +    # kencang
+                0.4 * family_score    # tetap family-friendly
+            ).clip(0, 1)
+
+            # penalti ekstra untuk mobil yang terlalu besar (bus MPV besar)
+            if length.notna().any():
+                len_p70_combo = float(np.nanpercentile(length.dropna(), 70))
+            else:
+                len_p70_combo = np.inf
+            if weight.notna().any():
+                wgt_p70_combo = float(np.nanpercentile(weight.dropna(), 70))
+            else:
+                wgt_p70_combo = np.inf
+
+            too_big = (length >= len_p70_combo) | (weight >= wgt_p70_combo)
+            size_penalty = pd.Series(1.0, index=cand.index, dtype=float)
+            size_penalty[too_big] = 0.90
+            combo_attr = (combo_attr * size_penalty).clip(0, 1)
+
+        # 9.3 long trip + keluarga
+        elif {"perjalanan_jauh", "keluarga"}.issubset(needs_set):
+            combo_attr = (
+                0.55 * comfort_score +   # nyaman & stabil
+                0.45 * family_score      # kursi cukup & layout keluarga
+            ).clip(0, 1)
+
+        # 9.4 keluarga + short trip (perkotaan)
+        elif {"keluarga", "perkotaan"}.issubset(needs_set):
+            combo_attr = (
+                0.45 * family_score +
+                0.30 * city_score +
+                0.25 * efficiency_score
+            ).clip(0, 1)
+
+        # 9.5 long trip + fun
+        elif {"perjalanan_jauh", "fun"}.issubset(needs_set):
+            combo_attr = (
+                0.5 * perf_score +
+                0.5 * comfort_score
+            ).clip(0, 1)
+
+        # 9.6 short trip + fun (perkotaan + fun)
+        elif {"perkotaan", "fun"}.issubset(needs_set):
+            combo_attr = (
+                0.5 * perf_score +
+                0.3 * efficiency_score +
+                0.2 * city_score
+            ).clip(0, 1)
+
+        # 9.7 offroad + long trip
+        elif {"offroad", "perjalanan_jauh"}.issubset(needs_set):
+            combo_attr = (
+                0.5 * offroad_score +
+                0.5 * comfort_score
+            ).clip(0, 1)
+
+        # 9.8 offroad + short trip
+        elif {"offroad", "perkotaan"}.issubset(needs_set):
+            combo_attr = (
+                0.6 * offroad_score +
+                0.4 * city_score
+            ).clip(0, 1)
+
+        # 9.9 keluarga + offroad
+        elif {"keluarga", "offroad"}.issubset(needs_set):
+            combo_attr = (
+                0.5 * offroad_score +
+                0.5 * family_score
+            ).clip(0, 1)
+
+        # Jika ada kombinasi khusus, pakai untuk override attr_score
+        if combo_attr is not None:
+            # blending supaya masih respect need_score klaster
+            attr_score = combo_attr
+
+        # Gabungkan need_score (klaster) + attr_score eksplisit
         if needs and isinstance(need_score, np.ndarray):
-            alpha_price = 0.20 if ("fun" in needs) else 0.30
-            cand["fit_score"] = (1.0 - alpha_price) * \
-                cand["need_score"] + alpha_price * cand["price_fit"]
+            # skor preferensi murni kebutuhan
+            pref_score = (
+                0.6 * attr_score +
+                0.4 * need_s
+            ).clip(0, 1)
+        else:
+            pref_score = attr_score
+
+        # ------------------------------------------------------------
+        # 10) Gabungkan dengan harga → fit_score awal
+        # ------------------------------------------------------------
+        if needs:
+            alpha_price = 0.20 if ("fun" in needs_set) else 0.30
+            cand["fit_score"] = (
+                (1.0 - alpha_price) * pref_score +
+                alpha_price * cand["price_fit"]
+            ).clip(0, 1)
         else:
             cand["fit_score"] = cand["price_fit"]
 
-        # 8) Soft layer + style layer
+        # ------------------------------------------------------------
+        # 11) Soft layer + style layer (lapisan halus)
+        # ------------------------------------------------------------
         P = compute_percentiles(cand)
-        cand["soft_mult"] = cand.apply(
-            lambda r: soft_multiplier(r, needs or [], P), axis=1)
-        cand["fit_score"] = (cand["fit_score"] *
-                             cand["soft_mult"]).clip(0, 1.0)
-        cand["style_mult"] = cand.apply(
-            lambda r: style_adjust_multiplier(r, needs or []), axis=1)
-        cand["fit_score"] = (cand["fit_score"] *
-                             cand["style_mult"]).clip(0, 1.0)
+        cand["soft_mult"]  = cand.apply(lambda r: soft_multiplier(r, needs or [], P), axis=1)
+        cand["fit_score"]  = (cand["fit_score"] * cand["soft_mult"]).clip(0, 1.0)
+        cand["style_mult"] = cand.apply(lambda r: style_adjust_multiplier(r, needs or []), axis=1)
+        cand["fit_score"]  = (cand["fit_score"] * cand["style_mult"]).clip(0, 1.0)
 
-        # 9) Alasan
+        # ------------------------------------------------------------
+        # 12) Alasan sederhana
+        # ------------------------------------------------------------
         def mk_reason(r):
             why = []
-            why.append(
-                "harga sesuai budget" if r["price"] <= budget else "±15% dari budget")
+            why.append("harga sesuai budget" if r["price"] <= budget else "±15% dari budget")
             if "keluarga" in (needs or []):
                 min_seats = 5 if "perkotaan" in (needs or []) else 6
                 why.append(f"kursi ≥{min_seats}")
             if "offroad" in (needs or []):
-                why.append("AWD/4x4 & siap offroad" if r.get("awd_flag", 0)
-                           >= 0.5 else "butuh AWD/4x4")
+                why.append("AWD/4x4 & siap offroad" if r.get("awd_flag", 0) >= 0.5 else "butuh AWD/4x4")
             if "perkotaan" in (needs or []):
                 why.append("kompak & efisien")
             if "perjalanan_jauh" in (needs or []):
-                why.append("diesel cocok perjalanan jauh" if str(
-                    r.get("fuel_code", "")) == "d" else "stabil & efisien jarak jauh")
+                why.append("diesel cocok perjalanan jauh" if str(r.get("fuel_code", "")) == "d" else "stabil & efisien jarak jauh")
             if "fun" in (needs or []):
                 bits = []
                 if pd.to_numeric(r.get("cc_kwh_num"), errors="coerce") >= 1600:
@@ -565,45 +860,44 @@ def rank_candidates(
 
         cand["alasan"] = cand.apply(mk_reason, axis=1)
 
-        # 10) Sortir & deduplikasi
-        cand["model_norm"] = cand["model"].astype(str).str.replace(
-            r"\s+", " ", regex=True).str.strip().str.lower()
-        cand["price_int"] = pd.to_numeric(
-            cand["price"], errors="coerce").fillna(-1).astype(int)
+        # ------------------------------------------------------------
+        # 13) Sortir, deduplikasi, rank & points
+        # ------------------------------------------------------------
+        cand["model_norm"] = cand["model"].astype(str).str.replace(r"\s+", " ", regex=True).str.strip().str.lower()
+        cand["price_int"]  = pd.to_numeric(cand["price"], errors="coerce").fillna(-1).astype(int)
         cand = (
             cand.sort_values(["fit_score"], ascending=[False])
                 .drop_duplicates(subset=["model_norm", "price_int"], keep="first")
                 .drop(columns=["model_norm", "price_int"])
         )
 
-        # 11) Rank & points
         cand = cand.reset_index(drop=True)
-        cand["rank"] = cand["fit_score"].rank(
-            ascending=False, method="first").astype(int)
+        cand["rank"] = cand["fit_score"].rank(ascending=False, method="first").astype(int)
         n_out = len(cand)
         den = max(1, n_out - 1)
-        cand["points"] = (((n_out - cand["rank"]) / den)
-                          * 98 + 1).round(0).astype(int)
+        cand["points"] = (((n_out - cand["rank"]) / den) * 98 + 1).round(0).astype(int)
 
-        # 12) Kolom tampil minimal (kolom lain tetap ikut ke JSON)
-        show_cols = ["rank", "points", "brand", "model", "price", "fit_score",
-                     "fuel", "fuel_code", "trans", "seats", "cc_kwh", "alasan"]
+        # ------------------------------------------------------------
+        # 14) Kolom minimal untuk JSON
+        # ------------------------------------------------------------
+        show_cols = [
+            "rank", "points", "brand", "model", "price", "fit_score",
+            "fuel", "fuel_code", "trans", "seats", "cc_kwh", "alasan"
+        ]
         for c in show_cols:
             if c not in cand.columns:
                 cand[c] = np.nan
 
-        topn = 15 if (topn is None or (isinstance(
-            topn, (int, float)) and topn <= 0)) else int(topn)
+        topn = 15 if (topn is None or (isinstance(topn, (int, float)) and topn <= 0)) else int(topn)
 
         t1 = time.perf_counter()
         shape_ns = getattr(need_score, "shape", None)
-        print(
-            f"[rank] n_out={len(cand)} time={t1-t0:.3f}s needs={needs} need_score_shape={shape_ns}")
+        print(f"[rank] n_out={len(cand)} time={t1-t0:.3f}s needs={needs} need_score_shape={shape_ns}")
         try:
-            print("max price passing hard:", float(
-                pd.to_numeric(cand["price"], errors="coerce").max()))
+            print("max price passing hard:", float(pd.to_numeric(cand["price"], errors="coerce").max()))
         except Exception:
             pass
+
         return _ensure_df(cand.head(topn))
 
     except Exception as e:
