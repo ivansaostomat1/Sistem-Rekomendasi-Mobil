@@ -123,7 +123,7 @@ export function NeedsPicker({
         <span className="text-xs opacity-70">{selectedCanon.size}/{maxSelect}</span>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-10">
         {(needs || []).map((n) => {
           const keyCanon = canonKey(n.key);
           const active = selectedCanon.has(keyCanon);
@@ -157,7 +157,7 @@ export function NeedsPicker({
               <img
                 src={n.image}
                 alt={n.label}
-                className="w-full aspect-square object-cover"
+                className="w-full  object-fit"
                 draggable={false}
               />
               <div className={["px-3 py-2 text-sm text-center", active ? "bg-orange-500 text-white" : ""].join(" ")}>

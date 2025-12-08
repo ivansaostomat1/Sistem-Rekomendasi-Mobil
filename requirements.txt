@@ -4,5 +4,6 @@ pandas
 numpy
 python-multipart
 scikit-learn
-google-genai
 python-dotenv
+rasa
+requests

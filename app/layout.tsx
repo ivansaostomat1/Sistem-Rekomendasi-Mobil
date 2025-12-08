@@ -6,15 +6,17 @@ export const metadata: Metadata = {
   description: 'Temukan mobil impianmu',
 }
 
+// app/layout.tsx
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
   return (
-    <html lang="id">
-
+    // TAMBAHKAN suppressHydrationWarning DI SINI:
+    <html lang="id" suppressHydrationWarning>
       <body>{children}</body>
     </html>
-  )
+  );
 }

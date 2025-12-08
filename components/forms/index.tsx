@@ -1,5 +1,3 @@
-// index.tsx
-
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
@@ -10,9 +8,9 @@ import { BudgetField } from "./BudgetField";
 import { NeedsPicker } from "./NeedsPicker";
 import { FuelPicker } from "./FuelPicker";
 import { TransmissionBrandRow } from "./TransmissionBrandRow";
-import { AlertCircle } from "lucide-react"; // untuk alert kebutuhan & fuel
+import { AlertCircle } from "lucide-react";
 
-const DEFAULT_TOPN = 18;
+const DEFAULT_TOPN = 6;
 const DEFAULT_BUDGET = BUDGET_MIN;
 
 // selalu kembalikan number
@@ -69,14 +67,14 @@ export function RecommendationForm({
   const [form, setForm] = useState<FormState>({
     budget: pickBudget(meta),
     topn: DEFAULT_TOPN,
-    filters: { fuels: [] }, // default: semua OFF
+    filters: { fuels: [] },
   });
   const [brand, setBrand] = useState("");
   const [selectedNeeds, setSelectedNeeds] = useState<string[]>([]);
   const [fuelError, setFuelError] = useState<string | null>(null);
-  const [needsError, setNeedsError] = useState<string | null>(null); // <- alert kebutuhan
+  const [needsError, setNeedsError] = useState<string | null>(null);
 
-  // ---------------- Fuel Options (meta → bersih & urut) ----------------
+  // ---------------- Fuel Options ----------------
   const fuelOptions: FuelOption[] = useMemo(() => {
     const fallback: FuelOption[] = [
       { code: "g", label: "Bensin" },
@@ -89,7 +87,6 @@ export function RecommendationForm({
       return fallback;
 
     const first = meta.fuels[0] as any;
-    // kalau backend sudah kirim {code,label}
     if (typeof first === "object" && "code" in first && "label" in first) {
       const allow = new Set(["g", "d", "h", "p", "e"]);
       return (meta.fuels as any[])
@@ -100,22 +97,17 @@ export function RecommendationForm({
         .filter((f) => allow.has(f.code));
     }
 
-    // kalau backend kirim string bebas
     const toCode = (s: string): FuelOption => {
       const v = (s || "").toLowerCase();
       if (["g", "bensin", "gasoline", "petrol"].includes(v))
         return { code: "g", label: "Bensin" };
       if (["d", "diesel", "dsl", "solar"].includes(v))
         return { code: "d", label: "Diesel" };
-      if (
-        ["p", "phev", "plug-in", "plugin", "plug in", "plug in hybrid"].includes(
-          v,
-        )
-      )
+      if (["p", "phev", "plug-in", "plugin", "plug in"].includes(v))
         return { code: "p", label: "PHEV" };
       if (["h", "hybrid", "hev"].includes(v))
         return { code: "h", label: "Hybrid" };
-      if (["e", "bev", "ev", "electric", "full electric"].includes(v))
+      if (["e", "bev", "ev", "electric"].includes(v))
         return { code: "e", label: "BEV" };
       return { code: "g", label: "Bensin" };
     };
@@ -142,22 +134,17 @@ export function RecommendationForm({
     [fuelOptions],
   );
 
-  // Budget default dari meta (opsional—hanya kalau valid number)
   useEffect(() => {
     if (
       typeof meta?.budgetDefault === "number" &&
       Number.isFinite(meta.budgetDefault)
     ) {
-      setForm((s) => ({
-        ...s,
-        budget: meta.budgetDefault as number,
-      }));
+      setForm((s) => ({ ...s, budget: meta.budgetDefault as number }));
     }
   }, [meta?.budgetDefault]);
 
   // ---------------- Handlers ----------------
   const toggleNeed = (key: string) => {
-    // begitu user mulai pilih kebutuhan, error di-clear
     setNeedsError(null);
     setSelectedNeeds((prev) =>
       prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key],
@@ -165,17 +152,14 @@ export function RecommendationForm({
   };
 
   const toggleFuel = (code: string) => {
-    setFuelError(null); // bersihkan alert ketika user ganti pilihan
+    setFuelError(null);
     setForm((s) => {
       const cur = new Set((s.filters as FiltersState).fuels || []);
       if (cur.has(code)) cur.delete(code);
       else cur.add(code);
       return {
         ...s,
-        filters: {
-          ...(s.filters as FiltersState),
-          fuels: Array.from(cur),
-        },
+        filters: { ...(s.filters as FiltersState), fuels: Array.from(cur) },
       };
     });
   };
@@ -186,7 +170,7 @@ export function RecommendationForm({
   }, [form.filters, allFuelCodes]);
 
   const handleToggleAllFuels = () => {
-    setFuelError(null); // bersihkan alert juga saat klik "Semua"
+    setFuelError(null);
     setForm((s) => {
       const cur = new Set((s.filters as FiltersState).fuels || []);
       const isAll =
@@ -203,28 +187,17 @@ export function RecommendationForm({
   };
 
   async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault(); // cegah reload & reset form
-
+    e.preventDefault();
     setError(null);
     setData(null);
 
     const selectedFuels = ((form.filters as FiltersState).fuels ||
       []) as string[];
-
-    // VALIDASI: minimal 1 kebutuhan & minimal 1 fuel
     const hasNeeds = selectedNeeds.length > 0;
-    if (!hasNeeds) {
-      setNeedsError("Pilih minimal satu kebutuhan terlebih dahulu.");
-    }
+    if (!hasNeeds) setNeedsError("Pilih minimal satu kebutuhan terlebih dahulu.");
+    if (selectedFuels.length === 0) setFuelError("Pilih minimal satu jenis bahan bakar terlebih dahulu.");
 
-    if (selectedFuels.length === 0) {
-      setFuelError("Pilih minimal satu jenis bahan bakar terlebih dahulu.");
-    }
-
-    // kalau salah satu belum diisi, hentikan submit
-    if (!hasNeeds || selectedFuels.length === 0) {
-      return;
-    }
+    if (!hasNeeds || selectedFuels.length === 0) return;
 
     setLoading(true);
 
@@ -237,7 +210,7 @@ export function RecommendationForm({
           trans_choice:
             (form.filters as FiltersState).trans_choice || undefined,
           brand: brand || undefined,
-          fuels: selectedFuels, // misal ["e"] kalau cuma BEV
+          fuels: selectedFuels,
         },
       };
 
@@ -277,7 +250,7 @@ export function RecommendationForm({
     setForm({
       budget: pickBudget(meta),
       topn: DEFAULT_TOPN,
-      filters: { fuels: [] }, // reset: semua OFF
+      filters: { fuels: [] },
     });
     setSelectedNeeds([]);
     setData(null);
@@ -285,118 +258,133 @@ export function RecommendationForm({
     setIsSearched(false);
     setBrand("");
     setFuelError(null);
-    setNeedsError(null); // sekaligus hilangkan alert kebutuhan
+    setNeedsError(null);
   };
 
-  // ---------------- Render ----------------
+  // ---------------- Render (TEMA BARU: GREEN-BLUE-ISH) ----------------
   return (
     <motion.section
       initial="hidden"
       animate="visible"
       variants={sectionVariant}
-      className={`mb-16 rounded-3xl p-8 shadow-xl ${
-        isDark ? "bg-[#1a1a1a] shadow-black/30" : "bg-white"
-      }`}
+      className={`relative mb-16 w-full overflow-hidden rounded-3xl border p-6 sm:p-8 lg:p-10 shadow-2xl ${isDark
+          // Dark Mode: Deep Teal/Cyan/Slate
+          ? "border-white/10 bg-gradient-to-br from-[#0c1c18] via-[#0f2e2e] to-[#0c1c2e] shadow-teal-100/90"
+          // Light Mode: Mint/Soft Green/Sky Blue (Sesuai request)
+          : "border-black/10 bg-gradient-to-br from-[#68fce8] via-[#9be8c0] to-[#638bb8] shadow-teal-900/100"
+        }`}
     >
-      <h2 className="text-xl font-bold mb-6">
-        Atur Kriteria Mobil Impianmu
-      </h2>
-
-      <form
-        id="rec-form-form"
-        onSubmit={handleSubmit}
-        className="grid gap-8"
-      >
-        <BudgetField
-          isDark={isDark}
-          value={form.budget}
-          onChange={(v) =>
-            setForm((s) => ({
-              ...s,
-              budget: v,
-            }))
-          }
-        />
-
-        <NeedsPicker
-          isDark={isDark}
-          needs={(meta?.needs || []) as any[]}
-          selected={selectedNeeds}
-          onToggle={toggleNeed}
-        />
-
-        {needsError && (
-          <motion.div
-            initial={{ opacity: 0, y: -4 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mt-1 flex items-center gap-2 rounded-xl border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-500"
-          >
-            <AlertCircle className="h-4 w-4" />
-            <span>{needsError}</span>
-          </motion.div>
-        )}
-
-        <FuelPicker
-          isDark={isDark}
-          fuelOptions={fuelOptions}
-          selectedFuels={(form.filters as FiltersState).fuels || []}
-          allSelected={allSelected}
-          onToggleFuel={toggleFuel}
-          onToggleAll={handleToggleAllFuels}
-        />
-
-        {fuelError && (
-          <motion.div
-            initial={{ opacity: 0, y: -4 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mt-1 flex items-center gap-2 rounded-xl border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-500"
-          >
-            <AlertCircle className="h-4 w-4" />
-            <span>{fuelError}</span>
-          </motion.div>
-        )}
-
-        <TransmissionBrandRow
-          isDark={isDark}
-          transChoice={
-            (form.filters as FiltersState).trans_choice || ""
-          }
-          setTransChoice={(v) =>
-            setForm((s) => ({
-              ...s,
-              filters: {
-                ...(s.filters as FiltersState),
-                trans_choice: v || undefined,
-              },
-            }))
-          }
-          brand={brand}
-          setBrand={setBrand}
-          brands={meta?.brands || []}
-        />
-
-        <div className="flex gap-4">
-          <button
-            type="submit"
-            disabled={loading}
-            className="bg-gradient-to-r from-amber-400 to-orange-600 px-6 py-3 rounded-xl text-white font-semibold hover:opacity-90 disabled:opacity-60"
-          >
-            {loading ? "Menghitung…" : "Tampilkan Rekomendasi"}
-          </button>
-
-          <button
-            type="button"
-            onClick={handleReset}
-            className={`${
-              isDark
-                ? "border border-gray-700 hover:bg-[#2a2a2a]"
-                : "border border-gray-300 hover:bg-gray-100"
-            } px-6 py-3 rounded-xl`}
-          >
-            Reset Filter
-          </button>
+      {isDark && (
+        <div className="pointer-events-none absolute inset-0 opacity-40 mix-blend-screen">
+          {/* Blobs: Emerald, Teal, Cyan */}
+          <div className="absolute -left-32 -top-32 h-64 w-64 rounded-full bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-600 blur-3xl" />
+          <div className="absolute -right-24 bottom-[-4rem] h-56 w-56 rounded-full bg-gradient-to-tr from-cyan-600 via-sky-500 to-emerald-400 blur-3xl" />
         </div>
-      </form>
+      )}
+
+      <div className="relative z-10">
+        <h2
+          className={`mb-6 text-xl sm:text-2xl font-bold ${isDark
+              // Teks Gradient: Emerald -> Cyan -> Sky
+              ? "bg-gradient-to-r from-emerald-300 via-cyan-400 to-sky-500 bg-clip-text text-transparent"
+              : "text-slate-900"
+            }`}
+        >
+          Atur Kriteria Mobil Impianmu
+        </h2>
+
+        <form
+          id="rec-form-form"
+          onSubmit={handleSubmit}
+          className="grid gap-8 lg:gap-10"
+        >
+          <BudgetField
+            isDark={isDark}
+            value={form.budget}
+            onChange={(v) => setForm((s) => ({ ...s, budget: v }))}
+          />
+
+          <NeedsPicker
+            isDark={isDark}
+            needs={(meta?.needs || []) as any[]}
+            selected={selectedNeeds}
+            onToggle={toggleNeed}
+          />
+
+          {needsError && (
+            <motion.div
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-1 flex items-center gap-2 rounded-xl border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-500"
+            >
+              <AlertCircle className="h-4 w-4" />
+              <span>{needsError}</span>
+            </motion.div>
+          )}
+
+          <FuelPicker
+            isDark={isDark}
+            fuelOptions={fuelOptions}
+            selectedFuels={(form.filters as FiltersState).fuels || []}
+            allSelected={allSelected}
+            onToggleFuel={toggleFuel}
+            onToggleAll={handleToggleAllFuels}
+          />
+
+          {fuelError && (
+            <motion.div
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-1 flex items-center gap-2 rounded-xl border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-500"
+            >
+              <AlertCircle className="h-4 w-4" />
+              <span>{fuelError}</span>
+            </motion.div>
+          )}
+
+          <TransmissionBrandRow
+            isDark={isDark}
+            transChoice={(form.filters as FiltersState).trans_choice || ""}
+            setTransChoice={(v) =>
+              setForm((s) => ({
+                ...s,
+                filters: {
+                  ...(s.filters as FiltersState),
+                  trans_choice: v || undefined,
+                },
+              }))
+            }
+            brand={brand}
+            setBrand={setBrand}
+            brands={meta?.brands || []}
+          />
+
+          <div className="flex flex-wrap gap-4">
+            <button
+              type="submit"
+              disabled={loading}
+              // Button: Gradient Teal/Cyan
+              className="relative overflow-hidden rounded-xl px-6 py-3 text-sm sm:text-base font-semibold text-white shadow-lg shadow-teal-500/40 transition hover:scale-[1.01] hover:shadow-teal-500/60 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              <span className="absolute inset-0 bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-600" />
+              <span className="relative">
+                {loading ? "Menghitung…" : "Tampilkan Rekomendasi"}
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={handleReset}
+              className={`relative rounded-xl px-6 py-3 text-sm sm:text-base font-medium transition ${isDark
+                  ? "border border-white/10 bg-black/20 hover:bg-black/30"
+                  : "border border-gray-300 bg-white/70 hover:bg-white"
+                }`}
+            >
+              Reset Filter
+            </button>
+          </div>
+        </form>
+      </div>
     </motion.section>
   );
 }

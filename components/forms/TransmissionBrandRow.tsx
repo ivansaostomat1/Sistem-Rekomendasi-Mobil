@@ -41,7 +41,7 @@ export function TransmissionBrandRow({
           onChange={(e) => setTransChoice((e.target.value as "Matic" | "Manual") || "")}
           className={`${isDark ? "bg-[#0a0a0a] border border-gray-700 text-gray-100" : "bg-white border border-gray-300"} rounded-xl px-3 py-2`}
         >
-          <option value=""> Gabungan </option>
+          <option value="">Pilih transmisi</option>
           <option value="Matic">Matic</option>
           <option value="Manual">Manual</option>
         </select>

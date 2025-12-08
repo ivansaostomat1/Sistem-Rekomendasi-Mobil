@@ -1,29 +1,34 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  experimental: {
-    turbo: false, // turn off to test
-  },
-};
+import { NextConfig } from "next";
 
-module.exports = nextConfig;
-
-// next.config.js
-module.exports = {
+const nextConfig: NextConfig = {
   images: {
-    domains: ["localhost", "127.0.0.1"],
     remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "vroomvroom.id",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "http",
+        hostname: "192.168.1.10",
+        port: "",
+        pathname: "/**",
+      },
       {
         protocol: "http",
         hostname: "localhost",
-        port: "3000",
-        pathname: "/cars/**",
+        port: "",
+        pathname: "/**",
       },
       {
         protocol: "http",
         hostname: "127.0.0.1",
-        port: "3000",
-        pathname: "/cars/**",
-      }
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
 };
+
+export default nextConfig;

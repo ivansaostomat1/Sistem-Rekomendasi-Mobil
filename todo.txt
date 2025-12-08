@@ -1,0 +1,67 @@
+Benerin logic spk v
+
+chatbot v
+
+penjelasan kalau di pencet aneh v
+
+prompt :
+
+Cari mobil buat antar anak sekolah tiap hari, budget sekitar 400jt
+
+Saya butuh city car listrik untuk kerja pulang pergi, 350 juta
+
+Ingin mobil nyaman untuk mudik keluarga 5 orang, budget 600jt-an
+
+Mau mobil lincah buat macet-macetan harian, 300–350 juta
+
+Sedang cari mobil untuk bawa dagangan kecil, sekitar 450jt
+
+Butuh SUV tangguh buat jalan rusak, anggaran 700 juta
+
+Cari mobil keluarga + road trip keluar kota, budget 500–600 juta
+
+Saya ingin mobil hybrid buat ke kantor istri, sekitar 400jt
+
+Mobil kecil lincah parkir gampang, budget 320jt
+
+Mau mobil kuat nanjak ke desa tapi juga bisa harian, budget 650jt
+
+Ingin EV supaya irit listrik harian, sekitar 380–400 juta
+
+Butuh mobil 7-seater buat keluarga dan jalan tol panjang, 750jt
+
+Cari pickup kecil buat jualan sayur, 420–450 juta
+
+Mobil nyaman tapi fun dikendarai, budget 500jt
+
+Butuh city car buat antar jemput anak + belanja, 300–350jt
+
+Ingin mobil hemat bensin, bisa manual atau matic, 360jt
+
+Sedang nyari SUV lincah offroad ringan, budget 700–720 juta
+
+Mau mobil hybrid untuk perjalanan jauh, 600–650 juta
+
+Cari mobil untuk keluarga + road trip + fun driving, 680jt
+
+Butuh mobil buat keperluan kantor + antar anak, sekitar 400–450 juta
+
+Mobil untuk pulang kampung akhir pekan + liburan keluarga, 550jt
+
+Mau EV yang kecil tapi kencang dikendarai, budget 380jt
+
+Cari mobil yang bisa bawa barang + fun dikendarai, 500jt
+
+Sedang cari city car untuk sekolah anak, anggaran 300–320 juta
+
+Ingin SUV + city car untuk macet di kota tapi bisa tanjakan, 700jt
+
+Butuh mobil keluarga + offroad ringan, budget 650–680 juta
+
+Cari mobil tangguh + nyaman di jalan rusak + keperluan harian, 600jt
+
+Mau EV atau hybrid untuk mobilitas harian + keluarga, budget 400–450jt
+
+Mobil yang bisa jalan tol jauh + antar anak sekolah, 550–600 juta
+
+Sedang mencari mobil fun driving + lincah parkir, budget 350–370 juta

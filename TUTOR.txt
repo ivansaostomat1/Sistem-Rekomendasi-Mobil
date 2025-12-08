@@ -46,8 +46,7 @@ pip install -r requirements.txt
 # $env:DATA_DIR="C:\capstone\drive\data"
 
 # Jalankan API (port bisa diganti jika bentrok)
-python -m uvicorn app:app --reload --port 8000
-uvicorn app:app --reload --port 8000
+uvicorn backend.app:app --reload 
 
 Cek:
   http://127.0.0.1:8000/health  -> {"status":"ok"}
@@ -74,14 +73,14 @@ Buka browser: http://localhost:3000
 TERMINAL A (Backend):
   cd C:\capstone\drive
   .\.venv\Scripts\Activate
-  python -m uvicorn app:app --reload --port 8000
+uvicorn backend.app:app --reload 
 
 TERMINAL B (Frontend):
   cd C:\capstone\drive
   npm run dev
 
 ================================================================================
-5) GANTI DEVICE
+5) GANTI DEVICE (windows)
 ================================================================================
 
 deactivate  # abaikan jika belum aktif
@@ -101,7 +100,9 @@ Unblock-File .\.venv\Scripts\Activate.ps1
 ##aktifasi
 .\.venv\Scripts\Activate.ps1
 
-  python -m uvicorn app:app --reload --port 8000
+uvicorn backend.app:app --reload 
 
 buat (.env.local) dengan isi :
 NEXT_PUBLIC_API_BASE=http://127.0.0.1:8000
+
+GANTI device mac

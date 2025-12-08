@@ -128,7 +128,7 @@ export default function ElasticSlider({
   return (
     <div className={`flex flex-col items-stretch gap-2 ${className}`}>
       <motion.div
-        onHoverStart={() => animate(scale, 1.08)}
+        onHoverStart={() => animate(scale, 1.03)}
         onHoverEnd={() => animate(scale, 1)}
         onTouchStart={() => animate(scale, 1.08)}
         onTouchEnd={() => animate(scale, 1)}

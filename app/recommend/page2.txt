@@ -1,0 +1,618 @@
+// file: app/recommend/page.tsx
+"use client";
+
+import React, { useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useTheme } from "@/hooks/useTheme";
+import { Header } from "@/components/forms/Header";
+import { RecommendationForm } from "@/components/forms/index";
+import type { RecommendResponse, RecommendItem } from "@/types"; 
+import { useBootstrapMeta } from "./_hooks/useBootstrapMeta";
+import { useSearchFlow } from "./_hooks/useSearchFlow";
+import { ResultsSection } from "./_components/ResultSection";
+import { DevPanel } from "./_components/DevPanel";
+import type { Theme } from "./_types/theme";
+import { API_BASE } from "@/constants";
+
+/* =================================================================== */
+/*                           HELPER FUNCTION                         */
+/* =================================================================== */
+
+// Helper to format IDR currency 
+const fmtIDR = (n: number | string | null | undefined): string => {
+    if (n == null || isNaN(Number(n))) return "N/A";
+    const num = Math.round(Number(n));
+    return new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+    }).format(num).replace('Rp', 'Rp ');
+};
+
+
+/* =================================================================== */
+/*                           TIPE CHAT & PANEL                         */
+/* =================================================================== */
+
+type ChatMessage = { 
+    from: "user" | "bot"; 
+    text: string; 
+}; 
+
+export type ParsedConstraints = {
+    budget: number | null;
+    needs: string[] | null;
+    filters: {
+        brand: string | null;
+        trans_choice: string | null;
+        fuels: string[] | null;
+    } | null;
+};
+
+export type ChatRecommendation = {
+    budget: number;
+    needs: string[];
+    filters: {
+        brand: string | null;
+        trans_choice: string | null;
+        fuels: string[] | null;
+    };
+    topn?: number;
+    count: number;
+    items: any[];
+};
+
+export type ChatbotApiResponse = {
+    reply: string;
+    suggested_questions?: string[];
+    recommendation?: ChatRecommendation | null;
+    parsed_constraints?: ParsedConstraints | null;
+};
+
+export type SmartChatPanelProps = {
+    theme: Theme;
+    onClose: () => void;
+    onChatRecommendation?: (rec: ChatRecommendation | null) => void;
+    onChatConstraints?: (pc: ParsedConstraints | null) => void;
+    
+    // NEW: Prop untuk menerima pesan dari luar (Trigger Klik Kartu)
+    externalQuery?: string | null; 
+    setExternalQuery?: React.Dispatch<React.SetStateAction<string | null>>;
+};
+
+function SmartChatPanel({
+    theme,
+    onClose,
+    onChatRecommendation,
+    onChatConstraints,
+    externalQuery, 
+    setExternalQuery, 
+}: SmartChatPanelProps) {
+    const isDark = theme === "dark";
+    
+    // --- KEMBALI KE USESTATE MURNI (Stable Logic) ---
+    const [messages, setMessages] = useState<ChatMessage[]>([
+        { 
+            from: "bot", 
+            text: "Hai! Aku bisa bantu nyusun kriteria sebelum kamu klik \"Tampilkan Rekomendasi\", atau \"klik gambar mobil\" di hasil rekomendasi agar aku bisa jelaskan detailnya."
+        } // <--- PESAN AWAL DIBUAT LEBIH JELAS
+    ]);
+    const [input, setInput] = useState("");
+    const [isSending, setIsSending] = useState(false); 
+    const [suggested, setSuggested] = useState<string[]>([]);
+
+    const listRef = useRef<HTMLDivElement | null>(null);
+    const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
+    // --- FIX: COOLDOWN PREVENT DOUBLE SEND ---
+    const lastAutoMsgTime = useRef<number>(0);
+
+    // Logika untuk memicu kirim pesan dari luar (klik kartu)
+    useEffect(() => {
+        if (externalQuery && setExternalQuery) {
+            const now = Date.now();
+            // Beri cooldown 1 detik (1000ms) agar tidak terkirim 2x karena StrictMode atau re-render
+            if (now - lastAutoMsgTime.current > 1000) {
+                handleSend(externalQuery);
+                lastAutoMsgTime.current = now; // Update waktu terakhir kirim
+                setExternalQuery(null); // Reset setelah dikirim
+            }
+        }
+    }, [externalQuery, setExternalQuery]);
+
+    // auto scroll ke bawah ketika ada pesan baru
+    useEffect(() => {
+        if (listRef.current) {
+            listRef.current.scrollTop = listRef.current.scrollHeight;
+        }
+    }, [messages]);
+
+    // auto-resize textarea setiap input berubah
+    useEffect(() => {
+        const el = textareaRef.current;
+        if (!el) return;
+        el.style.height = "0px";
+        const base = 40; // px minimal
+        const newHeight = Math.max(base, el.scrollHeight);
+        el.style.height = `${newHeight}px`;
+    }, [input]);
+
+    const handleSend = async (text?: string) => {
+        const final = (text ?? input).trim();
+        if (!final || isSending) return;
+
+        // --- PERBAIKAN UTAMA DI SINI ---
+        const isAnalysisPrompt = final.includes('[ANALISIS_RANKING]');
+        let userMessageForChat = final;
+
+        if (isAnalysisPrompt) {
+            // Jika ini prompt internal dari klik kartu, tampilkan pesan yang lebih user-friendly
+            try {
+                // Regex: ambil string setelah "mengapa " sampai sebelum " ("
+                const parts = final.split('mengapa ');
+                if (parts.length > 1) {
+                    const modelName = parts[1].split(' berada')[0];
+                    userMessageForChat = `Tolong jelaskan analisis untuk ${modelName}.`;
+                } else {
+                    userMessageForChat = "Tolong jelaskan analisis mobil ini.";
+                }
+            } catch (e) {
+                userMessageForChat = "Tolong jelaskan analisis mobil ini.";
+            }
+        }
+
+        // 1. Tambahkan pesan user (menggunakan pesan yang sudah diperbaiki)
+        setMessages((prev) => [...prev, { from: "user", text: userMessageForChat }]);
+        
+        // 2. Bersihkan Input
+        setInput('');
+        setIsSending(true);
+
+        try {
+            // 3. Panggil Backend (TETAP MENGIRIM FINAL PROMPT LENGKAP)
+            const res = await fetch(`${API_BASE}/chat`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: final }),
+            });
+
+            if (!res.ok) {
+                throw new Error(`Gagal memanggil /chat (${res.status})`);
+            }
+
+            const json = (await res.json()) as ChatbotApiResponse;
+
+            const reply = json.reply?.trim() || "Maaf, aku belum bisa menjawab sekarang.";
+            
+            // 4. Tambahkan balasan BOT
+            setMessages((prev) => [...prev, { from: "bot", text: reply }]);
+
+            if (json.suggested_questions?.length) {
+                setSuggested(json.suggested_questions);
+            }
+
+            // 5. Teruskan Structured Data ke Parent
+            if (onChatConstraints) {
+                onChatConstraints(json.parsed_constraints ?? null);
+            }
+            if (onChatRecommendation) {
+                onChatRecommendation(json.recommendation ?? null);
+            }
+        } catch (err) {
+            console.error(err);
+            // Tambahkan pesan error
+            setMessages((prev) => [
+                ...prev, 
+                { 
+                    from: "bot", 
+                    text: "Maaf, ada kendala saat menghubungi asisten AI. Silakan coba lagi sebentar lagi." 
+                }
+            ]);
+        } finally {
+            setIsSending(false);
+        }
+    };
+
+    const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            handleSend();
+        }
+    };
+
+    return (
+        <div
+            className={`rounded-2xl flex flex-col max-h-[75vh] min-h-[280px] w-full shadow-2xl ${isDark
+                    ? "bg-[#05070b]/95 border border-gray-800/80"
+                    : "bg-white border border-gray-200"
+                }`}
+        >
+            {/* Header */}
+            <div className="px-4 pt-3 pb-2 border-b border-white/5 flex items-center justify-between gap-3">
+                <div className="flex flex-col gap-1">
+                    <div className="text-[10px] uppercase tracking-wide opacity-70">
+                        Asisten Rekomendasi Mobil
+                    </div>
+                    <div className="text-sm font-semibold">
+                        Chat AI – Tanya Kriteria &amp; Penjelasan
+                    </div>
+                </div>
+                <div className="flex items-center gap-2">
+                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-amber-400 text-[11px] font-bold text-black shadow-md">
+                        AI
+                    </div>
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        className={`w-7 h-7 inline-flex items-center justify-center rounded-full text-xs ${isDark
+                            ? "hover:bg-white/10 text-gray-300"
+                            : "hover:bg-gray-100 text-gray-600"
+                            }`}
+                        aria-label="Tutup chat"
+                    >
+                        ✕
+                    </button>
+                </div>
+            </div>
+
+            {/* Isi chat */}
+            <div
+                ref={listRef}
+                className="flex-1 px-4 py-3 space-y-2 overflow-y-auto text-sm"
+            >
+                {messages.map((m, idx) => {
+                    const isUser = m.from === "user"; 
+                    return (
+                        <div
+                            key={idx} 
+                            className={`flex ${isUser ? "justify-end" : "justify-start"}`}
+                        >
+                            <div
+                                className={`max-w-[85%] px-3 py-2 rounded-2xl text-xs sm:text-sm leading-relaxed shadow-sm ${isUser
+                                    ? "bg-orange-500 text-white rounded-br-sm"
+                                    : isDark
+                                        ? "bg-[#0c111b] border border-gray-800/80 text-gray-100 rounded-bl-sm"
+                                        : "bg-gray-50 border border-gray-200 text-gray-900 rounded-bl-sm"
+                                    }`}
+                            >
+                                {m.text}
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+
+            {/* Suggested questions */}
+            {suggested.length > 0 && (
+                <div className="px-4 pb-2 pt-1 border-t border-white/5">
+                    <div className="text-[11px] uppercase tracking-wide opacity-70">
+                        Coba tanya:
+                    </div>
+                    <div className="flex flex-wrap gap-1.5">
+                        {suggested.slice(0, 4).map((q) => (
+                            <button
+                                key={q}
+                                type="button"
+                                onClick={() => handleSend(q)}
+                                className={`text-[11px] px-2.5 py-1 rounded-full border transition ${isDark
+                                    ? "border-gray-700 hover:bg-gray-800 text-gray-200"
+                                    : "border-gray-300 hover:bg-gray-100 text-gray-800"
+                                    }`}
+                            >
+                                {q}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            {/* Input */}
+            <div className="px-4 pb-3 pt-2 border-t border-white/5">
+                <div className="flex items-end gap-2">
+                    <textarea
+                        ref={textareaRef}
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        onKeyDown={onKeyDown}
+                        rows={1}
+                        placeholder="Tulis pertanyaan seputar kebutuhan / rekomendasi mobil… "
+                        className={`flex-1 text-xs sm:text-sm rounded-xl px-3 py-2 outline-none border leading-relaxed ${isDark
+                            ? "bg-black/40 border-gray-700 placeholder:text-gray-500 text-gray-100 focus:border-orange-400"
+                            : "bg-white border-gray-300 placeholder:text-gray-400 text-gray-900 focus:border-orange-400"
+                            }`}
+                        style={{
+                            resize: "none",
+                            overflowY: "hidden",
+                            minHeight: "40px",
+                        }}
+                    />
+                    <button
+                        type="button"
+                        onClick={() => handleSend()}
+                        disabled={isSending || !input.trim()}
+                        className={`px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center gap-1 ${isSending || !input.trim()
+                            ? "bg-gray-500/40 text-gray-300 cursor-not-allowed"
+                            : "bg-orange-500 hover:bg-orange-600 text-white shadow-sm"
+                            }`}
+                    >
+                        {isSending ? "Mengirim…" : "Kirim"}
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+/* =================================================================== */
+/* HALAMAN RECOMMEND                          */
+/* =================================================================== */
+
+export default function RecommendPage() {
+    const { theme, toggleTheme } = useTheme() as {
+        theme: Theme;
+        toggleTheme: () => void;
+    };
+
+    // state utama
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [data, setData] = useState<RecommendResponse | null>(null);
+    const [isSearched, setIsSearched] = useState(false);
+
+    // NEW: STATE UNTUK MEMICU PESAN DARI KLIK KARTU
+    const [externalQuery, setExternalQuery] = useState<string | null>(null);
+
+    // NEW: simpan constraints dari chat (nanti bisa dipakai form)
+    const [chatConstraints, setChatConstraints] =
+        useState<ParsedConstraints | null>(null);
+
+    // state chat global (bisa dipakai sebelum & sesudah rekomendasi)
+    const [chatOpen, setChatOpen] = useState(false);
+
+    // meta untuk form (brands/segments/fuels/seats) + fungsi refetch
+    const { meta, dataReady, refetchMeta } = useBootstrapMeta();
+
+    // refs (nullable)
+    const formRef = useRef<HTMLDivElement | null>(null);
+    const resultsRef = useRef<HTMLDivElement | null>(null);
+
+    // alur form -> hasil + auto-scroll
+    const { showForm, openForm, openResults } = useSearchFlow({
+        isSearched,
+        loading,
+        data,
+        error,
+        formRef,
+        resultsRef,
+    });
+
+    // jika selesai submit pertama kali: pindah ke tampilan hasil
+    useEffect(() => {
+        if (isSearched) openResults();
+    }, [isSearched, openResults]);
+
+    // NEW: callback ketika /chat mengirim parsed_constraints
+    const handleChatConstraints = (pc: ParsedConstraints | null) => {
+        setChatConstraints(pc);
+        // di sini belum mengubah form; nanti RecommendationForm bisa pakai props ini
+    };
+
+    // INI ADALAH FUNGSI YANG BERMASALAH (HARUS MENGUBAH STATE)
+    const handleChatRecommendation = (rec: ChatRecommendation | null) => {
+        console.log("Chat Rec Payload (masuk):", rec); 
+
+        if (!rec || rec.count === 0 || !rec.items.length) {
+            console.warn("Chat received empty or null recommendation. Staying on form view.");
+            setData(null);
+            setIsSearched(false);
+            openForm(); 
+            return;
+        }
+
+        const mapped: RecommendResponse = {
+            count: rec.count,
+            items: rec.items,
+            needs: rec.needs ?? [],
+        };
+
+        // LANGKAH PENTING: Update state dan pemicu render
+        setData(mapped);
+        setError(null);
+        setIsSearched(true); 
+        openResults(); 
+
+        console.log("State Updated: Results should now be visible.");
+
+        setTimeout(() => {
+            resultsRef.current?.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+            });
+        }, 100); 
+    };
+
+    // NEW: HANDLER UNTUK KLIK KARTU (FITUR ANALISIS RANKING)
+    // NEW: HANDLER UNTUK KLIK KARTU (FITUR ANALISIS RANKING KOMPARATIF)
+    const handleCardClick = (item: RecommendItem) => {
+        // Validasi data
+        if (!data?.items || data.items.length === 0) return;
+
+        // 1. Tentukan Mobil Juara (Rank 1)
+        const rank1 = data.items[0];
+        
+        // 2. Cek apakah user mengklik Sang Juara?
+        const isRank1 = item.brand === rank1.brand && item.model === rank1.model;
+        
+        // 3. Tentukan Lawan Banding
+        // Jika klik Rank 1 -> Lawannya Rank 2 (Runner up)
+        // Jika klik Rank Bawah -> Lawannya Rank 1 (Juara)
+        const comparisonTarget = isRank1 ? (data.items[1] || null) : rank1;
+
+        // Helper format spek (digunakan 2 kali)
+        const formatCarSpecs = (c: RecommendItem) => [
+            `${c.brand} ${c.model}`,
+            c.price != null ? `Harga: ${fmtIDR(c.price)}` : null,
+            c.trans ? `Trans: ${c.trans}` : null,
+            (c as any).fuel_label ? `BBM: ${(c as any).fuel_label}` : null,
+            c.seats ? `Kursi: ${c.seats}` : null,
+            (c as any).cc_kwh ? `Mesin: ${(c as any).cc_kwh} cc` : null,
+            (c as any).drive_sys ? `Penggerak: ${(c as any).drive_sys}` : null, // Penting SUV
+            (c as any)['DIMENSION P x L x T'] ? `Dimensi: ${(c as any)['DIMENSION P x L x T']}` : null,
+            (c as any)['WHEEL BASE'] ? `Wheelbase: ${(c as any)['WHEEL BASE']} m` : null,
+            c.fit_score != null ? `Total Score: ${c.fit_score.toFixed(4)}` : null,
+        ].filter(Boolean).join(' | ');
+
+        const specsSelected = formatCarSpecs(item);
+        const specsCompare = comparisonTarget ? formatCarSpecs(comparisonTarget) : "Tidak ada pembanding";
+        
+        // 4. Ambil Kebutuhan User (untuk konteks argumen)
+        const activeNeeds = (data.needs ?? []).join(", ").toUpperCase();
+
+        // 5. Susun Instruksi Logika untuk Bot
+        let promptLogic = "";
+        if (isRank1) {
+             promptLogic = `User mengklik MOBIL JUARA (${item.brand} ${item.model}). Jelaskan kenapa mobil ini menang ranking melawan Runner-up (${comparisonTarget?.brand} ${comparisonTarget?.model}) berdasarkan Data Spek dan Kebutuhan User [${activeNeeds}].`;
+        } else {
+             promptLogic = `User mengklik MOBIL PERINGKAT BAWAH (${item.brand} ${item.model}). 
+             1. Jelaskan kenapa kalah ranking dari Peringkat 1 (${rank1.brand} ${rank1.model}).
+             2. TAPI, temukan 'Winning Feature' (Keunggulan Unik) mobil ini yang mungkin lebih cocok untuk kebutuhan [${activeNeeds}].`;
+        }
+
+        // 6. Bungkus dalam prompt rahasia
+        const query = `[ANALISIS_KOMPARASI] ${promptLogic}
+        \nDATA MOBIL TERPILIH: [${specsSelected}]
+        \nDATA PEMBANDING: [${specsCompare}]
+        \nCONTEXT USER: Budget Rp ${fmtIDR(data.budget ?? 0)}, Kebutuhan: ${activeNeeds}.`;
+        
+        setExternalQuery(query);
+        setChatOpen(true); 
+    };
+
+
+    return (
+        <div
+            className={`min-h-screen transition-colors duration-300 ${theme === "dark"
+                    ? "bg-[#0a0a0a] text-gray-100"
+                    : "bg-gray-50 text-gray-900"
+                }`}
+        >
+            <Header theme={theme} toggleTheme={toggleTheme} />
+
+            <main
+                className="
+                    w-full
+                    px-4 sm:px-8 lg:px-20 xl:px-30
+                    py-8
+                "
+            >
+                {/* Hero */}
+                <section className="mb-10">
+                    <h1 className="text-4xl md:text-5xl font-extrabold leading-tight mb-4">
+                        Cari mobil impianmu di{" "}
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-600">
+                            VRoom
+                        </span>
+                    </h1>
+                </section>
+
+                {/* Tahap 1: Form */}
+                <AnimatePresence mode="wait">
+                    {showForm && (
+                        <motion.section
+                            key="form"
+                            ref={formRef}
+                            initial={{ opacity: 0, y: 12 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -8 }}
+                            transition={{ duration: 0.35 }}
+                            className="mb-10"
+                        >
+                            <RecommendationForm
+                                theme={theme}
+                                loading={loading}
+                                error={error}
+                                data={data}
+                                meta={meta}
+                                isSearched={isSearched}
+                                setLoading={setLoading}
+                                setError={setError}
+                                setData={setData}
+                                setIsSearched={setIsSearched}
+                                // @ts-ignore
+                                chatConstraints={chatConstraints}
+                            />
+                        </motion.section>
+                    )}
+                </AnimatePresence>
+
+                {/* Tahap 2: Hasil */}
+                <AnimatePresence mode="wait">
+                    {!showForm && (
+                        <motion.section
+                            key="resultsView"
+                            ref={resultsRef}
+                            initial={{ opacity: 0, y: 18 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 8 }}
+                            transition={{ duration: 0.35 }}
+                            className="px-0 pb-12"
+                        >
+                            <ResultsSection
+                                theme={theme}
+                                loading={loading}
+                                error={error}
+                                data={data}
+                                onBackToForm={() => {
+                                    setIsSearched(false);
+                                    setData(null);
+                                    setError(null);
+                                    refetchMeta();
+                                    openForm();
+                                    setTimeout(() => {
+                                        formRef.current?.scrollIntoView({
+                                            behavior: "smooth",
+                                            block: "start",
+                                        });
+                                    }, 0);
+                                }}
+                                // FIX ERROR: Kirim handler klik ke ResultsSection
+                                onCardClick={handleCardClick}
+                            />
+                        </motion.section>
+                    )}
+                </AnimatePresence>
+
+                {/* Panel dev (opsional, tergantung NEXT_PUBLIC_DEBUG) */}
+                <DevPanel theme={theme} dataReady={dataReady} />
+            </main>
+
+            {/* Tombol + Panel Chat Global (berlaku sebelum & sesudah rekomendasi) */}
+            <>
+                <button
+                    type="button"
+                    onClick={() => setChatOpen(true)}
+                    className="fixed bottom-4 right-4 z-40 flex items-center gap-2 rounded-full px-3 py-2 text-xs sm:text-sm bg-orange-500 hover:bg-orange-600 text-white shadow-lg"
+                >
+                    <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-black/20 text-xl font-bold">
+                        👤
+                    </span>
+                    <span className="hidden sm:inline">Tanya / Simulasi dengan AI</span>
+                </button>
+
+                {chatOpen && (
+                    <div className="fixed bottom-16 right-4 z-50 w-[min(100%-2rem,420px)] sm:w-[420px] md:w-[440px]">
+                        <SmartChatPanel
+                            theme={theme}
+                            onClose={() => setChatOpen(false)}
+                            onChatRecommendation={handleChatRecommendation}
+                            onChatConstraints={handleChatConstraints}
+                            externalQuery={externalQuery} // Kirim query pemicu
+                            setExternalQuery={setExternalQuery} // Kirim setter untuk reset
+                        />
+                    </div>
+                )}
+            </>
+        </div>
+    );
+}
