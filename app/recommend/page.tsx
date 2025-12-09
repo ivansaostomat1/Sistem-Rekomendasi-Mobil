@@ -1,23 +1,25 @@
-// file: app/recommend/page.tsx  (atau path file Anda saat ini)
+// file: app/recommend/page.tsx  
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "@/hooks/useTheme";
 import { Header } from "@/components/forms/Header";
 import { RecommendationForm } from "@/components/forms/index";
-import type { RecommendResponse, RecommendItem } from "@/types"; 
+import type { RecommendResponse, RecommendItem } from "@/types";
 import { useBootstrapMeta } from "./_hooks/useBootstrapMeta";
 import { useSearchFlow } from "./_hooks/useSearchFlow";
 import { ResultsSection } from "./_components/ResultSection";
 import { DevPanel } from "./_components/DevPanel";
 import type { Theme } from "./_types/theme";
-import SmartChatPanel from "./_components/ChatPanel"; 
-import ModelViewer from "@/components/ui/ModelViewer"; 
+import SmartChatPanel from "./_components/ChatPanel";
+import ModelViewer from "@/components/ui/ModelViewer";
 
+// dynamic import Antigravity agar aman di Next.js SSR
+const Antigravity = dynamic(() => import("@/components/ui/Antigravity"), { ssr: false });
 
 const CHAT_ENABLED = true;
-
 
 const fmtIDR = (n: number | string | null | undefined): string => {
     if (n == null || isNaN(Number(n))) return "N/A";
@@ -42,7 +44,7 @@ export type ParsedConstraints = {
 
 export type ChatRecommendation = {
     budget: number;
-    needs: string[]; 
+    needs: string[];
     filters: {
         brand: string | null;
         trans_choice: string | null;
@@ -85,14 +87,14 @@ export default function RecommendPage() {
     const handleChatConstraints = (pc: ParsedConstraints | null) => { setChatConstraints(pc); };
 
     const handleChatRecommendation = (rec: ChatRecommendation | null) => {
-        console.log("Chat Rec Payload:", rec); 
+        console.log("Chat Rec Payload:", rec);
         if (!rec || rec.count === 0 || !rec.items.length) {
             console.warn("Chat empty.");
             setData(null); setIsSearched(false); openForm(); return;
         }
         const mapped: RecommendResponse = { count: rec.count, items: rec.items, needs: rec.needs ?? [] };
-        setData(mapped); setError(null); setIsSearched(true); openResults(); 
-        setTimeout(() => { resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }); }, 100); 
+        setData(mapped); setError(null); setIsSearched(true); openResults();
+        setTimeout(() => { resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }); }, 100);
     };
 
     const handleCardClick = (item: RecommendItem) => {
@@ -109,54 +111,90 @@ export default function RecommendPage() {
             (item as any)['WHEEL BASE'] ? `Wheelbase: ${(item as any)['WHEEL BASE']} m` : null,
             item.fit_score != null ? `Total Score: ${item.fit_score.toFixed(4)}` : null,
         ].filter(Boolean).join(' | ');
-        
+
         const activeNeeds = (data?.needs ?? []).join(", ").toUpperCase();
 
         const query = `[ANALISIS_KOMPARASI] Tolong jelaskan mengapa ${brandModel} (Skor: ${item.fit_score?.toFixed(4)}) berada di ranking ini? Fokus pada perbandingan harga dan fitur terhadap kebutuhan: [${activeNeeds}]. \n\nData Mobil: ${specs}`;
-        
+
         setExternalQuery(query);
-        // Hanya buka chat jika feature chat diizinkan
-        if (CHAT_ENABLED) setChatOpen(true); 
+        if (CHAT_ENABLED) setChatOpen(true);
     };
+
+    // deteksi mobile aman untuk SSR: gunakan state & effect
+    const [isMobile, setIsMobile] = useState(false);
+    useEffect(() => {
+        const onResize = () => setIsMobile(window.innerWidth <= 768);
+        onResize();
+        window.addEventListener("resize", onResize);
+        return () => window.removeEventListener("resize", onResize);
+    }, []);
+    const particleCount = isMobile ? 120 : 2000;
+    // warna partikel disesuaikan: dark => #38BDF8, light => #00a199ff
+    const particleColor = theme === "dark" ? "#38BDF8" : "rgba(0, 114, 101, 1)";
 
     return (
         <div className={`min-h-screen transition-colors duration-300 ${theme === "dark" ? "bg-[#0a0a0a] text-gray-100" : "bg-gray-50 text-gray-900"}`}>
             <Header theme={theme} toggleTheme={toggleTheme} />
 
-            <main className="w-full px-4 sm:px-8 lg:px-20 xl:px-30 py-8 relative">
-                <section className="mb-10">
-                    <h1 className="text-4xl md:text-5xl font-extrabold leading-tight mb-4">
-                        Cari mobil impianmu di{" "}
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-600">
-                            VRoom
-                        </span>
-                    </h1>
-                </section>
+            {/* Wrap utama jadi relative agar background absolute bisa menempel */}
+            <main className="w-full px-4 sm:px-8 lg:px-20 xl:px-30 py-8 relative overflow-hidden">
+                {/* Antigravity background layer */}
+                <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
+                    <Antigravity
+                        count={particleCount}
+                        magnetRadius={9}
+                        ringRadius={15}
+                        waveSpeed={0.2}
+                        waveAmplitude={5}
+                        particleSize={0.3}
+                        lerpSpeed={0.35}
+                        color={particleColor}
+                        autoAnimate={true}
+                        particleVariance={1}
+                        rotationSpeed={0.5}
+                        depthFactor={1}
+                        pulseSpeed={5}
+                        particleShape="capsule"
+                        fieldStrength={0}
+                    />
+                </div>
 
-                <AnimatePresence mode="wait">
-                    {showForm && (
-                        <motion.section key="form" ref={formRef} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.35 }} className="mb-10">
-                            <RecommendationForm theme={theme} loading={loading} error={error} data={data} meta={meta} isSearched={isSearched}
-                                setLoading={setLoading} setError={setError} setData={setData} setIsSearched={setIsSearched}
-                                // @ts-ignore
-                                chatConstraints={chatConstraints}
-                            />
-                        </motion.section>
-                    )}
-                </AnimatePresence>
+                {/* Konten utama di atas background */}
+                <div className="relative z-10">
+                    <section className="mb-10">
+                        <h1 className="text-4xl md:text-5xl font-extrabold leading-tight mb-4">
+                            Cari mobil impianmu di{" "}
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-600">
+                                VRoom
+                            </span>
+                        </h1>
+                    </section>
 
-                <AnimatePresence mode="wait">
-                    {!showForm && (
-                        <motion.section key="resultsView" ref={resultsRef} initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 8 }} transition={{ duration: 0.35 }} className="px-0 pb-12">
-                            <ResultsSection theme={theme} loading={loading} error={error} data={data} 
-                                onBackToForm={() => { setIsSearched(false); setData(null); setError(null); refetchMeta(); openForm(); setTimeout(() => { formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }); }, 0); }}
-                                onCardClick={handleCardClick}
-                            />
-                        </motion.section>
-                    )}
-                </AnimatePresence>
+                    <AnimatePresence mode="wait">
+                        {showForm && (
+                            <motion.section key="form" ref={formRef} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.35 }} className="mb-10">
+                                <RecommendationForm theme={theme} loading={loading} error={error} data={data} meta={meta} isSearched={isSearched}
+                                    setLoading={setLoading} setError={setError} setData={setData} setIsSearched={setIsSearched}
+                                    // @ts-ignore
+                                    chatConstraints={chatConstraints}
+                                />
+                            </motion.section>
+                        )}
+                    </AnimatePresence>
 
-                <DevPanel theme={theme} dataReady={dataReady} />
+                    <AnimatePresence mode="wait">
+                        {!showForm && (
+                            <motion.section key="resultsView" ref={resultsRef} initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 8 }} transition={{ duration: 0.35 }} className="px-0 pb-12">
+                                <ResultsSection theme={theme} loading={loading} error={error} data={data}
+                                    onBackToForm={() => { setIsSearched(false); setData(null); setError(null); refetchMeta(); openForm(); setTimeout(() => { formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }); }, 0); }}
+                                    onCardClick={handleCardClick}
+                                />
+                            </motion.section>
+                        )}
+                    </AnimatePresence>
+
+                    <DevPanel theme={theme} dataReady={dataReady} />
+                </div>
             </main>
 
             {/* --- 3D MODEL VIEWER BUTTON (hanya render bila CHAT_ENABLED = true) --- */}
@@ -164,7 +202,7 @@ export default function RecommendPage() {
                 <div className="fixed bottom-0 right-0 z-50">
                     <ModelViewer
                         url="/288.glb"  // File HARUS ada di folder public
-                        width={180}                   
+                        width={180}
                         height={180}
                         onClick={() => setChatOpen(true)} // Prop onClick diteruskan
                     />
@@ -179,7 +217,7 @@ export default function RecommendPage() {
                         onClose={() => setChatOpen(false)}
                         onChatRecommendation={handleChatRecommendation}
                         onChatConstraints={handleChatConstraints}
-                        externalQuery={externalQuery} 
+                        externalQuery={externalQuery}
                         setExternalQuery={setExternalQuery}
                     />
                 </div>
