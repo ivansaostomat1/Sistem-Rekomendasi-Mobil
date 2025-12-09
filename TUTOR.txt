@@ -105,4 +105,74 @@ uvicorn backend.app:app --reload
 buat (.env.local) dengan isi :
 NEXT_PUBLIC_API_BASE=http://127.0.0.1:8000
 
-GANTI device mac
+================================================================================ 6) GANTI DEVICE / SETUP DI MACOS (Macbook)
+Buka Terminal (Command + Space, ketik "Terminal").
+
+A. Reset / Bersihkan Environment Lama (Jika perlu):
+
+Bash
+
+# Hapus venv dan node_modules lama
+rm -rf .venv node_modules package-lock.json
+B. Setup Backend (Python):
+
+Bash
+
+# 1. Masuk ke folder project
+cd /path/to/capstone/drive
+
+# 2. Buat virtual environment
+python3 -m venv .venv
+
+# 3. Aktifkan virtual environment (Beda dengan Windows!)
+source .venv/bin/activate
+
+# 4. Install dependency
+pip install -r requirements.txt
+
+# 5. Jalankan Backend
+uvicorn backend.app:app --reload
+C. Setup Frontend (Next.js): Buka terminal baru (Command + T).
+
+Bash
+
+# 1. Masuk ke folder project
+cd /path/to/capstone/drive
+
+# 2. Install library
+npm install
+
+# 3. Jalankan Frontend
+npm run dev
+================================================================================ 7) KONFIGURASI FILE .ENV (WAJIB DIBUAT)
+Anda perlu membuat 2 file konfigurasi terpisah.
+
+A. Backend (.env) Buat file bernama .env di dalam folder root (C:\capstone\drive\.env) sejajar dengan app.py. Isinya:
+
+Cuplikan kode
+
+# Konfigurasi Ollama (Local)
+OPENROUTER_API_KEY=ollama
+OPENROUTER_MODEL=llama3.1
+# Jika nanti mau pakai API berbayar, ganti key dan modelnya di sini
+B. Frontend (.env.local) Buat file bernama .env.local di dalam folder root (C:\capstone\drive\.env.local). Isinya:
+
+Cuplikan kode
+
+# Agar Next.js tahu alamat backend FastAPI
+NEXT_PUBLIC_API_BASE=http://127.0.0.1:8000
+# Mode debug (opsional, set 1 untuk nyalakan DevPanel)
+NEXT_PUBLIC_DEBUG=0
+================================================================================ 8) PERSIAPAN OLLAMA (AI ENGINE)
+Karena chatbot menggunakan Llama 3.1 lokal, lakukan ini sekali saja di komputer baru.
+
+Download Ollama: https://ollama.com/download
+
+Install aplikasi.
+
+Download Model: Buka terminal/CMD, lalu ketik:
+
+Bash
+
+ollama pull llama3.1
+Pastikan Ollama Berjalan: Lihat icon Ollama di taskbar (kanan bawah di Windows, atau atas di Mac).
