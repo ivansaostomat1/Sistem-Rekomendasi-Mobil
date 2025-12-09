@@ -2,8 +2,7 @@ fastapi
 uvicorn[standard]
 pandas
 numpy
-python-multipart
 scikit-learn
 python-dotenv
-rasa
-requests
+openai
+python-multipart
