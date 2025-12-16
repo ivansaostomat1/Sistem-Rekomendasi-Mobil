@@ -18,7 +18,7 @@ export default function HomePage() {
   // deteksi mobile sederhana untuk menurunkan load particle
   const isClient = typeof window !== "undefined";
   const isMobile = isClient ? window.innerWidth <= 768 : false;
-  const particleCount = isMobile ? 120 : 10000;
+  const particleCount = isMobile ? 120 : 800;
 
   // warna partikel: dark => #38BDF8, light => #0EA5A4
   const particleColor = isDark ? "#38BDF8" : "#0EA5A4";
@@ -83,11 +83,11 @@ export default function HomePage() {
         >
           <Antigravity
             count={particleCount}
-            magnetRadius={5}
-            ringRadius={20}
-            waveSpeed={2}
-            waveAmplitude={5}
-            particleSize={1}
+            magnetRadius={10}
+            ringRadius={18}
+            waveSpeed={4}
+            waveAmplitude={2}
+            particleSize={0.88}
             lerpSpeed={0.35}
             color={particleColor}
             autoAnimate={true}
@@ -95,7 +95,7 @@ export default function HomePage() {
             rotationSpeed={0.1}
             depthFactor={1}
             pulseSpeed={5}
-            particleShape="tetrahedron"
+            particleShape="capsule"
             fieldStrength={1}
           />
         </div>

@@ -22,46 +22,8 @@ from .spk_utils import (
 from .spk_features import add_need_features
 from .spk_needs import sanitize_needs
 from .spk_hard import hard_constraints_filter, has_turbo_model
+# Kita mempercayakan logika penilaian sepenuhnya ke spk_soft
 from .spk_soft import compute_percentiles, soft_multiplier, style_adjust_multiplier
-
-
-# -------------------------
-# Helper: parse dimension
-# -------------------------
-def parse_dimension(dim: Optional[str]) -> Tuple[Optional[float], Optional[float], Optional[float]]:
-    """Parse variasi string dimension menjadi (L, W, H) dalam mm."""
-    if dim is None:
-        return None, None, None
-    try:
-        s = str(dim).lower()
-        s = s.replace("×", "x").replace("mm", "")
-        s = re.sub(r'[^0-9x\.\,\-\s]', ' ', s)
-        parts = re.split(r'[x]', s)
-        parts = [p.strip().replace(",", "") for p in parts if p.strip()]
-        if len(parts) >= 3:
-            return float(parts[0]), float(parts[1]), float(parts[2])
-        nums = re.findall(r'(\d{3,4})', s)
-        if len(nums) >= 3:
-            return float(nums[0]), float(nums[1]), float(nums[2])
-        return None, None, None
-    except Exception:
-        return None, None, None
-
-
-def _is_large_commercial_dim(L: Optional[float], W: Optional[float], H: Optional[float]) -> bool:
-    """
-    Indikator dimensi besar yang cenderung niaga.
-    Termasuk trigger khusus 5140 x 1928 x 1880.
-    """
-    if L is None or W is None or H is None:
-        return False
-    if L >= 5140 and W >= 1928 and H >= 1880:
-        return True
-    if L >= 5200 or H >= 2000 or W >= 2100:
-        return True
-    if L >= 5400 and H >= 1850:
-        return True
-    return False
 
 
 def rank_candidates(
@@ -150,7 +112,9 @@ def rank_candidates(
 
         # 5) Tambah fitur kebutuhan + hard constraints
         cand_feat = add_need_features(cand)
+        # hard_constraints_filter sudah menangani parsing dimensi secara internal
         hard_ok = hard_constraints_filter(cand_feat, needs or [])
+        
         if not isinstance(hard_ok, pd.Series):
             hard_ok = pd.Series(bool(hard_ok), index=cand_feat.index)
         else:
@@ -165,41 +129,7 @@ def rank_candidates(
         if cand.empty:
             return _ensure_df(cand)
 
-        # 5.1 Parse dimension di tingkat ranking untuk soft rules / special-case
-        # Cari kolom dimension variasi
-        dim_series = None
-        for col in cand.columns:
-            if col.lower().startswith("dimension") or "p x l" in col.lower() or "dimension p" in col.lower():
-                dim_series = cand[col]
-                break
-        if dim_series is None and "dimension" in cand.columns:
-            dim_series = cand["dimension"]
-        if dim_series is None:
-            dim_series = pd.Series([None] * len(cand), index=cand.index)
-
-        parsed = dim_series.apply(parse_dimension)
-        cand["dim_length_mm"] = [p[0] for p in parsed]
-        cand["dim_width_mm"] = [p[1] for p in parsed]
-        cand["dim_height_mm"] = [p[2] for p in parsed]
-
-        # gunakan fungsi vectorized yang sudah diperbaiki dari spk_hard
-        from .spk_hard import is_obvious_commercial_by_dimension as is_dim_commercial_vec
-
-        # ambil Series yang baru dibuat dan panggil fungsi vectorized
-        dimL = cand["dim_length_mm"]
-        dimW = cand["dim_width_mm"]
-        dimH = cand["dim_height_mm"]
-
-        # is_dim_commercial sekarang adalah pd.Series[bool] (vektor)
-        is_dim_commercial = is_dim_commercial_vec(dimL, dimW, dimH)
-        # pastikan tidak ada NA (treat NA sebagai False)
-        is_dim_commercial = is_dim_commercial.fillna(False).astype(bool)
-
-# (opsional) debug print: tampilkan beberapa nilai untuk verifikasi
-# print("[DEBUG] dim sample:", pd.concat([dimL, dimW, dimH, is_dim_commercial], axis=1).head())
-
-
-        # 6) Klaster
+        # 6) Klaster (Machine Learning Similarity)
         try:
             cand_feat2, cluster_to_label, C_scaled, feat_cols, scaler, _ = cluster_and_label(cand_feat, k=6)
             X_for_need = cand_feat2[feat_cols].apply(lambda col: col.fillna(col.median()), axis=0).values
@@ -229,7 +159,7 @@ def rank_candidates(
         price_anchor = p.apply(lambda x: price_fit_anchor(x, budget, pmax_cand))
         cand["price_fit"] = 0.5 * price_rank + 0.5 * price_anchor
 
-        # 8) Skor atribut detail
+        # 8) Skor atribut detail (Raw Scoring - Baseline)
         def _scale_01(series: pd.Series) -> pd.Series:
             s = pd.to_numeric(series, errors="coerce")
             s_valid = s.dropna()
@@ -275,11 +205,11 @@ def rank_candidates(
         is_elec_hybrid = fuel_c.isin({"h", "p", "e"}).astype(float)
         is_diesel = (fuel_c == "d").astype(float)
 
+        # Baseline Scores (Angka kasar sebelum Soft Multiplier)
         small_size = (0.45 * (1 - len_norm) + 0.45 * (1 - wid_norm) + 0.10 * (1 - wgt_norm))
         cc_small = 1 - cc_norm
         efficiency_score = (0.30 * cc_small + 0.20 * (1 - wgt_norm) + 0.50 * is_elec_hybrid).clip(0, 1)
 
-        # EV-aware city_score (perbaikan): berikan toleransi untuk sedan kompak lebar >=1650
         is_ev = (fuel_c == "e")
         dim_comp_non_ev = 0.40 * (1 - wid_norm) + 0.30 * (1 - len_norm) + 0.30 * (1 - wgt_norm)
         dim_comp_ev = 0.30 * (1 - wid_norm) + 0.20 * (1 - len_norm) + 0.50 * (1 - wgt_norm)
@@ -287,7 +217,6 @@ def rank_candidates(
         efficiency_boost = efficiency_score * (1.05 * is_ev + 1.0 * (~is_ev))
         city_score = (0.40 * dim_comp + 0.60 * efficiency_boost).clip(0, 1)
 
-        # Sedan kompak allowance: jika seg=sedan & width >=1650 maka beri sedikit dorongan city_score
         sedan_mask = seg.str.contains(r"\bsedan\b", flags=re.I, regex=True)
         sedan_allow = sedan_mask & (width >= 1650)
         city_score = city_score + (0.02 * sedan_allow.astype(float))
@@ -300,19 +229,12 @@ def rank_candidates(
         doors_good = (doors >= 5).astype(float)
         mpv_like = seg.str.contains(r"\b(?:mpv|van|minibus)\b", flags=re.I, regex=True).astype(float)
 
-        # Perbaikan family_score:
-        # - seats >=6 beri dorongan kuat
-        # - seats ==5 diterima sebagai keluarga kecil jika lebar/wb/mpv_like terpenuhi
         family_score = (0.50 * seats_norm + 0.30 * doors_good + 0.20 * mpv_like).clip(0, 1)
-
-        # extra boosts berdasarkan seats konkret
         seats_ge6 = (seats >= 6)
-        family_score = family_score + (0.08 * seats_ge6.astype(float))  # dorongan kuat bila >=6
-
+        family_score = family_score + (0.08 * seats_ge6.astype(float)) 
         seats_eq5 = (seats == 5)
         seats_eq5_ok = seats_eq5 & ((width >= 1700) | (wb >= 2500) | (mpv_like == 1.0))
-        family_score = family_score + (0.03 * seats_eq5_ok.astype(float))  # sedikit dorongan untuk family kecil yang memadai
-
+        family_score = family_score + (0.03 * seats_eq5_ok.astype(float))
         family_score = family_score.clip(0, 1)
 
         if length.notna().any():
@@ -371,7 +293,9 @@ def rank_candidates(
         alpha_price = 0.20 if ({"fun", "offroad"} & needs_set) else 0.30
         cand["fit_score"] = ((1.0 - alpha_price) * pref_score + alpha_price * cand["price_fit"]).clip(0, 1)
 
-        # 11) Soft & style layer (memakai compute_percentiles + soft_multiplier yang sudah punya penanganan dimensi besar)
+        # 11) SOFT & STYLE LAYER (THE JUDGE)
+        # Di sinilah semua logika "Jujur & Realistis" Anda diterapkan.
+        # Kita menggunakan compute_percentiles dari spk_soft.
         P = compute_percentiles(cand)
         cand["soft_mult"] = cand.apply(lambda r: soft_multiplier(r, needs or [], P), axis=1)
         cand["style_mult"] = cand.apply(lambda r: style_adjust_multiplier(r, needs or []), axis=1)
@@ -379,34 +303,7 @@ def rank_candidates(
         cand["raw_score"] = cand["fit_score"]
         cand["fit_score"] = (cand["fit_score"] * cand["soft_mult"] * cand["style_mult"]).clip(0, 1.0)
 
-        # 12) KHUSUS: penalti / handling untuk dimensi komersial besar (mis: 5140 x 1928 x 1880)
-        # Jika dimensi komersial deteksi TRUE dan user tidak meminta 'niaga', penalti kuat agar tidak masuk cluster keluarga/perkotaan.
-        dimL = cand.get("dim_length_mm", pd.Series([np.nan] * len(cand), index=cand.index))
-        dimW = cand.get("dim_width_mm", pd.Series([np.nan] * len(cand), index=cand.index))
-        dimH = cand.get("dim_height_mm", pd.Series([np.nan] * len(cand), index=cand.index))
-
-        is_dim_commercial = (dimL.notna() & dimW.notna() & dimH.notna()) & \
-                            ( (dimL >= 5140) & (dimW >= 1928) & (dimH >= 1880) )
-        # juga treat broader _is_large_commercial_dim
-        broader_dim_commercial = dimL.apply(lambda x: _is_large_commercial_dim(x, np.nan, np.nan))  # fallback per-item can't use W,H here; we fallback to strict check above
-        # combine (prefer strict with W/H)
-        is_dim_commercial = is_dim_commercial | broader_dim_commercial.fillna(False)
-
-        # jika tidak minta niaga, penalti
-        if "niaga" not in needs_set:
-            penal_idx = cand.index[is_dim_commercial.fillna(False)]
-            if len(penal_idx) > 0:
-                cand.loc[penal_idx, "fit_score"] = (cand.loc[penal_idx, "fit_score"] * 0.60).clip(0, 1)
-                # tambahkan alasan ke kolom 'alasan' (gabungkan bila sudah ada)
-                def _append_reason(old, add):
-                    if not isinstance(old, str) or old == "":
-                        return add
-                    return old + "; " + add
-                for ix in penal_idx:
-                    old = cand.at[ix, "alasan"] if "alasan" in cand.columns else ""
-                    cand.at[ix, "alasan"] = _append_reason(old, "dimensi besar -> penalti (mis: kemungkinan niaga)")
-
-        # 13) Alasan singkat (melengkapi kolom alasan jika belum)
+        # 12) Alasan singkat (Generating Reason Text)
         def mk_reason(r):
             why = []
             if r.get("price", np.nan) <= budget:
@@ -432,11 +329,13 @@ def rank_candidates(
                 elif main == "perjalanan_jauh":
                     if str(r.get("fuel_code", "")) == "d":
                         why.append("mesin diesel tangguh")
+                    elif str(r.get("fuel_code", "")) in ["h", "p"]:
+                        why.append("hybrid efisien")
                     else:
                         why.append("nyaman jarak jauh")
                 elif main == "niaga":
                     why.append("kapasitas/utility sesuai niaga")
-            # gabungkan existing alasan (jika ada)
+            
             prev = r.get("alasan", "")
             res = ", ".join(why)
             if prev and isinstance(prev, str):
@@ -447,14 +346,12 @@ def rank_candidates(
 
         cand["spk_reason"] = cand.apply(mk_reason, axis=1)
 
-        # 14) Sortir, dedup, rank FINAL (sama seperti sebelumnya)
+        # 13) Sortir, dedup, rank FINAL
         cand["model_norm"] = cand["model"].astype(str).str.replace(r"\s+", " ", regex=True).str.strip().str.lower()
         cand["price_int"] = pd.to_numeric(cand["price"], errors="coerce").fillna(-1).astype(int)
 
-        # Urutkan berdasarkan fit_score dulu (trim terbaik paling atas)
         cand = cand.sort_values(["fit_score"], ascending=[False])
 
-        # BATASI TRIMS PER (brand, model_base) - infer_model_base sama seperti sebelumnya (dipertahankan)
         variant_tokens = [
             "prime", "signature", "extended", "extended range", "extended-range", "extendedrange",
             "premium", "performance", "dynamic", "deluxe", "sport", "long range", "longrange", "lr",
@@ -483,7 +380,6 @@ def rank_candidates(
         cand["model_base"] = cand["model_norm_lc"].apply(infer_model_base)
         cand["brand_key_lc"] = cand.get("brand", pd.Series([""] * len(cand), index=cand.index)).astype(str).str.strip().str.lower()
 
-        # BATASI TRIMS PER MODEL
         max_trims_per_model = 2
         cand = cand.groupby(["brand_key_lc", "model_base"], sort=False).head(max_trims_per_model).reset_index(drop=True)
 

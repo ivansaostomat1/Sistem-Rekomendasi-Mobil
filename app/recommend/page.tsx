@@ -128,7 +128,7 @@ export default function RecommendPage() {
         window.addEventListener("resize", onResize);
         return () => window.removeEventListener("resize", onResize);
     }, []);
-    const particleCount = isMobile ? 120 : 2000;
+    const particleCount = isMobile ? 120 : 700;
     // warna partikel disesuaikan: dark => #38BDF8, light => #00a199ff
     const particleColor = theme === "dark" ? "#38BDF8" : "rgba(0, 114, 101, 1)";
 
@@ -143,10 +143,10 @@ export default function RecommendPage() {
                     <Antigravity
                         count={particleCount}
                         magnetRadius={9}
-                        ringRadius={15}
+                        ringRadius={10}
                         waveSpeed={0.2}
                         waveAmplitude={5}
-                        particleSize={0.3}
+                        particleSize={0.15}
                         lerpSpeed={0.35}
                         color={particleColor}
                         autoAnimate={true}
