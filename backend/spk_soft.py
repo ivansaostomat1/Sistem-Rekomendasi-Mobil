@@ -89,8 +89,13 @@ def _is_large_commercial_dim(L: Optional[float], W: Optional[float], H: Optional
 
 def soft_multiplier(r: pd.Series, needs: Optional[List[str]], P: Dict[str, float]) -> float:
     """
-    Hitung multiplier 'soft' dengan LOGIKA JUJUR, ADIL, & REALISTIS.
-    Updated: Agresif mengoreksi dominasi EV di kota agar Hybrid/PHEV menang.
+    Hitung multiplier 'soft' dengan LOGIKA JUJUR, ADIL, & REALISTIS (VERSI AWAM & WORTH IT).
+    
+    Revisi Utama:
+    1. Cap maksimal diturunkan ke 1.30 (dari 1.50) untuk mencegah dominasi tunggal.
+    2. Logika 'Fun' tidak lagi memberi bonus turbo pada mobil berat (>1.8 ton).
+    3. Logika 'Offroad' lebih ke 'Jalan Rusak' (SUV 4x2 oke), bukan Hardcore 4x4.
+    4. Bonus khusus untuk Brand Mainstream (Toyota, Honda, dll) demi 'Peace of Mind'.
     """
     needs = needs or []
     m = 1.0
@@ -108,6 +113,7 @@ def soft_multiplier(r: pd.Series, needs: Optional[List[str]], P: Dict[str, float
 
     seg = str(r.get("segmentasi") or "").lower()
     model = str(r.get("model") or "")
+    brand = str(r.get("brand") or "").lower()
     fuel_c = str(r.get("fuel_code") or "").lower()
     trans_str = str(r.get("trans") or "").lower()
 
@@ -139,120 +145,123 @@ def soft_multiplier(r: pd.Series, needs: Optional[List[str]], P: Dict[str, float
     is_diesel = (fuel_c == "d")
     is_small_petrol = (fuel_c == "g" and (not np.isnan(cc) and cc <= 1500))
     
+    # Identifikasi Mobil Bongsor (Heavy) - Penting untuk membedakan 'Lincah' vs 'Badak'
+    is_heavy = (not np.isnan(weight) and weight > 1800) # SUV Ladder frame biasanya > 1900kg
+
     pw = np.nan
     if (not np.isnan(weight)) and weight > 0:
         pw = cc / weight if not np.isnan(cc) else np.nan
 
     # =========================================================
-    # LOGIKA INTERAKSI
+    # LOGIKA INTERAKSI (Updated for "Worth It" & Awam)
     # =========================================================
 
     # --- SKENARIO 1: KELUARGA + PERKOTAAN ---
     if "keluarga" in needs and "perkotaan" in needs:
         if is_7_seater:
+            # MPV Compact (Veloz, Xpander) lebih worth it di kota daripada Innova/Fortuner
             if not np.isnan(length) and length <= 4600: m *= 1.10 
-            else: m *= 0.95 
+            elif length > 4700: m *= 0.95 # Terlalu panjang buat kota
         elif is_5_seater:
             if is_city_car or (is_suv and length <= 4500): m *= 1.08
             elif is_sedan: m *= 0.95
         
-        # AGGRESSIVE REBALANCING (Kota)
-        if is_phev: m *= 1.25       # PHEV: Raja (Boost masif)
-        elif is_hybrid: m *= 1.15   # Hybrid: Boost besar (biar menang vs EV)
-        elif is_small_petrol: m *= 1.10 # Bensin kecil: Boost
-        elif is_electric: m *= 0.95 # EV: Penalti ringan (Infrastruktur check)
+        # Effisiensi
+        if is_hybrid or is_phev: m *= 1.15
+        elif is_electric: m *= 1.05 # EV enak di kota
+        elif is_small_petrol: m *= 1.05
             
-        if is_diesel and "perjalanan_jauh" not in needs: m *= 0.92
+        if is_diesel: m *= 0.95 # Diesel kurang cocok buat stop-n-go kota (polusi/suara)
 
     # --- SKENARIO 2: KELUARGA + PERJALANAN JAUH ---
     elif "keluarga" in needs and "perjalanan_jauh" in needs:
-        if is_7_seater: m *= 1.15
+        if is_7_seater: m *= 1.10
         elif is_5_seater:
-            if is_city_car: m *= 0.85 
-            elif is_suv: m *= 0.98
-            else: m *= 0.90
+            if is_city_car: m *= 0.85 # Capek naik city car jauh
             
-        if not np.isnan(wb) and wb > 2700: m *= 1.05
-        if is_diesel or has_turbo_model(model): m *= 1.05
-        if is_electric: m *= 0.90 
+        if not np.isnan(wb) and wb > 2700: m *= 1.05 # Kabin lega
+        if is_diesel: m *= 1.10 # Diesel raja jarak jauh
+        if is_heavy: m *= 1.05 # Mobil berat lebih stabil di tol
 
     # --- SKENARIO 3: HANYA KELUARGA ---
     elif "keluarga" in needs:
         if is_7_seater: m *= 1.10
-        elif is_5_seater:
-            if not np.isnan(width) and width >= 1800: m *= 1.02
-            else: m *= 0.95
+        elif is_5_seater: m *= 0.95
 
     # --- SKENARIO 4: FUN + PERKOTAAN ---
     if "fun" in needs and "perkotaan" in needs:
-        if is_electric: m *= 0.90 
-        if is_mpv_boxy: m *= 0.70
-        elif is_city_car or is_sedan or (is_suv and length < 4500): m *= 1.10
-        if is_diesel: m *= 0.95
-        if "cvt" in trans_str: m *= 0.95 
-        elif "dct" in trans_str or "dsg" in trans_str: m *= 1.05
+        if is_mpv_boxy or is_pickup: m *= 0.70 # Gak enak
+        if is_heavy: m *= 0.80 # Mobil berat di kota gak fun (susah parkir/manuver)
+        elif is_city_car or is_sedan: m *= 1.15 # Kecil = Fun di kota
 
     # =========================================================
-    # FITUR INDEPENDEN (STACKABLE)
+    # FITUR INDEPENDEN (STACKABLE) - REFINED
     # =========================================================
     
-    # 1. OFFROAD
+    # 1. OFFROAD (Versi Awam: "Jalan Rusak/Banjir", bukan Hardcore)
     if "offroad" in needs:
-        if is_suv or is_pickup: m *= 1.15
-        if awd >= 0.5: m *= 1.10
-        if is_mpv_boxy or is_sedan or is_city_car: m *= 0.60
-        if "cvt" in trans_str: m *= 0.70 
-        elif "manual" in trans_str: m *= 0.90 
-        else: m *= 1.10 # AT Con
-        if is_diesel: m *= 1.15
-        if is_electric or is_hybrid: m *= 0.80
-        if is_city_car and is_suv and (awd >= 0.5): m *= 1.25 # Jimny Rule
+        if is_suv or is_pickup: m *= 1.15 # SUV cukup (bahkan 4x2 oke)
+        if awd >= 0.5: m *= 1.05 # Bonus AWD dikecilkan (biar harga gak melambung)
+        if is_sedan or is_city_car: m *= 0.60 # Pendek = Big No
+        if is_mpv_boxy: m *= 0.85
+        if is_diesel: m *= 1.05 # Diesel disukai untuk jalan berat
 
     # 2. NIAGA
     if "niaga" in needs:
         if _is_large_commercial_dim(dimL, dimW, dimH) or SEG_PICKUP.search(seg) or "van" in seg: m *= 1.20
         elif is_sedan or (is_mpv_boxy and length > 4800): m *= 0.80
 
-    # 3. POWER (Fun General)
+    # 3. FUN (Versi Awam: "Lincah & Responsif")
     if "fun" in needs:
-        if is_electric: m *= 0.88 
-        if "cvt" in trans_str: m *= 0.85 
-        elif "dct" in trans_str: m *= 1.08 
-        if has_turbo_model(model): m *= 1.08 
-        if not np.isnan(pw) and pw > 0.08: m *= 1.05
-        if is_sedan or is_city_car: m *= 1.05
-        if is_mpv_boxy: m *= 0.80
-
-    # 4. PERJALANAN JAUH (Independent Feature Logic)
-    if "perjalanan_jauh" in needs:
-        if wb >= 2700: m *= 1.10
-        elif wb < 2550: m *= 0.90
-        if is_diesel: m *= 1.10
-        elif is_hybrid: m *= 1.08
-        elif is_electric: m *= 0.85
-        if is_city_car: m *= 0.85
-        elif is_sedan or is_mpv_boxy: m *= 1.05
-        if "manual" in trans_str: m *= 0.95
-
-    # 5. PERKOTAAN (Independent - REBALANCED for Aggressive Correction)
-    if "perkotaan" in needs:
-        # AGGRESSIVE HIERARCHY
-        if is_phev: m *= 1.35       # PHEV (Top Tier)
-        elif is_hybrid: m *= 1.25   # Hybrid (Must beat EV raw score)
-        elif is_small_petrol: m *= 1 # Petrol Kecil (Reliable City Car)
-        elif is_electric: m *= 1 # EV (Penalty Infrastruktur)
+        # HAPUS BONUS TURBO UNTUK MOBIL BERAT
+        # Turbo di Fortuner/MU-X itu untuk ngangkat bodi berat, bukan buat ngebut lincah.
+        if has_turbo_model(model):
+            if is_heavy: m *= 1.00 # No bonus
+            else: m *= 1.08 # Bonus Turbo cuma buat mobil ringan (Raize, Civic, dll)
         
-        # Size
-        if is_city_car: m *= 1.08
-        elif is_suv and length <= 4500: m *= 1.05
-        elif is_mpv_boxy or (is_suv and length > 4700): m *= 0.96
+        if is_electric: m *= 1.10 # EV instan torque = Fun
+        
+        # Body Type Handling
+        if is_sedan or is_city_car: m *= 1.10
+        if is_mpv_boxy or is_heavy: m *= 0.90 # Mobil berat/kotak mengurangi fun handling
 
-    return float(np.clip(m, 0.50, 1.50))
+    # 4. PERJALANAN JAUH
+    if "perjalanan_jauh" in needs:
+        if is_diesel: m *= 1.08
+        elif is_hybrid: m *= 1.05
+        if is_city_car: m *= 0.85
+
+    # 5. PERKOTAAN
+    if "perkotaan" in needs:
+        if is_heavy: m *= 0.90 # Hukum mobil besar di kota
+        if is_city_car or (length is not None and length < 4300): m *= 1.05
+
+    # =========================================================
+    # *** NEW: BRAND PEACE OF MIND (The "Worth It" Factor) ***
+    # =========================================================
+    # Orang awam merasa worth it kalau brand-nya gampang servis & jual kembali.
+    # Beri bonus kecil untuk brand mainstream.
+    MAINSTREAM_BRANDS = ["toyota", "honda", "daihatsu", "suzuki", "mitsubishi", "hyundai", "wuling"]
+    is_mainstream = any(b in brand for b in MAINSTREAM_BRANDS)
+    
+    if is_mainstream:
+        m *= 1.05 # Bonus 5% untuk ketenangan pikiran
+    else:
+        # Brand niche/eropa/baru mungkin spek bagus, tapi aftersales PR buat awam
+        # Kecuali user memang cari "Fun" (Hobi), kita tahan dikit nilainya
+        if "fun" not in needs and "offroad" not in needs: 
+            m *= 0.98 # Sedikit penalti jika user cari mobil fungsional biasa
+
+    # =========================================================
+    # FINAL CAP: TURUNKAN DARI 1.50 -> 1.30
+    # =========================================================
+    # Ini kuncinya. Jangan biarkan satu mobil menumpuk bonus terlalu banyak.
+    return float(np.clip(m, 0.50, 1.30))
 
 
 def style_adjust_multiplier(r: pd.Series, needs: Optional[List[str]]) -> float:
     """
-    Guardrail terakhir.
+    Guardrail terakhir. Logika tetap sama seperti sebelumnya.
     """
     needs = needs or []
     seg = str(r.get("segmentasi") or "").lower()

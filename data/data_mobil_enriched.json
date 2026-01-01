@@ -1,0 +1,3618 @@
+[
+  {
+    "brand": "Audi",
+    "model": null,
+    "trim": null,
+    "year": null,
+    "dimensions": {
+      "length_mm": null,
+      "width_mm": null,
+      "height_mm": null,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": null,
+      "drivetrain": null,
+      "engine_cc": null,
+      "battery_kwh": null,
+      "motor_power_kw": null,
+      "torque_nm": null
+    },
+    "transmission": {
+      "category": null,
+      "technology_name": null,
+      "manufacturer": null,
+      "gears": null,
+      "shift_mechanism": null,
+      "paddle_shifter": null,
+      "drive_modes": []
+    },
+    "chassis": {
+      "body_type": null,
+      "chassis_type": null
+    },
+    "suspension": {
+      "front": null,
+      "rear": null,
+      "adaptive": null,
+      "air_suspension": null
+    },
+    "braking": {
+      "front_brake": null,
+      "rear_brake": null,
+      "brake_material": null,
+      "parking_brake": null,
+      "regen_braking": null
+    },
+    "comfort": {
+      "seat_material": null,
+      "seat_adjustment": null,
+      "seat_heating": null,
+      "seat_ventilation": null,
+      "sunroof": null,
+      "panoramic_roof": null
+    },
+    "infotainment": {
+      "screen_size_inch": null,
+      "android_auto": null,
+      "apple_carplay": null,
+      "wireless_projection": null,
+      "speaker_brand": "Bang & Olufsen",
+      "speaker_count": null
+    },
+    "safety": {
+      "airbag_count": null,
+      "abs": null,
+      "esc": null,
+      "adas": []
+    },
+    "_source_pdf": "audi-a5-491078.pdf"
+  },
+  {
+    "brand": "Audi",
+    "model": null,
+    "trim": null,
+    "year": null,
+    "dimensions": {
+      "length_mm": null,
+      "width_mm": null,
+      "height_mm": null,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": null,
+      "drivetrain": null,
+      "engine_cc": null,
+      "battery_kwh": null,
+      "motor_power_kw": null,
+      "torque_nm": null
+    },
+    "transmission": {
+      "category": null,
+      "technology_name": null,
+      "manufacturer": null,
+      "gears": null,
+      "shift_mechanism": null,
+      "paddle_shifter": null,
+      "drive_modes": []
+    },
+    "chassis": {
+      "body_type": null,
+      "chassis_type": null
+    },
+    "suspension": {
+      "front": null,
+      "rear": null,
+      "adaptive": null,
+      "air_suspension": null
+    },
+    "braking": {
+      "front_brake": null,
+      "rear_brake": null,
+      "brake_material": null,
+      "parking_brake": null,
+      "regen_braking": null
+    },
+    "comfort": {
+      "seat_material": null,
+      "seat_adjustment": null,
+      "seat_heating": null,
+      "seat_ventilation": null,
+      "sunroof": null,
+      "panoramic_roof": null
+    },
+    "infotainment": {
+      "screen_size_inch": null,
+      "android_auto": null,
+      "apple_carplay": null,
+      "wireless_projection": null,
+      "speaker_brand": "Bang & Olufsen",
+      "speaker_count": null
+    },
+    "safety": {
+      "airbag_count": null,
+      "abs": null,
+      "esc": null,
+      "adas": []
+    },
+    "_source_pdf": "audi-a5-sportback-195711.pdf"
+  },
+  {
+    "brand": "Audi",
+    "model": null,
+    "trim": "Standard",
+    "year": null,
+    "dimensions": {
+      "length_mm": null,
+      "width_mm": null,
+      "height_mm": null,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": null,
+      "drivetrain": null,
+      "engine_cc": null,
+      "battery_kwh": null,
+      "motor_power_kw": null,
+      "torque_nm": null
+    },
+    "transmission": {
+      "category": null,
+      "technology_name": null,
+      "manufacturer": null,
+      "gears": null,
+      "shift_mechanism": null,
+      "paddle_shifter": null,
+      "drive_modes": []
+    },
+    "chassis": {
+      "body_type": null,
+      "chassis_type": null
+    },
+    "suspension": {
+      "front": null,
+      "rear": null,
+      "adaptive": null,
+      "air_suspension": null
+    },
+    "braking": {
+      "front_brake": null,
+      "rear_brake": null,
+      "brake_material": null,
+      "parking_brake": null,
+      "regen_braking": null
+    },
+    "comfort": {
+      "seat_material": null,
+      "seat_adjustment": null,
+      "seat_heating": null,
+      "seat_ventilation": null,
+      "sunroof": null,
+      "panoramic_roof": null
+    },
+    "infotainment": {
+      "screen_size_inch": null,
+      "android_auto": null,
+      "apple_carplay": null,
+      "wireless_projection": null,
+      "speaker_brand": "Bang & Olufsen",
+      "speaker_count": null
+    },
+    "safety": {
+      "airbag_count": null,
+      "abs": null,
+      "esc": null,
+      "adas": []
+    },
+    "_source_pdf": "audi-a5-sportback-195711.pdf"
+  },
+  {
+    "brand": "Audi",
+    "model": null,
+    "trim": "Optional",
+    "year": null,
+    "dimensions": {
+      "length_mm": null,
+      "width_mm": null,
+      "height_mm": null,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": null,
+      "drivetrain": null,
+      "engine_cc": null,
+      "battery_kwh": null,
+      "motor_power_kw": null,
+      "torque_nm": null
+    },
+    "transmission": {
+      "category": null,
+      "technology_name": null,
+      "manufacturer": null,
+      "gears": null,
+      "shift_mechanism": null,
+      "paddle_shifter": null,
+      "drive_modes": []
+    },
+    "chassis": {
+      "body_type": null,
+      "chassis_type": null
+    },
+    "suspension": {
+      "front": null,
+      "rear": null,
+      "adaptive": null,
+      "air_suspension": null
+    },
+    "braking": {
+      "front_brake": null,
+      "rear_brake": null,
+      "brake_material": null,
+      "parking_brake": null,
+      "regen_braking": null
+    },
+    "comfort": {
+      "seat_material": null,
+      "seat_adjustment": null,
+      "seat_heating": null,
+      "seat_ventilation": null,
+      "sunroof": null,
+      "panoramic_roof": null
+    },
+    "infotainment": {
+      "screen_size_inch": null,
+      "android_auto": null,
+      "apple_carplay": null,
+      "wireless_projection": null,
+      "speaker_brand": "Bang & Olufsen",
+      "speaker_count": null
+    },
+    "safety": {
+      "airbag_count": null,
+      "abs": null,
+      "esc": null,
+      "adas": []
+    },
+    "_source_pdf": "audi-a5-sportback-195711.pdf"
+  },
+  {
+    "brand": "Audi",
+    "model": "Q3",
+    "trim": "1.4",
+    "year": null,
+    "dimensions": {
+      "length_mm": null,
+      "width_mm": null,
+      "height_mm": null,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": "G",
+      "drivetrain": "FWD",
+      "engine_cc": null,
+      "battery_kwh": null,
+      "motor_power_kw": 110,
+      "torque_nm": 250
+    },
+    "transmission": {
+      "category": "AT",
+      "technology_name": "S tronic",
+      "manufacturer": null,
+      "gears": 6,
+      "shift_mechanism": "DualClutch",
+      "paddle_shifter": null,
+      "drive_modes": null
+    },
+    "chassis": {
+      "body_type": "SUV",
+      "chassis_type": "Monocoque"
+    },
+    "suspension": {
+      "front": "Comfort suspension",
+      "rear": "Comfort suspension",
+      "adaptive": null,
+      "air_suspension": null
+    },
+    "braking": {
+      "front_brake": null,
+      "rear_brake": null,
+      "brake_material": null,
+      "parking_brake": null,
+      "regen_braking": null
+    },
+    "comfort": {
+      "seat_material": null,
+      "seat_adjustment": null,
+      "seat_heating": null,
+      "seat_ventilation": null,
+      "sunroof": null,
+      "panoramic_roof": null
+    },
+    "infotainment": {
+      "screen_size_inch": null,
+      "android_auto": null,
+      "apple_carplay": null,
+      "wireless_projection": null,
+      "speaker_brand": "Audi Sound System",
+      "speaker_count": null
+    },
+    "safety": {
+      "airbag_count": 6,
+      "abs": null,
+      "esc": null,
+      "adas": [
+        "Rear Cross Traffic Assist",
+        "Parking Aid Plus",
+        "360 surround camera",
+        "Side Assist",
+        "Hold Assist",
+        "Drive Select"
+      ]
+    },
+    "_source_pdf": "audi-q3-162068.pdf"
+  },
+  {
+    "brand": "Audi",
+    "model": "Q3",
+    "trim": "Sportback 1.4",
+    "year": null,
+    "dimensions": {
+      "length_mm": null,
+      "width_mm": null,
+      "height_mm": null,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": "G",
+      "drivetrain": "FWD",
+      "engine_cc": null,
+      "battery_kwh": null,
+      "motor_power_kw": 110,
+      "torque_nm": 250
+    },
+    "transmission": {
+      "category": "AT",
+      "technology_name": "S tronic",
+      "manufacturer": null,
+      "gears": 6,
+      "shift_mechanism": "DualClutch",
+      "paddle_shifter": null,
+      "drive_modes": null
+    },
+    "chassis": {
+      "body_type": "SUV",
+      "chassis_type": "Monocoque"
+    },
+    "suspension": {
+      "front": "Comfort suspension",
+      "rear": "Comfort suspension",
+      "adaptive": null,
+      "air_suspension": null
+    },
+    "braking": {
+      "front_brake": null,
+      "rear_brake": null,
+      "brake_material": null,
+      "parking_brake": null,
+      "regen_braking": null
+    },
+    "comfort": {
+      "seat_material": null,
+      "seat_adjustment": null,
+      "seat_heating": null,
+      "seat_ventilation": null,
+      "sunroof": null,
+      "panoramic_roof": null
+    },
+    "infotainment": {
+      "screen_size_inch": null,
+      "android_auto": null,
+      "apple_carplay": null,
+      "wireless_projection": null,
+      "speaker_brand": "Bang and Olufsen Premium Sound System with 3D sound",
+      "speaker_count": null
+    },
+    "safety": {
+      "airbag_count": 6,
+      "abs": null,
+      "esc": null,
+      "adas": [
+        "Rear Cross Traffic Assist",
+        "Parking Aid Plus",
+        "360 surround camera",
+        "Side Assist",
+        "Hold Assist",
+        "Drive Select"
+      ]
+    },
+    "_source_pdf": "audi-q3-162068.pdf"
+  },
+  {
+    "brand": "Audi",
+    "model": "Q3",
+    "trim": "2.0",
+    "year": null,
+    "dimensions": {
+      "length_mm": null,
+      "width_mm": null,
+      "height_mm": null,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": "G",
+      "drivetrain": "AWD",
+      "engine_cc": null,
+      "battery_kwh": null,
+      "motor_power_kw": 140,
+      "torque_nm": 320
+    },
+    "transmission": {
+      "category": "AT",
+      "technology_name": "S tronic",
+      "manufacturer": null,
+      "gears": 7,
+      "shift_mechanism": "DualClutch",
+      "paddle_shifter": null,
+      "drive_modes": null
+    },
+    "chassis": {
+      "body_type": "SUV",
+      "chassis_type": "Monocoque"
+    },
+    "suspension": {
+      "front": "Comfort suspension",
+      "rear": "Comfort suspension",
+      "adaptive": null,
+      "air_suspension": null
+    },
+    "braking": {
+      "front_brake": null,
+      "rear_brake": null,
+      "brake_material": null,
+      "parking_brake": null,
+      "regen_braking": null
+    },
+    "comfort": {
+      "seat_material": null,
+      "seat_adjustment": null,
+      "seat_heating": null,
+      "seat_ventilation": null,
+      "sunroof": null,
+      "panoramic_roof": null
+    },
+    "infotainment": {
+      "screen_size_inch": null,
+      "android_auto": null,
+      "apple_carplay": null,
+      "wireless_projection": null,
+      "speaker_brand": "Bang and Olufsen Premium Sound System with 3D sound",
+      "speaker_count": null
+    },
+    "safety": {
+      "airbag_count": 6,
+      "abs": null,
+      "esc": null,
+      "adas": [
+        "Rear Cross Traffic Assist",
+        "Parking Aid Plus",
+        "360 surround camera",
+        "Side Assist",
+        "Hold Assist",
+        "Drive Select"
+      ]
+    },
+    "_source_pdf": "audi-q3-162068.pdf"
+  },
+  {
+    "brand": "Audi",
+    "model": "Q5",
+    "trim": "S Line",
+    "year": null,
+    "dimensions": {
+      "length_mm": null,
+      "width_mm": null,
+      "height_mm": null,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": null,
+      "drivetrain": "AWD",
+      "engine_cc": null,
+      "battery_kwh": null,
+      "motor_power_kw": 183,
+      "torque_nm": 370
+    },
+    "transmission": {
+      "category": "AT",
+      "technology_name": "7 Speed S tronic",
+      "manufacturer": null,
+      "gears": 7,
+      "shift_mechanism": "DualClutch",
+      "paddle_shifter": null,
+      "drive_modes": null
+    },
+    "chassis": {
+      "body_type": null,
+      "chassis_type": "Monocoque"
+    },
+    "suspension": {
+      "front": "Suspension system",
+      "rear": "Suspension system with damping control",
+      "adaptive": true,
+      "air_suspension": false
+    },
+    "braking": {
+      "front_brake": null,
+      "rear_brake": null,
+      "brake_material": null,
+      "parking_brake": null,
+      "regen_braking": null
+    },
+    "comfort": {
+      "seat_material": null,
+      "seat_adjustment": null,
+      "seat_heating": null,
+      "seat_ventilation": null,
+      "sunroof": null,
+      "panoramic_roof": null
+    },
+    "infotainment": {
+      "screen_size_inch": null,
+      "android_auto": null,
+      "apple_carplay": null,
+      "wireless_projection": null,
+      "speaker_brand": "Bang & Olufsen",
+      "speaker_count": null
+    },
+    "safety": {
+      "airbag_count": null,
+      "abs": null,
+      "esc": null,
+      "adas": [
+        "Audi Pre Sense Rear",
+        "Park Assist",
+        "Parking Aid Plus",
+        "Camera 360 surround",
+        "Side Assist",
+        "Hold Assist",
+        "Drive Select"
+      ]
+    },
+    "_source_pdf": "audi-q5-392090.pdf"
+  },
+  {
+    "brand": "Audi",
+    "model": "Q5",
+    "trim": "S Line + BE",
+    "year": null,
+    "dimensions": {
+      "length_mm": null,
+      "width_mm": null,
+      "height_mm": null,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": null,
+      "drivetrain": "AWD",
+      "engine_cc": null,
+      "battery_kwh": null,
+      "motor_power_kw": 183,
+      "torque_nm": 370
+    },
+    "transmission": {
+      "category": "AT",
+      "technology_name": "7 Speed S tronic",
+      "manufacturer": null,
+      "gears": 7,
+      "shift_mechanism": "DualClutch",
+      "paddle_shifter": null,
+      "drive_modes": null
+    },
+    "chassis": {
+      "body_type": null,
+      "chassis_type": "Monocoque"
+    },
+    "suspension": {
+      "front": "Suspension system",
+      "rear": "Suspension system with damping control",
+      "adaptive": true,
+      "air_suspension": false
+    },
+    "braking": {
+      "front_brake": null,
+      "rear_brake": null,
+      "brake_material": null,
+      "parking_brake": null,
+      "regen_braking": null
+    },
+    "comfort": {
+      "seat_material": null,
+      "seat_adjustment": null,
+      "seat_heating": null,
+      "seat_ventilation": null,
+      "sunroof": null,
+      "panoramic_roof": null
+    },
+    "infotainment": {
+      "screen_size_inch": null,
+      "android_auto": null,
+      "apple_carplay": null,
+      "wireless_projection": null,
+      "speaker_brand": "Bang & Olufsen",
+      "speaker_count": null
+    },
+    "safety": {
+      "airbag_count": null,
+      "abs": null,
+      "esc": null,
+      "adas": [
+        "Audi Pre Sense Rear",
+        "Park Assist",
+        "Parking Aid Plus",
+        "Camera 360 surround",
+        "Side Assist",
+        "Hold Assist",
+        "Drive Select"
+      ]
+    },
+    "_source_pdf": "audi-q5-392090.pdf"
+  },
+  {
+    "brand": "Audi",
+    "model": "Q5",
+    "trim": "Sportback",
+    "year": null,
+    "dimensions": {
+      "length_mm": null,
+      "width_mm": null,
+      "height_mm": null,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": null,
+      "drivetrain": "AWD",
+      "engine_cc": null,
+      "battery_kwh": null,
+      "motor_power_kw": 183,
+      "torque_nm": 370
+    },
+    "transmission": {
+      "category": "AT",
+      "technology_name": "7 Speed S tronic",
+      "manufacturer": null,
+      "gears": 7,
+      "shift_mechanism": "DualClutch",
+      "paddle_shifter": null,
+      "drive_modes": null
+    },
+    "chassis": {
+      "body_type": null,
+      "chassis_type": "Monocoque"
+    },
+    "suspension": {
+      "front": "Suspension system",
+      "rear": "Suspension system with damping control",
+      "adaptive": true,
+      "air_suspension": false
+    },
+    "braking": {
+      "front_brake": null,
+      "rear_brake": null,
+      "brake_material": null,
+      "parking_brake": null,
+      "regen_braking": null
+    },
+    "comfort": {
+      "seat_material": null,
+      "seat_adjustment": null,
+      "seat_heating": null,
+      "seat_ventilation": null,
+      "sunroof": null,
+      "panoramic_roof": null
+    },
+    "infotainment": {
+      "screen_size_inch": null,
+      "android_auto": null,
+      "apple_carplay": null,
+      "wireless_projection": null,
+      "speaker_brand": "Bang & Olufsen",
+      "speaker_count": null
+    },
+    "safety": {
+      "airbag_count": null,
+      "abs": null,
+      "esc": null,
+      "adas": [
+        "Audi Pre Sense Rear",
+        "Park Assist",
+        "Parking Aid Plus",
+        "Camera 360 surround",
+        "Side Assist",
+        "Hold Assist",
+        "Drive Select"
+      ]
+    },
+    "_source_pdf": "audi-q5-392090.pdf"
+  },
+  {
+    "brand": "Audi",
+    "model": "Q7",
+    "trim": "3.0 TFSI quattro",
+    "year": null,
+    "dimensions": {
+      "length_mm": 5063,
+      "width_mm": 2212,
+      "height_mm": 1741,
+      "wheelbase_mm": 2995,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": "G",
+      "drivetrain": "AWD",
+      "engine_cc": 2995,
+      "battery_kwh": null,
+      "motor_power_kw": 250,
+      "torque_nm": 500
+    },
+    "transmission": {
+      "category": "AT",
+      "technology_name": "tiptronic",
+      "manufacturer": null,
+      "gears": 8,
+      "shift_mechanism": "TorqueConverter",
+      "paddle_shifter": null,
+      "drive_modes": [
+        "Audi drive select"
+      ]
+    },
+    "chassis": {
+      "body_type": null,
+      "chassis_type": "Monocoque"
+    },
+    "suspension": {
+      "front": "Adaptive air suspension",
+      "rear": "Adaptive air suspension",
+      "adaptive": true,
+      "air_suspension": true
+    },
+    "braking": {
+      "front_brake": "Disc brakes in front",
+      "rear_brake": "Disc brakes in rear",
+      "brake_material": "Steel",
+      "parking_brake": "Electric",
+      "regen_braking": null
+    },
+    "comfort": {
+      "seat_material": "Leather",
+      "seat_adjustment": "Power",
+      "seat_heating": true,
+      "seat_ventilation": true,
+      "sunroof": false,
+      "panoramic_roof": true
+    },
+    "infotainment": {
+      "screen_size_inch": null,
+      "android_auto": null,
+      "apple_carplay": null,
+      "wireless_projection": null,
+      "speaker_brand": "Bang & Olufsen",
+      "speaker_count": 1
+    },
+    "safety": {
+      "airbag_count": null,
+      "abs": true,
+      "esc": null,
+      "adas": [
+        "Audi pre sense basic",
+        "Parking aid Plus with 360° display",
+        "Cruise control system with speed limiter"
+      ]
+    },
+    "_source_pdf": "audi-q7-842554.pdf"
+  },
+  {
+    "brand": "Audi",
+    "model": "Q8",
+    "trim": null,
+    "year": null,
+    "dimensions": {
+      "length_mm": null,
+      "width_mm": null,
+      "height_mm": null,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": null,
+      "drivetrain": "AWD",
+      "engine_cc": null,
+      "battery_kwh": null,
+      "motor_power_kw": 250,
+      "torque_nm": 500
+    },
+    "transmission": {
+      "category": "AT",
+      "technology_name": "Tiptronic",
+      "manufacturer": null,
+      "gears": 8,
+      "shift_mechanism": null,
+      "paddle_shifter": null,
+      "drive_modes": null
+    },
+    "chassis": {
+      "body_type": null,
+      "chassis_type": "Monocoque"
+    },
+    "suspension": {
+      "front": null,
+      "rear": null,
+      "adaptive": true,
+      "air_suspension": true
+    },
+    "braking": {
+      "front_brake": null,
+      "rear_brake": null,
+      "brake_material": null,
+      "parking_brake": "Electric",
+      "regen_braking": null
+    },
+    "comfort": {
+      "seat_material": null,
+      "seat_adjustment": null,
+      "seat_heating": null,
+      "seat_ventilation": null,
+      "sunroof": true,
+      "panoramic_roof": true
+    },
+    "infotainment": {
+      "screen_size_inch": null,
+      "android_auto": true,
+      "apple_carplay": true,
+      "wireless_projection": null,
+      "speaker_brand": "Bang and Olufsen",
+      "speaker_count": null
+    },
+    "safety": {
+      "airbag_count": 6,
+      "abs": null,
+      "esc": null,
+      "adas": [
+        "Audi Pre Sense Front and rear",
+        "Exit warning system",
+        "Parking Aid Plus",
+        "Camera 360 surround",
+        "Side Assist",
+        "Hold Assist",
+        "Drive Select",
+        "Heads-up display"
+      ]
+    },
+    "_source_pdf": "audi-q8-247426.pdf"
+  },
+  {
+    "brand": "BMW",
+    "model": "2 Series Coupé",
+    "trim": "220i Coupé M Sport",
+    "year": null,
+    "dimensions": {
+      "length_mm": null,
+      "width_mm": null,
+      "height_mm": null,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": "G",
+      "drivetrain": "RWD",
+      "engine_cc": 1998,
+      "battery_kwh": null,
+      "motor_power_kw": 135.6,
+      "torque_nm": 300
+    },
+    "transmission": {
+      "category": "AT",
+      "technology_name": "8-Speed Steptronic Sport transmission",
+      "manufacturer": null,
+      "gears": 8,
+      "shift_mechanism": "TorqueConverter",
+      "paddle_shifter": null,
+      "drive_modes": []
+    },
+    "chassis": {
+      "body_type": "Coupé",
+      "chassis_type": "Monocoque"
+    },
+    "suspension": {
+      "front": "M Sport suspension",
+      "rear": null,
+      "adaptive": null,
+      "air_suspension": null
+    },
+    "braking": {
+      "front_brake": "M Sport brake",
+      "rear_brake": null,
+      "brake_material": null,
+      "parking_brake": "Electric",
+      "regen_braking": null
+    },
+    "comfort": {
+      "seat_material": "Alcantara/Sensatec combination",
+      "seat_adjustment": "electric, with memory",
+      "seat_heating": null,
+      "seat_ventilation": null,
+      "sunroof": true,
+      "panoramic_roof": null
+    },
+    "infotainment": {
+      "screen_size_inch": 14.9,
+      "android_auto": null,
+      "apple_carplay": true,
+      "wireless_projection": null,
+      "speaker_brand": "Harman Kardon",
+      "speaker_count": 14
+    },
+    "safety": {
+      "airbag_count": 2,
+      "abs": true,
+      "esc": true,
+      "adas": [
+        "High-beam assistant",
+        "Driving Assistant",
+        "Rain sensor incl. automatic activation of the driving lights and windscreen wipers",
+        "Parking Assistant incl. Rear-view camera",
+        "Active Park Distance Control",
+        "Reversing Assistant"
+      ]
+    },
+    "_source_pdf": "bmw-2-series-coupe-439618.pdf"
+  },
+  {
+    "brand": "BMW",
+    "model": "218 Gran Coupé",
+    "trim": "M Sport",
+    "year": null,
+    "dimensions": {
+      "length_mm": 4546,
+      "width_mm": 1800,
+      "height_mm": 1445,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": null,
+      "drivetrain": null,
+      "engine_cc": null,
+      "battery_kwh": null,
+      "motor_power_kw": 115,
+      "torque_nm": 230
+    },
+    "transmission": {
+      "category": null,
+      "technology_name": "Steptronic transmission with double clutch",
+      "manufacturer": null,
+      "gears": null,
+      "shift_mechanism": "DualClutch",
+      "paddle_shifter": true,
+      "drive_modes": []
+    },
+    "chassis": {
+      "body_type": null,
+      "chassis_type": "Monocoque"
+    },
+    "suspension": {
+      "front": "Adaptive M suspension",
+      "rear": null,
+      "adaptive": true,
+      "air_suspension": false
+    },
+    "braking": {
+      "front_brake": null,
+      "rear_brake": null,
+      "brake_material": null,
+      "parking_brake": null,
+      "regen_braking": false
+    },
+    "comfort": {
+      "seat_material": "Veganza perforated",
+      "seat_adjustment": "electric, with memory",
+      "seat_heating": false,
+      "seat_ventilation": false,
+      "sunroof": false,
+      "panoramic_roof": false
+    },
+    "infotainment": {
+      "screen_size_inch": null,
+      "android_auto": false,
+      "apple_carplay": false,
+      "wireless_projection": false,
+      "speaker_brand": null,
+      "speaker_count": null
+    },
+    "safety": {
+      "airbag_count": null,
+      "abs": null,
+      "esc": null,
+      "adas": [
+        "Driving Assistant",
+        "Parking Assistant"
+      ]
+    },
+    "_source_pdf": "bmw-2-series-gran-coupe-556310.pdf"
+  },
+  {
+    "brand": "BMW",
+    "model": "4 Convertible",
+    "trim": "430i Convertible M Sport",
+    "year": null,
+    "dimensions": {
+      "length_mm": null,
+      "width_mm": null,
+      "height_mm": null,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": "G",
+      "drivetrain": null,
+      "engine_cc": 1998,
+      "battery_kwh": null,
+      "motor_power_kw": 191.0,
+      "torque_nm": 400
+    },
+    "transmission": {
+      "category": "AT",
+      "technology_name": "8-Speed Sport Steptronic",
+      "manufacturer": null,
+      "gears": 8,
+      "shift_mechanism": "TorqueConverter",
+      "paddle_shifter": true,
+      "drive_modes": []
+    },
+    "chassis": {
+      "body_type": "Convertible",
+      "chassis_type": "Monocoque"
+    },
+    "suspension": {
+      "front": "Adaptive M suspension with M-specific characteristics",
+      "rear": null,
+      "adaptive": true,
+      "air_suspension": false
+    },
+    "braking": {
+      "front_brake": "M Sport brake, with four-piston fixed calipers for front-axle",
+      "rear_brake": "single-piston floating caliper for rear-axle",
+      "brake_material": "Steel",
+      "parking_brake": "Electric",
+      "regen_braking": false
+    },
+    "comfort": {
+      "seat_material": "Leather 'Vernasca'",
+      "seat_adjustment": "electrical with memory",
+      "seat_heating": true,
+      "seat_ventilation": false,
+      "sunroof": false,
+      "panoramic_roof": true
+    },
+    "infotainment": {
+      "screen_size_inch": 14.9,
+      "android_auto": false,
+      "apple_carplay": false,
+      "wireless_projection": false,
+      "speaker_brand": "Harman Kardon",
+      "speaker_count": 12
+    },
+    "safety": {
+      "airbag_count": 6,
+      "abs": true,
+      "esc": true,
+      "adas": [
+        "Lane Departure Warning",
+        "Lane Change Warning",
+        "front collision warning with brake intervention",
+        "crossing traffic warning rear",
+        "rear collision prevention"
+      ]
+    },
+    "_source_pdf": "bmw-4-series-convertible-584013.pdf"
+  },
+  {
+    "brand": "BMW",
+    "model": "4",
+    "trim": "430i Coupé M Sport Pro",
+    "year": null,
+    "dimensions": {
+      "length_mm": null,
+      "width_mm": null,
+      "height_mm": null,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": "G",
+      "drivetrain": "RWD",
+      "engine_cc": 1998,
+      "battery_kwh": null,
+      "motor_power_kw": 191.0,
+      "torque_nm": 400
+    },
+    "transmission": {
+      "category": "AT",
+      "technology_name": "8-Speed Sport Steptronic",
+      "manufacturer": null,
+      "gears": 8,
+      "shift_mechanism": "TorqueConverter",
+      "paddle_shifter": true,
+      "drive_modes": []
+    },
+    "chassis": {
+      "body_type": "Coupé",
+      "chassis_type": "Monocoque"
+    },
+    "suspension": {
+      "front": "Adaptive M suspension with M-specific characteristics",
+      "rear": "M Sport brake",
+      "adaptive": true,
+      "air_suspension": false
+    },
+    "braking": {
+      "front_brake": "four-piston fixed calipers",
+      "rear_brake": "single-piston floating caliper",
+      "brake_material": "Steel",
+      "parking_brake": "Electric",
+      "regen_braking": false
+    },
+    "comfort": {
+      "seat_material": "Alcantara/Sensatec combination",
+      "seat_adjustment": "electrical with memory",
+      "seat_heating": null,
+      "seat_ventilation": null,
+      "sunroof": true,
+      "panoramic_roof": false
+    },
+    "infotainment": {
+      "screen_size_inch": 14.9,
+      "android_auto": false,
+      "apple_carplay": false,
+      "wireless_projection": false,
+      "speaker_brand": "Harman Kardon",
+      "speaker_count": 16
+    },
+    "safety": {
+      "airbag_count": 8,
+      "abs": true,
+      "esc": true,
+      "adas": [
+        "Lane Departure Warning",
+        "Lane Change Warning",
+        "front collision warning with brake intervention",
+        "crossing traffic warning rear",
+        "rear collision prevention"
+      ]
+    },
+    "_source_pdf": "bmw-4-series-coupe-304095.pdf"
+  },
+  {
+    "brand": "BMW",
+    "model": "520i",
+    "trim": "M Sport",
+    "year": null,
+    "dimensions": {
+      "length_mm": null,
+      "width_mm": null,
+      "height_mm": null,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": null,
+      "drivetrain": null,
+      "engine_cc": null,
+      "battery_kwh": null,
+      "motor_power_kw": 140,
+      "torque_nm": 310
+    },
+    "transmission": {
+      "category": null,
+      "technology_name": null,
+      "manufacturer": null,
+      "gears": null,
+      "shift_mechanism": null,
+      "paddle_shifter": null,
+      "drive_modes": []
+    },
+    "chassis": {
+      "body_type": null,
+      "chassis_type": null
+    },
+    "suspension": {
+      "front": null,
+      "rear": null,
+      "adaptive": null,
+      "air_suspension": null
+    },
+    "braking": {
+      "front_brake": "M Sport brake, dark blue metallic",
+      "rear_brake": null,
+      "brake_material": null,
+      "parking_brake": null,
+      "regen_braking": null
+    },
+    "comfort": {
+      "seat_material": "Veganza perforated and quilted | Black",
+      "seat_adjustment": "electric, with memory",
+      "seat_heating": null,
+      "seat_ventilation": null,
+      "sunroof": null,
+      "panoramic_roof": true
+    },
+    "infotainment": {
+      "screen_size_inch": null,
+      "android_auto": null,
+      "apple_carplay": null,
+      "wireless_projection": null,
+      "speaker_brand": "Harman Kardon",
+      "speaker_count": null
+    },
+    "safety": {
+      "airbag_count": null,
+      "abs": null,
+      "esc": null,
+      "adas": [
+        "Parking Assistant Professional",
+        "Driving Assistant Professional"
+      ]
+    },
+    "_source_pdf": "BMW-520i-M-Sport-2024-1.pdf"
+  },
+  {
+    "brand": "BMW",
+    "model": "7",
+    "trim": "735i M Sport",
+    "year": null,
+    "dimensions": {
+      "length_mm": null,
+      "width_mm": null,
+      "height_mm": null,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": "G",
+      "drivetrain": null,
+      "engine_cc": 2998,
+      "battery_kwh": null,
+      "motor_power_kw": 286,
+      "torque_nm": 425
+    },
+    "transmission": {
+      "category": "AT",
+      "technology_name": "8-Speed Sport Steptronic",
+      "manufacturer": null,
+      "gears": 8,
+      "shift_mechanism": "TorqueConverter",
+      "paddle_shifter": true,
+      "drive_modes": []
+    },
+    "chassis": {
+      "body_type": null,
+      "chassis_type": "Monocoque"
+    },
+    "suspension": {
+      "front": "Adaptive 2-axle air suspension",
+      "rear": "Adaptive 2-axle air suspension",
+      "adaptive": true,
+      "air_suspension": true
+    },
+    "braking": {
+      "front_brake": null,
+      "rear_brake": null,
+      "brake_material": "Steel",
+      "parking_brake": "Electric",
+      "regen_braking": false
+    },
+    "comfort": {
+      "seat_material": "Leather 'Merino'",
+      "seat_adjustment": "Multifunctional seats for driver and front passenger",
+      "seat_heating": true,
+      "seat_ventilation": true,
+      "sunroof": false,
+      "panoramic_roof": true
+    },
+    "infotainment": {
+      "screen_size_inch": 31.3,
+      "android_auto": false,
+      "apple_carplay": false,
+      "wireless_projection": false,
+      "speaker_brand": "Bowers & Wilkins",
+      "speaker_count": 18
+    },
+    "safety": {
+      "airbag_count": 8,
+      "abs": true,
+      "esc": true,
+      "adas": [
+        "Dynamic Stability Control (DSC)",
+        "Driving Assistant Professional",
+        "Lane Control Assistant",
+        "Emergency Stop Assistant",
+        "Automatic Speed Limit Assist",
+        "Lane Change Assistant",
+        "Distance Control (ACC with Stop&Go)",
+        "Lane Departure Warning",
+        "Front/rear crossing traffic warning",
+        "Parking Assistant Professional"
+      ]
+    },
+    "_source_pdf": "bmw-7-series-sedan-393144.pdf"
+  },
+  {
+    "brand": "BMW",
+    "model": "i4",
+    "trim": "eDrive40 M Sport",
+    "year": null,
+    "dimensions": {
+      "length_mm": 4783,
+      "width_mm": 1852,
+      "height_mm": 1448,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": "BEV",
+      "drivetrain": "RWD",
+      "engine_cc": null,
+      "battery_kwh": null,
+      "motor_power_kw": 250.0,
+      "torque_nm": 430
+    },
+    "transmission": {
+      "category": null,
+      "technology_name": null,
+      "manufacturer": null,
+      "gears": null,
+      "shift_mechanism": null,
+      "paddle_shifter": null,
+      "drive_modes": []
+    },
+    "chassis": {
+      "body_type": null,
+      "chassis_type": "Monocoque"
+    },
+    "suspension": {
+      "front": "Adaptive M suspension",
+      "rear": null,
+      "adaptive": true,
+      "air_suspension": false
+    },
+    "braking": {
+      "front_brake": null,
+      "rear_brake": null,
+      "brake_material": null,
+      "parking_brake": "Electric",
+      "regen_braking": null
+    },
+    "comfort": {
+      "seat_material": "Sensatec, perforated",
+      "seat_adjustment": "electric, with memory",
+      "seat_heating": null,
+      "seat_ventilation": null,
+      "sunroof": true,
+      "panoramic_roof": false
+    },
+    "infotainment": {
+      "screen_size_inch": 14.9,
+      "android_auto": false,
+      "apple_carplay": true,
+      "wireless_projection": true,
+      "speaker_brand": "Harman Kardon",
+      "speaker_count": 17
+    },
+    "safety": {
+      "airbag_count": 8,
+      "abs": true,
+      "esc": true,
+      "adas": [
+        "Driving Assistant Professional",
+        "Parking Assistant Plus"
+      ]
+    },
+    "_source_pdf": "bmw-i4-409112.pdf"
+  },
+  {
+    "brand": "BMW",
+    "model": "i4",
+    "trim": "eDrive35",
+    "year": null,
+    "dimensions": {
+      "length_mm": null,
+      "width_mm": null,
+      "height_mm": null,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": "BEV",
+      "drivetrain": "RWD",
+      "engine_cc": null,
+      "battery_kwh": 66.0,
+      "motor_power_kw": 210.0,
+      "torque_nm": 400
+    },
+    "transmission": {
+      "category": null,
+      "technology_name": null,
+      "manufacturer": null,
+      "gears": null,
+      "shift_mechanism": null,
+      "paddle_shifter": null,
+      "drive_modes": []
+    },
+    "chassis": {
+      "body_type": null,
+      "chassis_type": "Monocoque"
+    },
+    "suspension": {
+      "front": null,
+      "rear": null,
+      "adaptive": null,
+      "air_suspension": null
+    },
+    "braking": {
+      "front_brake": null,
+      "rear_brake": null,
+      "brake_material": null,
+      "parking_brake": null,
+      "regen_braking": null
+    },
+    "comfort": {
+      "seat_material": "Sensatec perforated | Cognac",
+      "seat_adjustment": "electric, with memory",
+      "seat_heating": null,
+      "seat_ventilation": null,
+      "sunroof": true,
+      "panoramic_roof": false
+    },
+    "infotainment": {
+      "screen_size_inch": null,
+      "android_auto": false,
+      "apple_carplay": true,
+      "wireless_projection": false,
+      "speaker_brand": "Harman Kardon",
+      "speaker_count": null
+    },
+    "safety": {
+      "airbag_count": null,
+      "abs": null,
+      "esc": null,
+      "adas": [
+        "Driving Assistant Professional",
+        "Parking Assistant Plus"
+      ]
+    },
+    "_source_pdf": "bmw-i4-409112.pdf"
+  },
+  {
+    "brand": "BMW",
+    "model": "i5",
+    "trim": "eDrive40",
+    "year": 2023,
+    "dimensions": {
+      "length_mm": 5060,
+      "width_mm": 1900,
+      "height_mm": 1515,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": "BEV",
+      "drivetrain": null,
+      "engine_cc": null,
+      "battery_kwh": 81.2,
+      "motor_power_kw": 250,
+      "torque_nm": 430
+    },
+    "transmission": {
+      "category": null,
+      "technology_name": null,
+      "manufacturer": null,
+      "gears": null,
+      "shift_mechanism": null,
+      "paddle_shifter": null,
+      "drive_modes": []
+    },
+    "chassis": {
+      "body_type": null,
+      "chassis_type": null
+    },
+    "suspension": {
+      "front": null,
+      "rear": null,
+      "adaptive": null,
+      "air_suspension": null
+    },
+    "braking": {
+      "front_brake": "M Sport brake, dark blue metallic",
+      "rear_brake": null,
+      "brake_material": null,
+      "parking_brake": null,
+      "regen_braking": null
+    },
+    "comfort": {
+      "seat_material": "Veganza perforated and quilted",
+      "seat_adjustment": "electric, with memory",
+      "seat_heating": true,
+      "seat_ventilation": true,
+      "sunroof": false,
+      "panoramic_roof": true
+    },
+    "infotainment": {
+      "screen_size_inch": null,
+      "android_auto": null,
+      "apple_carplay": null,
+      "wireless_projection": null,
+      "speaker_brand": "Harman Kardon",
+      "speaker_count": null
+    },
+    "safety": {
+      "airbag_count": null,
+      "abs": null,
+      "esc": null,
+      "adas": [
+        "Parking Assistant Professional",
+        "Driving Assistant Professional"
+      ]
+    },
+    "_source_pdf": "bmw-i5-346640.pdf"
+  },
+  {
+    "brand": "BMW",
+    "model": "i7",
+    "trim": "xDrive60 Gran Lusso",
+    "year": null,
+    "dimensions": {
+      "length_mm": null,
+      "width_mm": null,
+      "height_mm": null,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": "BEV",
+      "drivetrain": "AWD",
+      "engine_cc": null,
+      "battery_kwh": null,
+      "motor_power_kw": 544,
+      "torque_nm": 745
+    },
+    "transmission": {
+      "category": null,
+      "technology_name": null,
+      "manufacturer": null,
+      "gears": null,
+      "shift_mechanism": null,
+      "paddle_shifter": null,
+      "drive_modes": []
+    },
+    "chassis": {
+      "body_type": null,
+      "chassis_type": "Monocoque"
+    },
+    "suspension": {
+      "front": "Adaptive 2-axle air suspension",
+      "rear": "Adaptive 2-axle air suspension",
+      "adaptive": true,
+      "air_suspension": true
+    },
+    "braking": {
+      "front_brake": null,
+      "rear_brake": null,
+      "brake_material": null,
+      "parking_brake": null,
+      "regen_braking": null
+    },
+    "comfort": {
+      "seat_material": "Leather 'Merino'",
+      "seat_adjustment": "Multifunctional seats for driver and front passenger",
+      "seat_heating": true,
+      "seat_ventilation": true,
+      "sunroof": false,
+      "panoramic_roof": true
+    },
+    "infotainment": {
+      "screen_size_inch": 31.3,
+      "android_auto": false,
+      "apple_carplay": false,
+      "wireless_projection": false,
+      "speaker_brand": "Bowers & Wilkins",
+      "speaker_count": 35
+    },
+    "safety": {
+      "airbag_count": 8,
+      "abs": true,
+      "esc": true,
+      "adas": [
+        "Dynamic Stability Control (DSC)",
+        "Cornering Brake Control (CBC)",
+        "Automatic Stability Control (ASC)",
+        "Dynamic Brake Control (DBC)",
+        "Electronic Differential Lock Control (EDLC)",
+        "Dynamic Traction Control (DTC)",
+        "Lane Departure Warning",
+        "Parking Assistant Professional",
+        "Driving Assistant Professional"
+      ]
+    },
+    "_source_pdf": "bmw-i7-856992.pdf"
+  },
+  {
+    "brand": "BMW",
+    "model": "iX1",
+    "trim": "eDrive20",
+    "year": 2023,
+    "dimensions": {
+      "length_mm": 4500,
+      "width_mm": 1845,
+      "height_mm": 1642,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": "BEV",
+      "drivetrain": "AWD",
+      "engine_cc": null,
+      "battery_kwh": 64.8,
+      "motor_power_kw": 150,
+      "torque_nm": 250
+    },
+    "transmission": {
+      "category": null,
+      "technology_name": null,
+      "manufacturer": null,
+      "gears": null,
+      "shift_mechanism": null,
+      "paddle_shifter": null,
+      "drive_modes": []
+    },
+    "chassis": {
+      "body_type": null,
+      "chassis_type": "Monocoque"
+    },
+    "suspension": {
+      "front": "Adaptive M suspension",
+      "rear": null,
+      "adaptive": true,
+      "air_suspension": false
+    },
+    "braking": {
+      "front_brake": null,
+      "rear_brake": null,
+      "brake_material": null,
+      "parking_brake": "Electric",
+      "regen_braking": null
+    },
+    "comfort": {
+      "seat_material": null,
+      "seat_adjustment": "Electric, with memory",
+      "seat_heating": null,
+      "seat_ventilation": null,
+      "sunroof": false,
+      "panoramic_roof": true
+    },
+    "infotainment": {
+      "screen_size_inch": null,
+      "android_auto": false,
+      "apple_carplay": false,
+      "wireless_projection": true,
+      "speaker_brand": "Harman Kardon",
+      "speaker_count": null
+    },
+    "safety": {
+      "airbag_count": null,
+      "abs": null,
+      "esc": null,
+      "adas": [
+        "Parking Assistant Plus",
+        "Driving Assistant Plus"
+      ]
+    },
+    "_source_pdf": "BMW-ID-Spec-card2024-iX1-eDrive20-M-Sport-04.pdf.asset_.1721645977501.pdf-1.pdf"
+  },
+  {
+    "brand": "BMW",
+    "model": "iX",
+    "trim": "xDrive45",
+    "year": null,
+    "dimensions": {
+      "length_mm": 4965,
+      "width_mm": 1970,
+      "height_mm": 1695,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": "BEV",
+      "drivetrain": "AWD",
+      "engine_cc": null,
+      "battery_kwh": 96,
+      "motor_power_kw": 300,
+      "torque_nm": 700
+    },
+    "transmission": {
+      "category": null,
+      "technology_name": null,
+      "manufacturer": null,
+      "gears": null,
+      "shift_mechanism": null,
+      "paddle_shifter": null,
+      "drive_modes": []
+    },
+    "chassis": {
+      "body_type": null,
+      "chassis_type": null
+    },
+    "suspension": {
+      "front": null,
+      "rear": null,
+      "adaptive": true,
+      "air_suspension": true
+    },
+    "braking": {
+      "front_brake": null,
+      "rear_brake": null,
+      "brake_material": null,
+      "parking_brake": null,
+      "regen_braking": null
+    },
+    "comfort": {
+      "seat_material": null,
+      "seat_adjustment": "Multifunctional seats for driver and front passenger",
+      "seat_heating": null,
+      "seat_ventilation": null,
+      "sunroof": null,
+      "panoramic_roof": true
+    },
+    "infotainment": {
+      "screen_size_inch": null,
+      "android_auto": null,
+      "apple_carplay": null,
+      "wireless_projection": null,
+      "speaker_brand": "Harman Kardon",
+      "speaker_count": null
+    },
+    "safety": {
+      "airbag_count": null,
+      "abs": null,
+      "esc": null,
+      "adas": [
+        "Tyre pressure monitoring system",
+        "Tyre repair kit Plus",
+        "Warning triangle",
+        "Acoustic protection for pedestrians",
+        "Active Protection",
+        "Adaptive LED headlights",
+        "High-beam assistant",
+        "BMW IconicSounds Electric",
+        "Cruise control with braking function",
+        "Driving Assistant Professional",
+        "Parking Assistant Plus",
+        "Alarm system"
+      ]
+    },
+    "_source_pdf": "bmw-ix-440138.pdf"
+  },
+  {
+    "brand": "BMW",
+    "model": "M4 Convertible",
+    "trim": "Competition M xDrive",
+    "year": null,
+    "dimensions": {
+      "length_mm": null,
+      "width_mm": null,
+      "height_mm": null,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": "G",
+      "drivetrain": "AWD",
+      "engine_cc": 2993,
+      "battery_kwh": null,
+      "motor_power_kw": 375.5,
+      "torque_nm": 650
+    },
+    "transmission": {
+      "category": "AT",
+      "technology_name": "8-speed M Sport Steptronic",
+      "manufacturer": null,
+      "gears": 8,
+      "shift_mechanism": null,
+      "paddle_shifter": null,
+      "drive_modes": [
+        "3 selectable operating modes"
+      ]
+    },
+    "chassis": {
+      "body_type": "Convertible",
+      "chassis_type": "Monocoque"
+    },
+    "suspension": {
+      "front": "Adaptive M suspension with M-specific control of damper characteristics",
+      "rear": null,
+      "adaptive": true,
+      "air_suspension": false
+    },
+    "braking": {
+      "front_brake": "M Compound brake, red high-gloss with 6-piston fixed-calliper brake",
+      "rear_brake": "single-piston floating-calliper brake, painted red",
+      "brake_material": "Steel",
+      "parking_brake": "Electric",
+      "regen_braking": false
+    },
+    "comfort": {
+      "seat_material": "Leather 'Merino'",
+      "seat_adjustment": "electric, with memory",
+      "seat_heating": true,
+      "seat_ventilation": false,
+      "sunroof": false,
+      "panoramic_roof": false
+    },
+    "infotainment": {
+      "screen_size_inch": 12.3,
+      "android_auto": false,
+      "apple_carplay": false,
+      "wireless_projection": false,
+      "speaker_brand": "Harman Kardon",
+      "speaker_count": 12
+    },
+    "safety": {
+      "airbag_count": 6,
+      "abs": true,
+      "esc": true,
+      "adas": [
+        "Dynamic Stability Control (DSC)",
+        "Lane Departure Warning",
+        "Lane Change Warning",
+        "front collision warning with brake intervention",
+        "crossing traffic warning rear",
+        "rear collision prevention"
+      ]
+    },
+    "_source_pdf": "bmw-m4-convertible-958534.pdf"
+  },
+  {
+    "brand": "BMW",
+    "model": "M4",
+    "trim": "CS",
+    "year": 2023,
+    "dimensions": {
+      "length_mm": 4801,
+      "width_mm": 1918,
+      "height_mm": 1399,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": null,
+      "drivetrain": null,
+      "engine_cc": 2993,
+      "battery_kwh": null,
+      "motor_power_kw": 405,
+      "torque_nm": 650
+    },
+    "transmission": {
+      "category": null,
+      "technology_name": "Steptronic Sport transmission",
+      "manufacturer": null,
+      "gears": null,
+      "shift_mechanism": null,
+      "paddle_shifter": null,
+      "drive_modes": []
+    },
+    "chassis": {
+      "body_type": null,
+      "chassis_type": null
+    },
+    "suspension": {
+      "front": "Adaptive M suspension",
+      "rear": null,
+      "adaptive": true,
+      "air_suspension": false
+    },
+    "braking": {
+      "front_brake": "M Compound brake, red high-gloss",
+      "rear_brake": null,
+      "brake_material": null,
+      "parking_brake": null,
+      "regen_braking": false
+    },
+    "comfort": {
+      "seat_material": "Full leather 'Merino'",
+      "seat_adjustment": "electric, with memory",
+      "seat_heating": null,
+      "seat_ventilation": null,
+      "sunroof": null,
+      "panoramic_roof": null
+    },
+    "infotainment": {
+      "screen_size_inch": null,
+      "android_auto": null,
+      "apple_carplay": null,
+      "wireless_projection": true,
+      "speaker_brand": "Harman Kardon",
+      "speaker_count": null
+    },
+    "safety": {
+      "airbag_count": null,
+      "abs": null,
+      "esc": null,
+      "adas": [
+        "Driving Assistant",
+        "Parking Assistant"
+      ]
+    },
+    "_source_pdf": "bmw-m4-cs-149387.pdf"
+  },
+  {
+    "brand": "BMW",
+    "model": "X1",
+    "trim": "sDrive18i xLine",
+    "year": null,
+    "dimensions": {
+      "length_mm": null,
+      "width_mm": null,
+      "height_mm": null,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": "G",
+      "drivetrain": "FWD",
+      "engine_cc": 1499,
+      "battery_kwh": null,
+      "motor_power_kw": 115.5,
+      "torque_nm": 230
+    },
+    "transmission": {
+      "category": "DCT",
+      "technology_name": "7-DCT",
+      "manufacturer": null,
+      "gears": 7,
+      "shift_mechanism": "DualClutch",
+      "paddle_shifter": null,
+      "drive_modes": [
+        "sport"
+      ]
+    },
+    "chassis": {
+      "body_type": "SUV",
+      "chassis_type": "Monocoque"
+    },
+    "suspension": {
+      "front": null,
+      "rear": null,
+      "adaptive": null,
+      "air_suspension": null
+    },
+    "braking": {
+      "front_brake": null,
+      "rear_brake": null,
+      "brake_material": "Steel",
+      "parking_brake": "Electric",
+      "regen_braking": null
+    },
+    "comfort": {
+      "seat_material": "Sensatec, perforated",
+      "seat_adjustment": "electric, with memory",
+      "seat_heating": true,
+      "seat_ventilation": null,
+      "sunroof": false,
+      "panoramic_roof": true
+    },
+    "infotainment": {
+      "screen_size_inch": 10.25,
+      "android_auto": null,
+      "apple_carplay": null,
+      "wireless_projection": true,
+      "speaker_brand": null,
+      "speaker_count": null
+    },
+    "safety": {
+      "airbag_count": 6,
+      "abs": true,
+      "esc": true,
+      "adas": [
+        "Dynamic Stability Control (DSC)",
+        "Anti-lock Braking System (ABS)",
+        "Cornering Brake Control (CBC)",
+        "Dynamic Braking Lights",
+        "Attentiveness assistant",
+        "Runflat indicator",
+        "Tyre pressure monitoring system",
+        "Driving Assistant",
+        "Parking Assistant"
+      ]
+    },
+    "_source_pdf": "bmw-x1-220949.pdf"
+  },
+  {
+    "brand": "BMW",
+    "model": "X3",
+    "trim": "sDrive20i xLine",
+    "year": null,
+    "dimensions": {
+      "length_mm": null,
+      "width_mm": null,
+      "height_mm": null,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": "G",
+      "drivetrain": "RWD",
+      "engine_cc": 1998,
+      "battery_kwh": null,
+      "motor_power_kw": 135.6,
+      "torque_nm": 300
+    },
+    "transmission": {
+      "category": "AT",
+      "technology_name": "8-Speed Steptronic",
+      "manufacturer": null,
+      "gears": 8,
+      "shift_mechanism": "TorqueConverter",
+      "paddle_shifter": true,
+      "drive_modes": []
+    },
+    "chassis": {
+      "body_type": null,
+      "chassis_type": "Monocoque"
+    },
+    "suspension": {
+      "front": null,
+      "rear": null,
+      "adaptive": true,
+      "air_suspension": false
+    },
+    "braking": {
+      "front_brake": null,
+      "rear_brake": null,
+      "brake_material": "Steel",
+      "parking_brake": "Electric",
+      "regen_braking": false
+    },
+    "comfort": {
+      "seat_material": "Sensatec, perforated",
+      "seat_adjustment": "Electrical with memory functions",
+      "seat_heating": false,
+      "seat_ventilation": false,
+      "sunroof": false,
+      "panoramic_roof": true
+    },
+    "infotainment": {
+      "screen_size_inch": 12.3,
+      "android_auto": false,
+      "apple_carplay": true,
+      "wireless_projection": false,
+      "speaker_brand": "HiFi",
+      "speaker_count": null
+    },
+    "safety": {
+      "airbag_count": 6,
+      "abs": true,
+      "esc": true,
+      "adas": [
+        "Active Blind Spot Detection",
+        "Frontal Collision Warning with City Collision Mitigation",
+        "Lane Departure Warning",
+        "Dynamic Cruise Control",
+        "Driving Assistant",
+        "Rear crossing traffic warning",
+        "Rear collision warning"
+      ]
+    },
+    "_source_pdf": "bmw-x3-sdrive20i-xline-782217.pdf"
+  },
+  {
+    "brand": "BMW",
+    "model": "X4",
+    "trim": "xDrive30i M Sport",
+    "year": null,
+    "dimensions": {
+      "length_mm": null,
+      "width_mm": null,
+      "height_mm": null,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": null,
+      "drivetrain": "AWD",
+      "engine_cc": 1998,
+      "battery_kwh": null,
+      "motor_power_kw": 186,
+      "torque_nm": 350
+    },
+    "transmission": {
+      "category": "AT",
+      "technology_name": "8-Speed Sport Steptronic",
+      "manufacturer": null,
+      "gears": 8,
+      "shift_mechanism": null,
+      "paddle_shifter": null,
+      "drive_modes": []
+    },
+    "chassis": {
+      "body_type": null,
+      "chassis_type": "Monocoque"
+    },
+    "suspension": {
+      "front": null,
+      "rear": null,
+      "adaptive": true,
+      "air_suspension": false
+    },
+    "braking": {
+      "front_brake": null,
+      "rear_brake": null,
+      "brake_material": null,
+      "parking_brake": "Electric",
+      "regen_braking": false
+    },
+    "comfort": {
+      "seat_material": "Sensatec, perforated",
+      "seat_adjustment": "electric, with memory",
+      "seat_heating": null,
+      "seat_ventilation": null,
+      "sunroof": false,
+      "panoramic_roof": true
+    },
+    "infotainment": {
+      "screen_size_inch": 12.3,
+      "android_auto": false,
+      "apple_carplay": true,
+      "wireless_projection": false,
+      "speaker_brand": "Harman Kardon",
+      "speaker_count": null
+    },
+    "safety": {
+      "airbag_count": 8,
+      "abs": true,
+      "esc": true,
+      "adas": [
+        "Lane Departure Warning",
+        "Lane Change Warning",
+        "front collision warning with brake intervention",
+        "crossing traffic warning rear",
+        "rear collision prevention"
+      ]
+    },
+    "_source_pdf": "bmw-x4-585802.pdf"
+  },
+  {
+    "brand": "BMW",
+    "model": "X5",
+    "trim": "xDrive40i M Sport",
+    "year": 2024,
+    "dimensions": {
+      "length_mm": null,
+      "width_mm": null,
+      "height_mm": null,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": "G",
+      "drivetrain": "AWD",
+      "engine_cc": 2998,
+      "battery_kwh": null,
+      "motor_power_kw": 281.5,
+      "torque_nm": 520
+    },
+    "transmission": {
+      "category": "AT",
+      "technology_name": "8-Speed Sport Steptronic",
+      "manufacturer": null,
+      "gears": 8,
+      "shift_mechanism": "TorqueConverter",
+      "paddle_shifter": null,
+      "drive_modes": []
+    },
+    "chassis": {
+      "body_type": null,
+      "chassis_type": "Monocoque"
+    },
+    "suspension": {
+      "front": null,
+      "rear": null,
+      "adaptive": true,
+      "air_suspension": true
+    },
+    "braking": {
+      "front_brake": null,
+      "rear_brake": null,
+      "brake_material": null,
+      "parking_brake": null,
+      "regen_braking": null
+    },
+    "comfort": {
+      "seat_material": "Sensafin",
+      "seat_adjustment": "electric, with memory",
+      "seat_heating": true,
+      "seat_ventilation": null,
+      "sunroof": null,
+      "panoramic_roof": true
+    },
+    "infotainment": {
+      "screen_size_inch": 14.9,
+      "android_auto": null,
+      "apple_carplay": null,
+      "wireless_projection": true,
+      "speaker_brand": "Harman Kardon",
+      "speaker_count": 16
+    },
+    "safety": {
+      "airbag_count": null,
+      "abs": true,
+      "esc": true,
+      "adas": [
+        "Steering and Lane Control Assistant",
+        "Automatic Speed Limit Assist",
+        "Lane Keeping Assistant",
+        "Front crossing traffic warning",
+        "Evasion Assistant",
+        "Crossroads Warning",
+        "Wrong-way Warning"
+      ]
+    },
+    "_source_pdf": "bmw-x5-369535.pdf"
+  },
+  {
+    "brand": "BMW",
+    "model": "X6",
+    "trim": "xDrive40i M Sport Pro",
+    "year": null,
+    "dimensions": {
+      "length_mm": null,
+      "width_mm": null,
+      "height_mm": null,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": null,
+      "drivetrain": "AWD",
+      "engine_cc": 2998,
+      "battery_kwh": null,
+      "motor_power_kw": 281.5,
+      "torque_nm": 520
+    },
+    "transmission": {
+      "category": "AT",
+      "technology_name": "8-Speed Sport Steptronic",
+      "manufacturer": null,
+      "gears": 8,
+      "shift_mechanism": "TorqueConverter",
+      "paddle_shifter": null,
+      "drive_modes": [
+        "relaxed",
+        "sporty"
+      ]
+    },
+    "chassis": {
+      "body_type": "Crossover",
+      "chassis_type": "Monocoque"
+    },
+    "suspension": {
+      "front": "Adaptive M Suspension",
+      "rear": null,
+      "adaptive": true,
+      "air_suspension": false
+    },
+    "braking": {
+      "front_brake": "M Sport Brakes",
+      "rear_brake": null,
+      "brake_material": null,
+      "parking_brake": null,
+      "regen_braking": null
+    },
+    "comfort": {
+      "seat_material": "Sensafin",
+      "seat_adjustment": "electric, with memory",
+      "seat_heating": true,
+      "seat_ventilation": false,
+      "sunroof": false,
+      "panoramic_roof": true
+    },
+    "infotainment": {
+      "screen_size_inch": 14.9,
+      "android_auto": null,
+      "apple_carplay": null,
+      "wireless_projection": null,
+      "speaker_brand": "Harman Kardon",
+      "speaker_count": 16
+    },
+    "safety": {
+      "airbag_count": 6,
+      "abs": true,
+      "esc": true,
+      "adas": [
+        "Dynamic Stability Control (DSC)",
+        "Traction mode (DTC)",
+        "Lane Keeping Assistant",
+        "Automatic Speed Limit Assist",
+        "Front crossing traffic warning",
+        "Evasion Assistant",
+        "Crossroads Warning with city braking function",
+        "Wrong-way Warning"
+      ]
+    },
+    "_source_pdf": "bmw-x6-156768.pdf"
+  },
+  {
+    "brand": "BMW",
+    "model": "X7",
+    "trim": "xDrive40i M Sport",
+    "year": null,
+    "dimensions": {
+      "length_mm": null,
+      "width_mm": null,
+      "height_mm": null,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": "G",
+      "drivetrain": "AWD",
+      "engine_cc": 2998,
+      "battery_kwh": null,
+      "motor_power_kw": 281.0,
+      "torque_nm": 520
+    },
+    "transmission": {
+      "category": "AT",
+      "technology_name": "8Speed Sport Steptronic",
+      "manufacturer": null,
+      "gears": 8,
+      "shift_mechanism": "TorqueConverter",
+      "paddle_shifter": null,
+      "drive_modes": [
+        "null"
+      ]
+    },
+    "chassis": {
+      "body_type": "SUV",
+      "chassis_type": "Monocoque"
+    },
+    "suspension": {
+      "front": "Adaptive 2axle air suspension",
+      "rear": "Adaptive 2axle air suspension",
+      "adaptive": true,
+      "air_suspension": true
+    },
+    "braking": {
+      "front_brake": "M Sport brakes",
+      "rear_brake": "M Sport brakes",
+      "brake_material": "Steel",
+      "parking_brake": "Electric",
+      "regen_braking": null
+    },
+    "comfort": {
+      "seat_material": "Sensafin upholstery",
+      "seat_adjustment": "electric, with memory",
+      "seat_heating": true,
+      "seat_ventilation": true,
+      "sunroof": false,
+      "panoramic_roof": true
+    },
+    "infotainment": {
+      "screen_size_inch": 14.9,
+      "android_auto": false,
+      "apple_carplay": false,
+      "wireless_projection": false,
+      "speaker_brand": "Bowers & Wilkins",
+      "speaker_count": 20
+    },
+    "safety": {
+      "airbag_count": 6,
+      "abs": true,
+      "esc": true,
+      "adas": [
+        "Active Blind Spot Detection",
+        "Frontal Collision Warning with City Collision Mitigation",
+        "Lane Departure Warning",
+        "Driving Assistant Professional",
+        "Active cruise control with approach control",
+        "Parking Assistant",
+        "Lane Keeping Assistant with active side collision protection"
+      ]
+    },
+    "_source_pdf": "bmw-x7-662503.pdf"
+  },
+  {
+    "brand": "BMW",
+    "model": "XM",
+    "trim": "50e",
+    "year": null,
+    "dimensions": {
+      "length_mm": 5110,
+      "width_mm": 2005,
+      "height_mm": 1755,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": "HEV",
+      "drivetrain": null,
+      "engine_cc": 2998,
+      "battery_kwh": null,
+      "motor_power_kw": 350,
+      "torque_nm": 700
+    },
+    "transmission": {
+      "category": "AT",
+      "technology_name": "Steptronic Sport transmission",
+      "manufacturer": null,
+      "gears": null,
+      "shift_mechanism": null,
+      "paddle_shifter": null,
+      "drive_modes": []
+    },
+    "chassis": {
+      "body_type": null,
+      "chassis_type": null
+    },
+    "suspension": {
+      "front": null,
+      "rear": null,
+      "adaptive": true,
+      "air_suspension": false
+    },
+    "braking": {
+      "front_brake": "M sport brake black high gloss",
+      "rear_brake": null,
+      "brake_material": null,
+      "parking_brake": null,
+      "regen_braking": false
+    },
+    "comfort": {
+      "seat_material": "BMW Individual leather 'Merino'",
+      "seat_adjustment": "M multifunctional seats for driver and front passenger",
+      "seat_heating": false,
+      "seat_ventilation": true,
+      "sunroof": false,
+      "panoramic_roof": false
+    },
+    "infotainment": {
+      "screen_size_inch": null,
+      "android_auto": false,
+      "apple_carplay": false,
+      "wireless_projection": true,
+      "speaker_brand": "Bowers & Wilkins",
+      "speaker_count": null
+    },
+    "safety": {
+      "airbag_count": null,
+      "abs": true,
+      "esc": null,
+      "adas": [
+        "Adaptive M suspension Professional",
+        "Driving Assistant Professional",
+        "Parking Assistant Plus",
+        "High-beam assistant",
+        "Tyre pressure monitoring system"
+      ]
+    },
+    "_source_pdf": "bmw-xm-406947.pdf"
+  },
+  {
+    "brand": "BMW",
+    "model": "XM",
+    "trim": null,
+    "year": null,
+    "dimensions": {
+      "length_mm": 5110,
+      "width_mm": 2005,
+      "height_mm": 1755,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": null,
+      "drivetrain": null,
+      "engine_cc": 4395,
+      "battery_kwh": null,
+      "motor_power_kw": 480,
+      "torque_nm": 800
+    },
+    "transmission": {
+      "category": "AT",
+      "technology_name": "Steptronic Sport Transmission",
+      "manufacturer": null,
+      "gears": null,
+      "shift_mechanism": null,
+      "paddle_shifter": null,
+      "drive_modes": []
+    },
+    "chassis": {
+      "body_type": null,
+      "chassis_type": null
+    },
+    "suspension": {
+      "front": null,
+      "rear": null,
+      "adaptive": true,
+      "air_suspension": false
+    },
+    "braking": {
+      "front_brake": "M Sport Brake Red High Gloss",
+      "rear_brake": null,
+      "brake_material": null,
+      "parking_brake": null,
+      "regen_braking": false
+    },
+    "comfort": {
+      "seat_material": "BMW Individual leather 'Merino'",
+      "seat_adjustment": "M multifunctional seats for driver and front passenger",
+      "seat_heating": false,
+      "seat_ventilation": true,
+      "sunroof": false,
+      "panoramic_roof": false
+    },
+    "infotainment": {
+      "screen_size_inch": null,
+      "android_auto": false,
+      "apple_carplay": false,
+      "wireless_projection": true,
+      "speaker_brand": "Bowers & Wilkins",
+      "speaker_count": null
+    },
+    "safety": {
+      "airbag_count": null,
+      "abs": true,
+      "esc": null,
+      "adas": [
+        "Adaptive M Suspension Professional",
+        "Driving Assistant Professional",
+        "Parking Assistant Plus",
+        "High-beam Assistant",
+        "Tyre Pressure Monitoring System"
+      ]
+    },
+    "_source_pdf": "bmw-xm-406947.pdf"
+  },
+  {
+    "brand": "BMW",
+    "model": "XM",
+    "trim": "Label Red",
+    "year": null,
+    "dimensions": {
+      "length_mm": 5110,
+      "width_mm": 2005,
+      "height_mm": 1755,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": null,
+      "drivetrain": null,
+      "engine_cc": 4395,
+      "battery_kwh": null,
+      "motor_power_kw": 550,
+      "torque_nm": 1000
+    },
+    "transmission": {
+      "category": "AT",
+      "technology_name": "Steptronic Sport Transmission",
+      "manufacturer": null,
+      "gears": null,
+      "shift_mechanism": null,
+      "paddle_shifter": null,
+      "drive_modes": []
+    },
+    "chassis": {
+      "body_type": null,
+      "chassis_type": null
+    },
+    "suspension": {
+      "front": null,
+      "rear": null,
+      "adaptive": true,
+      "air_suspension": false
+    },
+    "braking": {
+      "front_brake": "M Sport Brake Red High Gloss",
+      "rear_brake": null,
+      "brake_material": null,
+      "parking_brake": null,
+      "regen_braking": false
+    },
+    "comfort": {
+      "seat_material": "BMW Individual leather 'Merino'",
+      "seat_adjustment": "M multifunctional seats for driver and front passenger",
+      "seat_heating": false,
+      "seat_ventilation": true,
+      "sunroof": false,
+      "panoramic_roof": false
+    },
+    "infotainment": {
+      "screen_size_inch": null,
+      "android_auto": false,
+      "apple_carplay": false,
+      "wireless_projection": true,
+      "speaker_brand": "Bowers & Wilkins",
+      "speaker_count": null
+    },
+    "safety": {
+      "airbag_count": null,
+      "abs": true,
+      "esc": null,
+      "adas": [
+        "Adaptive M suspension Professional",
+        "Driving Assistant Professional",
+        "Parking Assistant Plus",
+        "High-beam Assistant",
+        "Tyre Pressure Monitoring System"
+      ]
+    },
+    "_source_pdf": "bmw-xm-406947.pdf"
+  },
+  {
+    "brand": "BMW",
+    "model": "M2",
+    "trim": "Coupé",
+    "year": null,
+    "dimensions": {
+      "length_mm": null,
+      "width_mm": null,
+      "height_mm": null,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": "G",
+      "drivetrain": "RWD",
+      "engine_cc": 2993,
+      "battery_kwh": null,
+      "motor_power_kw": 343.74,
+      "torque_nm": 550
+    },
+    "transmission": {
+      "category": "AT",
+      "technology_name": "Steptronic Sport transmission",
+      "manufacturer": null,
+      "gears": 8,
+      "shift_mechanism": "TorqueConverter",
+      "paddle_shifter": null,
+      "drive_modes": null
+    },
+    "chassis": {
+      "body_type": "Coupé",
+      "chassis_type": "Monocoque"
+    },
+    "suspension": {
+      "front": "Adaptive M Suspension",
+      "rear": "Adaptive M Suspension",
+      "adaptive": true,
+      "air_suspension": false
+    },
+    "braking": {
+      "front_brake": "M Compound Brakes",
+      "rear_brake": "M Compound Brakes",
+      "brake_material": "Steel",
+      "parking_brake": "Electric",
+      "regen_braking": false
+    },
+    "comfort": {
+      "seat_material": "Leather 'Vernasca'",
+      "seat_adjustment": "electric, with memory",
+      "seat_heating": null,
+      "seat_ventilation": null,
+      "sunroof": null,
+      "panoramic_roof": null
+    },
+    "infotainment": {
+      "screen_size_inch": 14.9,
+      "android_auto": null,
+      "apple_carplay": null,
+      "wireless_projection": null,
+      "speaker_brand": "Harman Kardon",
+      "speaker_count": 14
+    },
+    "safety": {
+      "airbag_count": 6,
+      "abs": true,
+      "esc": true,
+      "adas": [
+        "Dynamic Stability Control (DSC)",
+        "Traction mode (DTC)",
+        "Lane Departure Warning",
+        "Lane Change Warning",
+        "Front Collision Warning",
+        "Rear crossing traffic warning",
+        "Speed Limit Info",
+        "Parking Assistant"
+      ]
+    },
+    "_source_pdf": "BMW_ID_SpecCard_NIK24_M2Coupe.pdf.asset.1709814009860.pdf"
+  },
+  {
+    "brand": "AION",
+    "model": "Y Plus",
+    "trim": "410 Exclusive",
+    "year": null,
+    "dimensions": {
+      "length_mm": 4535,
+      "width_mm": 1870,
+      "height_mm": 1650,
+      "wheelbase_mm": 2750,
+      "ground_clearance_mm": 150
+    },
+    "powertrain": {
+      "fuel_type": "BEV",
+      "drivetrain": "FWD",
+      "engine_cc": null,
+      "battery_kwh": 50.66,
+      "motor_power_kw": 150,
+      "torque_nm": 225
+    },
+    "transmission": {
+      "category": null,
+      "technology_name": null,
+      "manufacturer": null,
+      "gears": null,
+      "shift_mechanism": null,
+      "paddle_shifter": null,
+      "drive_modes": []
+    },
+    "chassis": {
+      "body_type": null,
+      "chassis_type": "Monocoque"
+    },
+    "suspension": {
+      "front": "MacPherson Independent",
+      "rear": "Torsion Beam Non-independent",
+      "adaptive": null,
+      "air_suspension": null
+    },
+    "braking": {
+      "front_brake": "Vented Disc",
+      "rear_brake": "Disc",
+      "brake_material": "Steel",
+      "parking_brake": "Electric",
+      "regen_braking": true
+    },
+    "comfort": {
+      "seat_material": "PVC Synthetic Leather",
+      "seat_adjustment": "6-way Electrically Adjustable",
+      "seat_heating": null,
+      "seat_ventilation": true,
+      "sunroof": true,
+      "panoramic_roof": true
+    },
+    "infotainment": {
+      "screen_size_inch": 10.25,
+      "android_auto": null,
+      "apple_carplay": null,
+      "wireless_projection": null,
+      "speaker_brand": "Bongiovi",
+      "speaker_count": 6
+    },
+    "safety": {
+      "airbag_count": 6,
+      "abs": true,
+      "esc": true,
+      "adas": [
+        "Forward Collision Warning (FCW)",
+        "Automatic Emergency Braking (AEB)",
+        "Lane Departure Warning (LDW)",
+        "Lane Keeping Assist (LKA)",
+        "Vehicle Dynamics Control (VDC)",
+        "Adaptive Cruise Control with Stop and Go (ACC S&G)",
+        "360° Imaging System",
+        "Traffic Jam Assist (TJA)",
+        "Intelligent Cruise Assist (ICA)"
+      ]
+    },
+    "_source_pdf": "Brosur-AION.pdf"
+  },
+  {
+    "brand": "AION",
+    "model": "Y Plus",
+    "trim": "490 Premium",
+    "year": null,
+    "dimensions": {
+      "length_mm": 4535,
+      "width_mm": 1870,
+      "height_mm": 1650,
+      "wheelbase_mm": 2750,
+      "ground_clearance_mm": 150
+    },
+    "powertrain": {
+      "fuel_type": "BEV",
+      "drivetrain": "FWD",
+      "engine_cc": null,
+      "battery_kwh": 63.2,
+      "motor_power_kw": 150,
+      "torque_nm": 225
+    },
+    "transmission": {
+      "category": null,
+      "technology_name": null,
+      "manufacturer": null,
+      "gears": null,
+      "shift_mechanism": null,
+      "paddle_shifter": null,
+      "drive_modes": []
+    },
+    "chassis": {
+      "body_type": null,
+      "chassis_type": "Monocoque"
+    },
+    "suspension": {
+      "front": "MacPherson Independent",
+      "rear": "Torsion Beam Non-independent",
+      "adaptive": null,
+      "air_suspension": null
+    },
+    "braking": {
+      "front_brake": "Vented Disc",
+      "rear_brake": "Disc",
+      "brake_material": "Steel",
+      "parking_brake": "Electric",
+      "regen_braking": true
+    },
+    "comfort": {
+      "seat_material": "PVC Synthetic Leather",
+      "seat_adjustment": "6-way Electrically Adjustable",
+      "seat_heating": null,
+      "seat_ventilation": true,
+      "sunroof": true,
+      "panoramic_roof": true
+    },
+    "infotainment": {
+      "screen_size_inch": 10.25,
+      "android_auto": null,
+      "apple_carplay": null,
+      "wireless_projection": null,
+      "speaker_brand": "Bongiovi",
+      "speaker_count": 6
+    },
+    "safety": {
+      "airbag_count": 6,
+      "abs": true,
+      "esc": true,
+      "adas": [
+        "Forward Collision Warning (FCW)",
+        "Automatic Emergency Braking (AEB)",
+        "Lane Departure Warning (LDW)",
+        "Lane Keeping Assist (LKA)",
+        "Vehicle Dynamics Control (VDC)",
+        "Adaptive Cruise Control with Stop and Go (ACC S&G)",
+        "360° Imaging System",
+        "Traffic Jam Assist (TJA)",
+        "Intelligent Cruise Assist (ICA)"
+      ]
+    },
+    "_source_pdf": "Brosur-AION.pdf"
+  },
+  {
+    "brand": "HYPTEC",
+    "model": "HT",
+    "trim": "Premium Ultra",
+    "year": null,
+    "dimensions": {
+      "length_mm": 4935,
+      "width_mm": 1920,
+      "height_mm": 1700,
+      "wheelbase_mm": 2935,
+      "ground_clearance_mm": 150
+    },
+    "powertrain": {
+      "fuel_type": "BEV",
+      "drivetrain": "RWD",
+      "engine_cc": null,
+      "battery_kwh": 83,
+      "motor_power_kw": 250,
+      "torque_nm": 430
+    },
+    "transmission": {
+      "category": null,
+      "technology_name": null,
+      "manufacturer": null,
+      "gears": null,
+      "shift_mechanism": null,
+      "paddle_shifter": null,
+      "drive_modes": []
+    },
+    "chassis": {
+      "body_type": "Gull-wing Doors",
+      "chassis_type": null
+    },
+    "suspension": {
+      "front": "Front Double Wishbone Independent",
+      "rear": "Rear Five-link Independent",
+      "adaptive": null,
+      "air_suspension": null
+    },
+    "braking": {
+      "front_brake": "Vented Disc",
+      "rear_brake": "Vented Disc",
+      "brake_material": "Steel",
+      "parking_brake": "Electric",
+      "regen_braking": true
+    },
+    "comfort": {
+      "seat_material": "NAPPA Leather",
+      "seat_adjustment": "8-way Electrically Adjustable (Driver), 6-way Electrically Adjustable (Front Passenger)",
+      "seat_heating": true,
+      "seat_ventilation": true,
+      "sunroof": true,
+      "panoramic_roof": true
+    },
+    "infotainment": {
+      "screen_size_inch": 14.6,
+      "android_auto": true,
+      "apple_carplay": true,
+      "wireless_projection": false,
+      "speaker_brand": null,
+      "speaker_count": 22
+    },
+    "safety": {
+      "airbag_count": 6,
+      "abs": true,
+      "esc": true,
+      "adas": [
+        "Automatic Emergency Braking (AEB)",
+        "Forward Collision Warning (FCW)",
+        "Lane Departure Warning (LDW)",
+        "Lane Departure Prevention (LDP)",
+        "Blind Spot Monitor (BSM)",
+        "Traction Control System (TCS)",
+        "Emergency Brake Reminder",
+        "Safety Reminder"
+      ]
+    },
+    "_source_pdf": "Flyer-AION-HYPTEC-HT.pdf"
+  },
+  {
+    "brand": "AION",
+    "model": "V",
+    "trim": [
+      "Exclusive",
+      "Luxury"
+    ],
+    "year": null,
+    "dimensions": {
+      "length_mm": 4605,
+      "width_mm": 1854,
+      "height_mm": 1686,
+      "wheelbase_mm": 2775,
+      "ground_clearance_mm": 180
+    },
+    "powertrain": {
+      "fuel_type": "BEV",
+      "drivetrain": "FWD",
+      "engine_cc": null,
+      "battery_kwh": 64.5,
+      "motor_power_kw": 135,
+      "torque_nm": 240
+    },
+    "transmission": {
+      "category": "null",
+      "technology_name": "null",
+      "manufacturer": "null",
+      "gears": null,
+      "shift_mechanism": "null",
+      "paddle_shifter": null,
+      "drive_modes": []
+    },
+    "chassis": {
+      "body_type": "null",
+      "chassis_type": "null"
+    },
+    "suspension": {
+      "front": "McPherson Independent Suspension",
+      "rear": "Torsion Beam Non-independent Suspension",
+      "adaptive": null,
+      "air_suspension": null
+    },
+    "braking": {
+      "front_brake": "Ventilated Disc Brake",
+      "rear_brake": "Disc Brake",
+      "brake_material": "null",
+      "parking_brake": "Electric",
+      "regen_braking": true
+    },
+    "comfort": {
+      "seat_material": "PVC Synthetic Leather, PVC Genuine Leather",
+      "seat_adjustment": "Electric Adjustment",
+      "seat_heating": true,
+      "seat_ventilation": true,
+      "sunroof": false,
+      "panoramic_roof": true
+    },
+    "infotainment": {
+      "screen_size_inch": 14.6,
+      "android_auto": false,
+      "apple_carplay": true,
+      "wireless_projection": false,
+      "speaker_brand": "null",
+      "speaker_count": 9
+    },
+    "safety": {
+      "airbag_count": 6,
+      "abs": true,
+      "esc": true,
+      "adas": [
+        "Adaptive Cruise Control with Stop and Go",
+        "Forward Collision Warning",
+        "Automatic Emergency Braking",
+        "Traffic Jam Assist",
+        "Lane Departure Warning",
+        "Lane Keeping Assist",
+        "Emergency Lane Keeping Assist",
+        "Blind Spot Detection",
+        "Rear Vehicle Approaching Warning",
+        "Reverse Crossing Traffic Assist"
+      ]
+    },
+    "_source_pdf": "FLYER-AION-V-2025-1.pdf"
+  },
+  {
+    "brand": "AION",
+    "model": "V",
+    "trim": [
+      "Exclusive",
+      "Luxury"
+    ],
+    "year": null,
+    "dimensions": {
+      "length_mm": 4605,
+      "width_mm": 1854,
+      "height_mm": 1686,
+      "wheelbase_mm": 2775,
+      "ground_clearance_mm": 180
+    },
+    "powertrain": {
+      "fuel_type": "BEV",
+      "drivetrain": "FWD",
+      "engine_cc": null,
+      "battery_kwh": 75.3,
+      "motor_power_kw": 150,
+      "torque_nm": 240
+    },
+    "transmission": {
+      "category": "null",
+      "technology_name": "null",
+      "manufacturer": "null",
+      "gears": null,
+      "shift_mechanism": "null",
+      "paddle_shifter": null,
+      "drive_modes": []
+    },
+    "chassis": {
+      "body_type": "null",
+      "chassis_type": "null"
+    },
+    "suspension": {
+      "front": "McPherson Independent Suspension",
+      "rear": "Torsion Beam Non-independent Suspension",
+      "adaptive": null,
+      "air_suspension": null
+    },
+    "braking": {
+      "front_brake": "Ventilated Disc Brake",
+      "rear_brake": "Disc Brake",
+      "brake_material": "null",
+      "parking_brake": "Electric",
+      "regen_braking": true
+    },
+    "comfort": {
+      "seat_material": "PVC Synthetic Leather, PVC Genuine Leather",
+      "seat_adjustment": "Electric Adjustment",
+      "seat_heating": true,
+      "seat_ventilation": true,
+      "sunroof": false,
+      "panoramic_roof": true
+    },
+    "infotainment": {
+      "screen_size_inch": 14.6,
+      "android_auto": false,
+      "apple_carplay": true,
+      "wireless_projection": false,
+      "speaker_brand": "null",
+      "speaker_count": 9
+    },
+    "safety": {
+      "airbag_count": 6,
+      "abs": true,
+      "esc": true,
+      "adas": [
+        "Adaptive Cruise Control with Stop and Go",
+        "Forward Collision Warning",
+        "Automatic Emergency Braking",
+        "Traffic Jam Assist",
+        "Lane Departure Warning",
+        "Lane Keeping Assist",
+        "Emergency Lane Keeping Assist",
+        "Blind Spot Detection",
+        "Rear Vehicle Approaching Warning",
+        "Reverse Crossing Traffic Assist"
+      ]
+    },
+    "_source_pdf": "FLYER-AION-V-2025-1.pdf"
+  },
+  {
+    "brand": "BMW",
+    "model": "3 Series",
+    "trim": "320i M Sport",
+    "year": null,
+    "dimensions": {
+      "length_mm": null,
+      "width_mm": null,
+      "height_mm": null,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": "G",
+      "drivetrain": "RWD",
+      "engine_cc": 1998,
+      "battery_kwh": null,
+      "motor_power_kw": 136.0,
+      "torque_nm": 300
+    },
+    "transmission": {
+      "category": "AT",
+      "technology_name": "8-Speed Sport Steptronic",
+      "manufacturer": null,
+      "gears": 8,
+      "shift_mechanism": "TorqueConverter",
+      "paddle_shifter": true,
+      "drive_modes": []
+    },
+    "chassis": {
+      "body_type": "Sedan",
+      "chassis_type": "Monocoque"
+    },
+    "suspension": {
+      "front": "Adaptive M suspension",
+      "rear": null,
+      "adaptive": true,
+      "air_suspension": false
+    },
+    "braking": {
+      "front_brake": null,
+      "rear_brake": null,
+      "brake_material": "Steel",
+      "parking_brake": "Electric",
+      "regen_braking": false
+    },
+    "comfort": {
+      "seat_material": "Alcantara/Sensatec upholstery",
+      "seat_adjustment": "Electric with memory",
+      "seat_heating": false,
+      "seat_ventilation": false,
+      "sunroof": false,
+      "panoramic_roof": false
+    },
+    "infotainment": {
+      "screen_size_inch": 12.3,
+      "android_auto": false,
+      "apple_carplay": false,
+      "wireless_projection": false,
+      "speaker_brand": "BMW",
+      "speaker_count": 6
+    },
+    "safety": {
+      "airbag_count": 8,
+      "abs": true,
+      "esc": true,
+      "adas": [
+        "Lane Departure Warning",
+        "Lane Change Warning",
+        "Collision Warning",
+        "Pedestrian Warning with city braking function",
+        "Rear crossing traffic warning",
+        "Rear collision warning"
+      ]
+    },
+    "_source_pdf": "G20_LCI_Speccard_320iMSport.pdf.asset.1709813679722.pdf"
+  },
+  {
+    "brand": "BMW",
+    "model": "3 Series",
+    "trim": "330i M Sport Pro",
+    "year": null,
+    "dimensions": {
+      "length_mm": null,
+      "width_mm": null,
+      "height_mm": null,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": "G",
+      "drivetrain": null,
+      "engine_cc": 1998,
+      "battery_kwh": null,
+      "motor_power_kw": 191.0,
+      "torque_nm": 400
+    },
+    "transmission": {
+      "category": "AT",
+      "technology_name": "8-Speed Sport Steptronic",
+      "manufacturer": null,
+      "gears": 8,
+      "shift_mechanism": "TorqueConverter",
+      "paddle_shifter": true,
+      "drive_modes": []
+    },
+    "chassis": {
+      "body_type": "Sedan",
+      "chassis_type": "Monocoque"
+    },
+    "suspension": {
+      "front": "Adaptive M suspension",
+      "rear": null,
+      "adaptive": true,
+      "air_suspension": false
+    },
+    "braking": {
+      "front_brake": null,
+      "rear_brake": null,
+      "brake_material": "Steel",
+      "parking_brake": "Electric",
+      "regen_braking": false
+    },
+    "comfort": {
+      "seat_material": "Alcantara/Sensatec upholstery",
+      "seat_adjustment": "Electric with memory",
+      "seat_heating": false,
+      "seat_ventilation": false,
+      "sunroof": true,
+      "panoramic_roof": false
+    },
+    "infotainment": {
+      "screen_size_inch": 14.9,
+      "android_auto": false,
+      "apple_carplay": false,
+      "wireless_projection": false,
+      "speaker_brand": "Harman Kardon",
+      "speaker_count": 16
+    },
+    "safety": {
+      "airbag_count": 8,
+      "abs": true,
+      "esc": true,
+      "adas": [
+        "Lane Departure Warning",
+        "Lane Change Warning",
+        "Front Collision Warning with Brake Intervention",
+        "Crossing Traffic Warning Rear",
+        "Rear Collision Prevention"
+      ]
+    },
+    "_source_pdf": "G20_LCI_Speccard_330iMSportPro.pdf.asset.1709813695841.pdf"
+  },
+  {
+    "brand": "BMW",
+    "model": "iX2",
+    "trim": "xDrive30 M Sport",
+    "year": 2024,
+    "dimensions": {
+      "length_mm": 4554,
+      "width_mm": 1845,
+      "height_mm": 1560,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": "BEV",
+      "drivetrain": "AWD",
+      "engine_cc": null,
+      "battery_kwh": 66.5,
+      "motor_power_kw": 225,
+      "torque_nm": 494
+    },
+    "transmission": {
+      "category": "AT",
+      "technology_name": "BMW xDrive electric all-wheel drive",
+      "manufacturer": null,
+      "gears": null,
+      "shift_mechanism": null,
+      "paddle_shifter": null,
+      "drive_modes": []
+    },
+    "chassis": {
+      "body_type": null,
+      "chassis_type": "Monocoque"
+    },
+    "suspension": {
+      "front": "Adaptive M suspension",
+      "rear": null,
+      "adaptive": true,
+      "air_suspension": false
+    },
+    "braking": {
+      "front_brake": "M Sport brake, dark blue metallic",
+      "rear_brake": null,
+      "brake_material": null,
+      "parking_brake": null,
+      "regen_braking": null
+    },
+    "comfort": {
+      "seat_material": "M Sport seats for driver and front passenger",
+      "seat_adjustment": "electric, with memory",
+      "seat_heating": null,
+      "seat_ventilation": null,
+      "sunroof": false,
+      "panoramic_roof": true
+    },
+    "infotainment": {
+      "screen_size_inch": null,
+      "android_auto": false,
+      "apple_carplay": false,
+      "wireless_projection": false,
+      "speaker_brand": "Harman Kardon",
+      "speaker_count": null
+    },
+    "safety": {
+      "airbag_count": 8,
+      "abs": true,
+      "esc": true,
+      "adas": [
+        "Driving Assistant",
+        "Parking Assistant Plus",
+        "Intelligent Emergency Call"
+      ]
+    },
+    "_source_pdf": "iX2_20240105_01_EN_new.pdf.asset.1708599236132.pdf"
+  },
+  {
+    "brand": "BMW",
+    "model": "M4",
+    "trim": "Coupé Competition",
+    "year": null,
+    "dimensions": {
+      "length_mm": null,
+      "width_mm": null,
+      "height_mm": null,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": "G",
+      "drivetrain": "RWD",
+      "engine_cc": 2993,
+      "battery_kwh": null,
+      "motor_power_kw": 375.5,
+      "torque_nm": 650
+    },
+    "transmission": {
+      "category": "AT",
+      "technology_name": "8-speed M Sport Steptronic",
+      "manufacturer": null,
+      "gears": 8,
+      "shift_mechanism": "TorqueConverter",
+      "paddle_shifter": null,
+      "drive_modes": [
+        "TRACK"
+      ]
+    },
+    "chassis": {
+      "body_type": "Sedan",
+      "chassis_type": "Monocoque"
+    },
+    "suspension": {
+      "front": "Adaptive M suspension with M-specific control of damper characteristics",
+      "rear": "Adaptive M suspension with M-specific control of damper characteristics",
+      "adaptive": true,
+      "air_suspension": false
+    },
+    "braking": {
+      "front_brake": "M Compound brake, black high-gloss with 6-piston fixed-calliper brake/380 mm",
+      "rear_brake": "single-piston floating-calliper brake/370 mm",
+      "brake_material": "Steel",
+      "parking_brake": "Electric",
+      "regen_braking": false
+    },
+    "comfort": {
+      "seat_material": "Leather 'Merino'",
+      "seat_adjustment": "electric, with memory",
+      "seat_heating": true,
+      "seat_ventilation": false,
+      "sunroof": false,
+      "panoramic_roof": false
+    },
+    "infotainment": {
+      "screen_size_inch": 14.9,
+      "android_auto": false,
+      "apple_carplay": false,
+      "wireless_projection": false,
+      "speaker_brand": "Harman Kardon",
+      "speaker_count": 16
+    },
+    "safety": {
+      "airbag_count": 6,
+      "abs": true,
+      "esc": true,
+      "adas": [
+        "Lane Departure Warning",
+        "Lane Change Warning",
+        "front collision warning with brake intervention",
+        "crossing traffic warning rear",
+        "rear collision prevention"
+      ]
+    },
+    "_source_pdf": "Speccard_M4CoupeCompetition.pdf.asset.1692766436138.pdf"
+  },
+  {
+    "brand": "BMW",
+    "model": "Z4",
+    "trim": "M40i",
+    "year": null,
+    "dimensions": {
+      "length_mm": null,
+      "width_mm": null,
+      "height_mm": null,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": null,
+      "drivetrain": null,
+      "engine_cc": 2998,
+      "battery_kwh": null,
+      "motor_power_kw": 287.5,
+      "torque_nm": 500
+    },
+    "transmission": {
+      "category": "AT",
+      "technology_name": "8-Speed Sport Steptronic",
+      "manufacturer": null,
+      "gears": 8,
+      "shift_mechanism": "TorqueConverter",
+      "paddle_shifter": true,
+      "drive_modes": [
+        "sporty",
+        "dynamic",
+        "relaxed",
+        "comfortable"
+      ]
+    },
+    "chassis": {
+      "body_type": "roadster",
+      "chassis_type": "Monocoque"
+    },
+    "suspension": {
+      "front": "Adaptive M Suspension",
+      "rear": "M Sport differential",
+      "adaptive": true,
+      "air_suspension": false
+    },
+    "braking": {
+      "front_brake": "M Sport brake",
+      "rear_brake": "M Sport brake",
+      "brake_material": "Steel",
+      "parking_brake": "Electric",
+      "regen_braking": false
+    },
+    "comfort": {
+      "seat_material": "Leather 'Vernasca'/Alcantara",
+      "seat_adjustment": "electric with memory",
+      "seat_heating": null,
+      "seat_ventilation": null,
+      "sunroof": null,
+      "panoramic_roof": null
+    },
+    "infotainment": {
+      "screen_size_inch": 10.25,
+      "android_auto": null,
+      "apple_carplay": null,
+      "wireless_projection": null,
+      "speaker_brand": "Harman Kardon",
+      "speaker_count": 12
+    },
+    "safety": {
+      "airbag_count": 6,
+      "abs": true,
+      "esc": true,
+      "adas": [
+        "Lane Departure Warning",
+        "Lane Change Warning",
+        "front collision warning with brake intervention",
+        "crossing traffic warning rear",
+        "rear collision prevention"
+      ]
+    },
+    "_source_pdf": "Z4-20240131.pdf.asset.1709811664451.pdf"
+  },
+  {
+    "brand": "BMW",
+    "model": "Z4",
+    "trim": "sDrive30i M Sport",
+    "year": null,
+    "dimensions": {
+      "length_mm": null,
+      "width_mm": null,
+      "height_mm": null,
+      "wheelbase_mm": null,
+      "ground_clearance_mm": null
+    },
+    "powertrain": {
+      "fuel_type": null,
+      "drivetrain": "RWD",
+      "engine_cc": 1998,
+      "battery_kwh": null,
+      "motor_power_kw": 191.0,
+      "torque_nm": 400
+    },
+    "transmission": {
+      "category": "AT",
+      "technology_name": "8-Speed Sport Steptronic",
+      "manufacturer": null,
+      "gears": 8,
+      "shift_mechanism": "TorqueConverter",
+      "paddle_shifter": true,
+      "drive_modes": []
+    },
+    "chassis": {
+      "body_type": "Roadster",
+      "chassis_type": "Monocoque"
+    },
+    "suspension": {
+      "front": "Adaptive M suspension",
+      "rear": null,
+      "adaptive": true,
+      "air_suspension": false
+    },
+    "braking": {
+      "front_brake": null,
+      "rear_brake": null,
+      "brake_material": null,
+      "parking_brake": null,
+      "regen_braking": false
+    },
+    "comfort": {
+      "seat_material": "Leather 'Vernasca'",
+      "seat_adjustment": "electric, with memory",
+      "seat_heating": null,
+      "seat_ventilation": null,
+      "sunroof": null,
+      "panoramic_roof": null
+    },
+    "infotainment": {
+      "screen_size_inch": 10.25,
+      "android_auto": false,
+      "apple_carplay": false,
+      "wireless_projection": false,
+      "speaker_brand": "Harman Kardon",
+      "speaker_count": 12
+    },
+    "safety": {
+      "airbag_count": 6,
+      "abs": true,
+      "esc": true,
+      "adas": [
+        "Lane Departure Warning",
+        "Lane Change Warning",
+        "front collision warning with brake intervention",
+        "crossing traffic warning rear",
+        "rear collision prevention",
+        "Active cruise control with Stop&Go function"
+      ]
+    },
+    "_source_pdf": "Z4sDrive30i_MS.pdf.asset.1709811921862.pdf"
+  }
+]

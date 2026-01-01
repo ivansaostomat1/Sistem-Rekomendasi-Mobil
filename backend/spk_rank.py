@@ -290,12 +290,13 @@ def rank_candidates(
             pref_score = attr_score
 
         # 10) Gabungkan dengan Price Fit
-        alpha_price = 0.20 if ({"fun", "offroad"} & needs_set) else 0.30
+        # REVISI: Tetapkan bobot harga 30% untuk menjaga "Worth It" logic
+        # alpha_price = 0.20 if ({"fun", "offroad"} & needs_set) else 0.30 --> DIHAPUS
+        alpha_price = 0.30 # FIXED 30% agar harga tetap sensitif untuk orang awam
+        
         cand["fit_score"] = ((1.0 - alpha_price) * pref_score + alpha_price * cand["price_fit"]).clip(0, 1)
 
         # 11) SOFT & STYLE LAYER (THE JUDGE)
-        # Di sinilah semua logika "Jujur & Realistis" Anda diterapkan.
-        # Kita menggunakan compute_percentiles dari spk_soft.
         P = compute_percentiles(cand)
         cand["soft_mult"] = cand.apply(lambda r: soft_multiplier(r, needs or [], P), axis=1)
         cand["style_mult"] = cand.apply(lambda r: style_adjust_multiplier(r, needs or []), axis=1)
