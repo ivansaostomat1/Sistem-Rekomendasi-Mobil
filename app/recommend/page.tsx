@@ -149,8 +149,7 @@ export default function RecommendPage() {
             {CHAT_ENABLED && (
                 <motion.div
                     drag={!isMobile}
-                    dragListener={!isMobile}
-                    dragControls={dragControls}
+                    dragListener={false}
                     dragMomentum={false}
                     dragConstraints={
                         isMobile
@@ -181,8 +180,9 @@ export default function RecommendPage() {
                     className={
                         isMobile
                             ? "fixed inset-0 z-50"
-                            : "fixed bottom-24 right-8 z-50 w-auto h-auto"
+                            : "fixed bottom-24 right-8 z-50 w-[380px] h-[520px] max-h-[70vh]"
                     }
+
                 >
 
                     <SmartChatPanel
@@ -191,7 +191,6 @@ export default function RecommendPage() {
                         onChatRecommendation={handleChatRecommendation}
                         externalQuery={externalQuery}
                         setExternalQuery={setExternalQuery}
-                        dragControls={dragControls}
                         isMobile={isMobile}
                     />
                 </motion.div>

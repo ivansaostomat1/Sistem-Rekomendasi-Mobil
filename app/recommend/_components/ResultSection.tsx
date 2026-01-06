@@ -211,10 +211,8 @@ export function ResultsSection({ theme, loading, error, data, onBackToForm, onCa
                         <p className="text-lg font-semibold mb-2">
                             Belum ada mobil yang bisa direkomendasikan dengan kriteria ini.
                         </p>
-
-                        {/* ... (Logika Empty Hint - Tetap sama, saya singkat biar hemat) ... */}
                         {(() => {
-                            // ... (Paste logika hint dari kode Anda sebelumnya di sini) ...
+                            
                              const r = emptyHint?.reason as string | undefined;
                              return (
                                 <p className="text-sm text-neutral-400">

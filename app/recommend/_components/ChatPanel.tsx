@@ -2,9 +2,10 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { API_BASE } from "@/constants";
-import type { ChatRecommendation, ParsedConstraints } from "../page";
+import type { ChatRecommendation } from "../page";
 import type { Theme } from "../_types/theme";
-import { DragControls } from "framer-motion";
+
+/* ================== TYPES ================== */
 
 type Message = { from: "user" | "bot"; text: string };
 
@@ -19,12 +20,21 @@ type ChatPanelProps = {
   theme: Theme;
   onClose: () => void;
   onChatRecommendation?: (rec: ChatRecommendation | null) => void;
-  onChatConstraints?: (pc: ParsedConstraints | null) => void;
   externalQuery?: string | null;
   setExternalQuery?: React.Dispatch<React.SetStateAction<string | null>>;
-  dragControls?: DragControls;
   isMobile?: boolean;
 };
+
+/* ================== UTILS ================== */
+
+function fmtIDR(v?: number | null) {
+  if (!v || !isFinite(v)) return "-";
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    maximumFractionDigits: 0,
+  }).format(v);
+}
 
 const loadingTexts = [
   "Mencocokkan kebutuhan Anda...",
@@ -33,14 +43,14 @@ const loadingTexts = [
   "Menghitung kecocokan penggunaan...",
 ];
 
-export default function SmartChatPanel({
+/* ================== COMPONENT ================== */
+
+export default function ChatPanel({
   theme,
   onClose,
   onChatRecommendation,
   externalQuery,
   setExternalQuery,
-  dragControls,
-  isMobile = false,
 }: ChatPanelProps) {
   const isDark = theme === "dark";
 
@@ -56,14 +66,9 @@ export default function SmartChatPanel({
     step: "INIT",
   });
 
-  const [showResizeHint, setShowResizeHint] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return !localStorage.getItem("vroom_resize_hint_seen");
-  });
-
   const listRef = useRef<HTMLDivElement | null>(null);
 
-  /* --- LOAD STORAGE --- */
+  /* ---------- LOAD STORAGE ---------- */
   useEffect(() => {
     const savedMsgs = localStorage.getItem("vroom_msgs");
     const savedState = localStorage.getItem("vroom_state");
@@ -74,7 +79,9 @@ export default function SmartChatPanel({
       setMessages([
         {
           from: "bot",
-          text: "Halo Kak! 👋 Saya AI VRoom. Mau cari mobil apa nih? Ketik 'Mulai' atau sebutkan budget Anda.",
+          text:
+            "Halo Kak! 👋 Saya AI VRoom.\n" +
+            "Mau cari mobil apa nih? Sebutkan budget atau ketik *Mulai*.",
         },
       ]);
     }
@@ -84,17 +91,16 @@ export default function SmartChatPanel({
     }
   }, []);
 
-  /* --- SAVE STORAGE --- */
+  /* ---------- SAVE STORAGE ---------- */
   useEffect(() => {
-    if (messages.length > 0)
-      localStorage.setItem("vroom_msgs", JSON.stringify(messages));
+    localStorage.setItem("vroom_msgs", JSON.stringify(messages));
   }, [messages]);
 
   useEffect(() => {
     localStorage.setItem("vroom_state", JSON.stringify(chatState));
   }, [chatState]);
 
-  /* --- AUTO SCROLL --- */
+  /* ---------- AUTO SCROLL ---------- */
   useEffect(() => {
     listRef.current?.scrollTo({
       top: listRef.current.scrollHeight,
@@ -102,13 +108,15 @@ export default function SmartChatPanel({
     });
   }, [messages, isSending]);
 
-  /* --- EXTERNAL QUERY --- */
+  /* ---------- EXTERNAL QUERY ---------- */
   useEffect(() => {
     if (externalQuery && setExternalQuery) {
       handleSend(externalQuery);
       setExternalQuery(null);
     }
   }, [externalQuery, setExternalQuery]);
+
+  /* ================== SEND ================== */
 
   const handleSend = async (text?: string) => {
     const final = (text ?? input).trim();
@@ -128,46 +136,105 @@ export default function SmartChatPanel({
         body: JSON.stringify({ message: final, state: chatState }),
       });
 
-      if (!res.ok) throw new Error("error");
+      if (!res.ok) throw new Error("API Error");
+
       const json = await res.json();
 
+      /* ===== CLEAR / RESET VIA CHAT ===== */
+      const cmd = final.toLowerCase();
+      if (
+        cmd === "clear" ||
+        cmd === "reset" ||
+        cmd === "ulangi" ||
+        cmd === "mulai baru"
+      ) {
+        localStorage.removeItem("vroom_msgs");
+        localStorage.removeItem("vroom_state");
+
+        setMessages([{ from: "bot", text: json.reply }]);
+
+        if (json.state) setChatState(json.state);
+
+        setIsSending(false);
+        return; // ⬅️ STOP FLOW NORMAL
+      }
+
+      /* ===== NORMAL BOT REPLY ===== */
       setMessages((p) => [...p, { from: "bot", text: json.reply }]);
+
       if (json.state) setChatState(json.state);
-      if (json.recommendation && onChatRecommendation) {
-        onChatRecommendation(json.recommendation);
+
+      /* ===== RECOMMENDATION ===== */
+      if (json.recommendation) {
+        onChatRecommendation?.(json.recommendation);
+
+        const items = json.recommendation.items ?? [];
+        if (items.length > 0) {
+          const summary = items
+            .slice(0, 3)
+            .map(
+              (it: any, i: number) =>
+                `${i + 1}. ${it.brand} ${it.model} (${fmtIDR(it.price)})`
+            )
+            .join("\n");
+
+          setMessages((p) => [
+            ...p,
+            {
+              from: "bot",
+              text:
+                "🚗 Rekomendasi terbaik:\n\n" +
+                summary +
+                "\n\nDetail lengkap ada di panel hasil.",
+            },
+          ]);
+        }
       }
     } catch {
       setMessages((p) => [
         ...p,
-        { from: "bot", text: "Maaf, terjadi gangguan koneksi." },
+        { from: "bot", text: "Maaf, terjadi gangguan koneksi 😵‍💫" },
       ]);
     } finally {
       setIsSending(false);
     }
   };
 
-  const handleReset = () => {
+  /* ---------- BUTTON RESET ---------- */
+  const handleReset = async () => {
     localStorage.removeItem("vroom_msgs");
     localStorage.removeItem("vroom_state");
-    setMessages([
-      {
-        from: "bot",
-        text: "Chat direset. Silakan mulai ulang dengan menyebutkan kebutuhan Anda.",
-      },
-    ]);
+
+    setMessages([{ from: "bot", text: "Chat direset 🔄" }]);
     setChatState({ budget: null, needs: [], filters: {}, step: "INIT" });
+
+    try {
+      const res = await fetch(`${API_BASE}/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: "reset", state: null }),
+      });
+
+      if (!res.ok) throw new Error("reset error");
+
+      const json = await res.json();
+
+      setMessages((p) => [...p, { from: "bot", text: json.reply }]);
+      if (json.state) setChatState(json.state);
+    } catch {
+      setMessages((p) => [
+        ...p,
+        {
+          from: "bot",
+          text:
+            "Halo Kak! 👋 Saya AI VRoom siap bantu.\n" +
+            "🤔 Kira-kira budget maksimal berapa ya?",
+        },
+      ]);
+    }
   };
 
-  /* --- RESIZE HINT DISMISS --- */
-  useEffect(() => {
-    if (!isMobile && showResizeHint) {
-      const t = setTimeout(() => {
-        localStorage.setItem("vroom_resize_hint_seen", "1");
-        setShowResizeHint(false);
-      }, 4000);
-      return () => clearTimeout(t);
-    }
-  }, [showResizeHint, isMobile]);
+  /* ================== RENDER ================== */
 
   return (
     <div
@@ -175,32 +242,21 @@ export default function SmartChatPanel({
         isDark ? "bg-[#0a1014] border-teal-900/50" : "bg-white border-teal-100"
       }`}
       style={{
-        resize: isMobile ? "none" : "both",
-        minHeight: isMobile ? "100%" : "500px",
-        minWidth: isMobile ? "100%" : "420px",
         width: "100%",
         height: "100%",
+        minHeight: "520px",
         overflow: "hidden",
       }}
     >
-      {/* HEADER (DRAG HANDLE) */}
-      <div
-        onPointerDown={(e) => !isMobile && dragControls?.start(e)}
-        className="px-4 py-3 bg-gradient-to-r from-emerald-600 to-cyan-600 text-white flex justify-between items-center cursor-grab active:cursor-grabbing select-none"
-      >
-        <div className="text-sm font-bold pointer-events-none">
-          AI VRoom Assistant
-        </div>
-        <div
-          className="flex gap-2"
-          onPointerDown={(e) => e.stopPropagation()}
-        >
+      {/* HEADER */}
+      <div className="px-4 py-3 bg-gradient-to-r from-emerald-600 to-cyan-600 text-white flex justify-between items-center select-none">
+        <div className="text-sm font-bold">AI VRoom Assistant</div>
+        <div className="flex gap-2">
           <button
             onClick={handleReset}
-            title="Hapus percakapan & mulai ulang rekomendasi"
             className="text-[10px] bg-white/20 px-2 rounded hover:bg-white/30"
           >
-            ↻ Ulangi Chat
+            ↻ Reset
           </button>
           <button
             onClick={onClose}
@@ -274,25 +330,6 @@ export default function SmartChatPanel({
           </button>
         </div>
       </div>
-
-      {/* RESIZE AFFORDANCE */}
-      {!isMobile && (
-        <>
-          <div className="absolute bottom-1 right-1 opacity-70 pointer-events-none">
-            <div
-              className={`w-4 h-4 border-r-2 border-b-2 ${
-                isDark ? "border-teal-400/70" : "border-teal-600/60"
-              }`}
-            />
-          </div>
-
-          {showResizeHint && (
-            <div className="absolute bottom-6 right-6 text-[10px] bg-black/70 text-white px-2 py-1 rounded">
-              Tarik sudut untuk ubah ukuran
-            </div>
-          )}
-        </>
-      )}
     </div>
   );
 }

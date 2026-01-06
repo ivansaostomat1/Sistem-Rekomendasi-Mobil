@@ -166,7 +166,7 @@ async def chat_endpoint(payload: ChatRequest = Body(...)):
     # --- FITUR 1: RESET ---
     if user_text.lower() in ["reset", "ulangi", "mulai baru", "clear", "ganti budget"]:
         return {
-            "reply": "Halo Kak! 👋 Saya AI VRoom siap bantu.\n\n🤔 Saya lagi mikir nih, kira-kira Kakak nyiapin budget maksimal berapa ya buat mobil impian?",
+            "reply": "Halo Kak! 👋 Saya AI VRoom siap bantu.\n\n🤔 Saya lagi mikir nih, kira-kira Kakak nyiapin budget maksimal berapa ya?",
             "state": ConversationState(step="ASK_BUDGET"), 
             "recommendation": None
         }
@@ -176,7 +176,7 @@ async def chat_endpoint(payload: ChatRequest = Body(...)):
     if "[ANALISIS]" in user_text or (is_asking_reason and current_state.step == "READY"):
         last_rec = get_last_recommendation()
         if not last_rec or not last_rec.get("items"):
-            return {"reply": "Maaf Kak, saya belum kasih rekomendasi mobil nih. 🤔\nKita cari dulu yuk! Berapa budget maksimal Kakak?", "state": current_state}
+            return {"reply": "Maaf Kak, saya belum kasih rekomendasi mobil nih 😔. 🤔\nKita cari dulu yuk! Berapa budget maksimal Kakak?", "state": current_state}
         
         summary_data = build_summary_text(last_rec["items"])
         needs_context = ", ".join(current_state.needs)
@@ -240,7 +240,7 @@ async def chat_endpoint(payload: ChatRequest = Body(...)):
     if not current_state.budget:
         current_state.step = "ASK_BUDGET"
         return {
-            "reply": "Halo Kak! 👋 Saya AI VRoom siap bantu.\n\n🤔 Saya lagi mikir nih, kira-kira Kakak nyiapin budget maksimal berapa ya buat mobil impian ini? (Sebut angka aja, misal: 300 juta)",
+            "reply": "Halo Kak! 👋 Saya carbot siap membantu.\n\n🤔 Saya mau tanya nih, kira-kira Kakak nyiapin budget maksimal berapa ya? (misal: 300 juta)",
             "state": current_state,
             "recommendation": None,
         }
@@ -250,7 +250,7 @@ async def chat_endpoint(payload: ChatRequest = Body(...)):
         current_state.step = "ASK_NEEDS"
         human_budget = format_budget_human(current_state.budget)
         return {
-            "reply": f"Oke, budget {human_budget} sudah saya catat! 💰\n\n💡 Biar rekomendasinya akurat, mobil ini nanti bakal sering dipakai buat apa?\n\n(Misal: Buat Keluarga, Harian di Kota, atau Roadtrip Luar Kota?)",
+            "reply": f"Oke, budget {human_budget} sudah saya catat! 💰\n\n💡Kira-kira mobil ini nanti bakal sering dipakai buat apa?\n\n(Misal: Buat Keluarga, Harian di Kota, atau Roadtrip Luar Kota?)",
             "state": current_state,
             "recommendation": None,
         }
@@ -270,7 +270,7 @@ async def chat_endpoint(payload: ChatRequest = Body(...)):
         )
     except Exception as e:
         print(f"[SPK ERROR] {e}")
-        return {"reply": "Waduh, ada sedikit gangguan teknis nih Kak. Coba lagi ya! 🛠️", "state": current_state}
+        return {"reply": "Waduh, ada sedikit gangguan teknis nih Kak. Coba lagi nanti ya! 🛠️", "state": current_state}
 
     if results is None or results.empty:
         # Pesan khusus jika filter terlalu ketat
